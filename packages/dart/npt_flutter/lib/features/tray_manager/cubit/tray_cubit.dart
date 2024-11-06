@@ -8,6 +8,7 @@ import 'package:npt_flutter/app.dart';
 import 'package:npt_flutter/constants.dart';
 import 'package:npt_flutter/features/favorite/favorite.dart';
 import 'package:npt_flutter/features/onboarding/onboarding.dart';
+import 'package:npt_flutter/features/profile/profile.dart';
 import 'package:npt_flutter/features/profile_list/profile_list.dart';
 import 'package:npt_flutter/routes.dart';
 import 'package:tray_manager/tray_manager.dart';
@@ -95,35 +96,46 @@ class TrayCubit extends LoggingCubit<TrayState> {
     };
   }
 
-  Future<void> reload({AppLocalizations? localizations}) async {
+  Future<void> reload({
+    AppLocalizations? localizations,
+    FavoritesState? favoriteState,
+    ProfileListState? profileListState,
+    ProfilesRunningState? profilesRunningState,
+    OnboardingState? onboardingState,
+    ProfileState? profileState,
+  }) async {
     var context = App.navState.currentContext;
     if (context == null) return;
+
     localizations ??= AppLocalizations.of(context);
     if (localizations == null) return;
     var init = initialize(localizations: localizations);
 
     /// Access the context before any awaited function calls
-    var showSettings = context.read<OnboardingCubit>().getStatus() == OnboardingStatus.onboarded;
-    var favoriteBloc = context.read<FavoriteBloc>();
-    var profilesList = context.read<ProfileListBloc>();
+    favoriteState ??= context.read<FavoriteBloc>().state;
+    profileListState ??= context.read<ProfileListBloc>().state;
+    onboardingState ??= context.read<OnboardingCubit>().state;
+    var showSettings = onboardingState.status == OnboardingStatus.onboarded;
 
     await init;
 
-    /// Get favorites
-    if (favoriteBloc.state is! FavoritesLoaded) return;
-    var favorites = (favoriteBloc.state as FavoritesLoaded).favorites;
-
-    /// Get profiles uuid list
-    if (profilesList.state is! ProfileListLoaded) return;
-    var profiles = (profilesList.state as ProfileListLoaded).profiles;
+    // Guard against empty values
+    if (favoriteState is! FavoritesLoaded) return;
+    if (profileListState is! ProfileListLoaded) return;
 
     /// Generate the new menu based on current state
     var favMenuItems = await Future.wait(
-      favorites.where((fav) => fav.isLoadedInProfiles(profiles)).map((fav) async {
+      favoriteState.favorites
+          .where((fav) => fav.isLoadedInProfiles((profileListState as ProfileListLoaded).profiles))
+          .map((fav) async {
         /// Make sure to call [e.displayName] and [e.isRunning] only once to
         /// ensure good performance - these getters call a bunch of nested
         /// information from elsewhere in the app state
-        var displayName = await fav.displayName;
+
+        var displayName = (profileState != null && profileState is ProfileLoadedState && profileState.uuid == fav.uuid)
+            ? profileState.profile.displayName
+            : await fav.displayName;
+
         var status = fav.status;
         var label = '$displayName $status';
         return MenuItem(
@@ -148,6 +160,6 @@ class TrayCubit extends LoggingCubit<TrayState> {
         _getMenuItem(TrayAction.quitApp, localizations),
       ],
     ));
-    emit(TrayLoaded(favorites: favorites));
+    emit(const TrayLoaded());
   }
 }

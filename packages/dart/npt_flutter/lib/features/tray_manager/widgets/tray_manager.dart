@@ -28,11 +28,20 @@ class _TrayManagerState extends State<TrayManager> with TrayListener, WindowList
   /// the [.read()] extension which causes an error
   void reloadTray(BuildContext context, Loggable state) async {
     var cubit = context.read<TrayCubit>();
-    if (state is SettingsLoadedState) {
-      var localizations = await AppLocalizations.delegate.load(state.settings.language.locale);
-      cubit.reload(localizations: localizations);
-    } else {
-      cubit.reload(localizations: AppLocalizations.of(context));
+    switch (state) {
+      case FavoritesState _:
+        cubit.reload(favoriteState: state);
+      case ProfileListState _:
+        cubit.reload(profileListState: state);
+      case ProfilesRunningState _:
+        cubit.reload(profilesRunningState: state);
+      case SettingsLoadedState _:
+        var localizations = await AppLocalizations.delegate.load(state.settings.language.locale);
+        cubit.reload(localizations: localizations);
+      case ProfileState _:
+        cubit.reload(profileState: state);
+      default:
+        cubit.reload(localizations: AppLocalizations.of(context));
     }
   }
 
