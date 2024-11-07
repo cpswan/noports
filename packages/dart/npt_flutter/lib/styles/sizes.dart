@@ -65,7 +65,7 @@ class Sizes {
   // The below size factors are constants that are used to determine the height or width based on the device size.
   static const dashboardCardHeightFactor = 489 / 691;
   static const dashboardCardWidthFactor = 941 / 1053;
-  static const profileFieldsWidthFactor = 138 / 1053;
+  static const profileFieldsWidthFactor = 136 / 1053;
   static const profileFieldsWidthFactorAlt = 300 / 1053;
   static const settingsCardWidthFactor = 654 / 1053;
   static const settingsCardHeightFactor = 438 / 691;
