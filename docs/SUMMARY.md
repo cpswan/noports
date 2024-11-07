@@ -42,6 +42,7 @@
 
 ## Product Information <a href="#reference" id="reference"></a>
 
+* [Managing Policies](reference/policy.md)
 * [FAQ](reference/faq.md)
 * [How It Works](reference/how-it-works.md)
 * [Under The Hood](reference/underthehood.md)
