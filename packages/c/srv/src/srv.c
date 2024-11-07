@@ -190,17 +190,30 @@ int run_srv_daemon_side_multi(srv_params_t *params) {
                      "run_srv_daemon_side_multi\n Control socket received %s request - \n creating new socketToSocket "
                      "connection\n",
                      messagetype);
-        // start socket_to_socket connection
-        res = create_encrypter_and_decrypter(new_session_aes_key_string, new_session_aes_iv_string,
-                                             new_socket_encrypter, new_socket_decrypter);
+
+        bool no_encrypt =
+            strcmp(new_session_aes_key_string, "no") == 0 && strcmp("new_session_aes_iv_string", "encrypt") == 0;
+        if (no_encrypt) {
+          atlogger_log(TAG, ATLOGGER_LOGGING_LEVEL_WARN,
+                       "Socket connector requested no encryption!\n\tOnly disable encryption if you know what you "
+                       "are doing!\n");
+        }
+
+        if (!no_encrypt) {
+          // start socket_to_socket connection
+          res = create_encrypter_and_decrypter(new_session_aes_key_string, new_session_aes_iv_string,
+                                               new_socket_encrypter, new_socket_decrypter);
+        }
         atlogger_log(TAG, INFO, "Starting socket to socket srv\n");
 
         pthread_t sts_thread;
         socket_to_socket_params_t *sts_thread_params = malloc(sizeof(socket_to_socket_params_t));
         if (sts_thread_params == NULL) {
           atlogger_log(TAG, ERROR, "Failed to allocate memory for thread parameters\n");
-          free(new_socket_encrypter);
-          free(new_socket_decrypter);
+          if (!no_encrypt) {
+            free(new_socket_encrypter);
+            free(new_socket_decrypter);
+          }
           goto exit;
         }
 
@@ -213,8 +226,10 @@ int run_srv_daemon_side_multi(srv_params_t *params) {
         res = pthread_create(&sts_thread, NULL, run_socket_to_socket, (void *)sts_thread_params);
         if (res != 0) {
           atlogger_log(TAG, ERROR, "Failed to create thread: %d\n", res);
-          free(new_socket_encrypter);
-          free(new_socket_decrypter);
+          if (!no_encrypt) {
+            free(new_socket_encrypter);
+            free(new_socket_decrypter);
+          }
           free(sts_thread_params);
           goto exit;
         }
