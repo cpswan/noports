@@ -1,3 +1,7 @@
+---
+icon: users-rectangle
+---
+
 # Managing Policies
 
 NoPorts has a flexible suite of tools for managing policies. You can use a standalone database for storing and managing your policies using our administration interface, or you can integrate it with your existing policy database or service.&#x20;
