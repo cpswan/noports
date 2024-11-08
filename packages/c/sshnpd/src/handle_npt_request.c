@@ -27,86 +27,42 @@ void handle_npt_request(atclient *atclient, pthread_mutex_t *atclient_lock, sshn
                         bool *is_child_process, atclient_monitor_response *message, char *home_dir, FILE *authkeys_file,
                         char *authkeys_filename, atchops_rsa_key_private_key signing_key) {
   int res = 0;
-  if (!atclient_atnotification_is_from_initialized(&message->notification) && message->notification.from != NULL) {
-    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to initialize the from field of the notification\n");
+
+  cJSON *envelope = extract_envelope_from_notification(message);
+  if (envelope == NULL) {
     return;
   }
-  char *requesting_atsign = message->notification.from;
-
-  if (!atclient_atnotification_is_decrypted_value_initialized(&message->notification) &&
-      message->notification.decrypted_value != NULL) {
-    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR,
-                 "Failed to initialize the decrypted value of the notification\n");
-    return;
-  }
-  char *decrypted_json = malloc(sizeof(char) * (strlen(message->notification.decrypted_value) + 1));
-  if (decrypted_json == NULL) {
-    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to allocate memory to decrypt the envelope\n");
-    return;
-  }
-
-  memcpy(decrypted_json, message->notification.decrypted_value, strlen(message->notification.decrypted_value));
-  *(decrypted_json + strlen(message->notification.decrypted_value)) = '\0';
-
-  // log the decrypted json
-  atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Decrypted json: %s\n", decrypted_json);
-
-  cJSON *envelope = cJSON_Parse(decrypted_json);
+  // allocated: envelope
 
   // log envelope
   atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Received envelope: %s\n", cJSON_Print(envelope));
-  free(decrypted_json);
 
-  // First validate the types of everything we expect to be in the envelope
-  bool has_valid_values = cJSON_IsObject(envelope);
-
-  if (!has_valid_values) {
-    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to parse the envelope\n");
+  char *requesting_atsign = message->notification.from;
+  res = verify_envelope_signature_from(envelope, requesting_atsign, atclient);
+  if (res != 0) {
+    cJSON_Delete(envelope);
     return;
   }
 
-  cJSON *signature = cJSON_GetObjectItem(envelope, "signature");
-  has_valid_values = has_valid_values && cJSON_IsString(signature);
+  res = verify_envelope_contents(envelope, payload_type_npt);
 
-  cJSON *hashing_algo = cJSON_GetObjectItem(envelope, "hashingAlgo");
-  has_valid_values = has_valid_values && cJSON_IsString(hashing_algo);
-
-  cJSON *signing_algo = cJSON_GetObjectItem(envelope, "signingAlgo");
-  has_valid_values = has_valid_values && cJSON_IsString(signing_algo);
+  if (res != 0) {
+    cJSON_Delete(envelope);
+    return;
+  }
 
   cJSON *payload = cJSON_GetObjectItem(envelope, "payload");
-  has_valid_values = has_valid_values && cJSON_IsObject(payload);
-
-  if (!has_valid_values) {
-    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Received invalid envelope format\n");
-    cJSON_Delete(envelope);
-    return;
-  }
-
   cJSON *session_id = cJSON_GetObjectItem(payload, "sessionId");
-  has_valid_values = cJSON_IsString(session_id);
+  // cJSON *rvd_host = cJSON_GetObjectItem(payload, "rvdHost");
+  // cJSON *rvd_port = cJSON_GetObjectItem(payload, "rvdPort");
+  // cJSON *requested_host = cJSON_GetObjectItem(payload, "requestedHost");
+  // cJSON *requested_port = cJSON_GetObjectItem(payload, "requestedPort");
+  // cJSON *client_ephemeral_pk = cJSON_GetObjectItem(payload, "clientEphemeralPK");
+  // cJSON *client_ephemeral_pk_type = cJSON_GetObjectItem(payload, "clientEphemeralPKType");
 
-  cJSON *rvd_host = cJSON_GetObjectItem(payload, "rvdHost");
-  has_valid_values = has_valid_values && cJSON_IsString(rvd_host);
-
-  cJSON *rvd_port = cJSON_GetObjectItem(payload, "rvdPort");
-  has_valid_values = has_valid_values && cJSON_IsNumber(rvd_port);
-
-  // NPT ONLY
   cJSON *requested_host = cJSON_GetObjectItem(payload, "requestedHost");
-  has_valid_values = has_valid_values && cJSON_IsString(requested_host);
-
   cJSON *requested_port = cJSON_GetObjectItem(payload, "requestedPort");
-  has_valid_values = has_valid_values && cJSON_IsNumber(requested_port) && cJSON_GetNumberValue(requested_port) > 0;
-  // END NPT ONLY
 
-  if (!has_valid_values) {
-    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Received invalid payload format\n");
-    cJSON_Delete(envelope);
-    return;
-  }
-
-  // NPT ONLY
   // Don't try optimizing this to reuse the permitopen struct from main.c.
   // none of the memory duplication here is expensive, and it's a surface for bugs
   permitopen_params permitopen;
@@ -122,384 +78,40 @@ void handle_npt_request(atclient *atclient, pthread_mutex_t *atclient_lock, sshn
     cJSON_Delete(envelope);
     return;
   }
-  // END NPT ONLY
 
   // These values do not need to be asserted for v4 compatibility, only for v5
-
-  cJSON *auth_to_rvd = cJSON_GetObjectItem(payload, "authenticateToRvd");
-  cJSON *encrypt_traffic = cJSON_GetObjectItem(payload, "encryptRvdTraffic");
-  cJSON *client_nonce = cJSON_GetObjectItem(payload, "clientNonce");
-  cJSON *rvd_nonce = cJSON_GetObjectItem(payload, "rvdNonce");
-  cJSON *client_ephemeral_pk = cJSON_GetObjectItem(payload, "clientEphemeralPK");
-  cJSON *client_ephemeral_pk_type = cJSON_GetObjectItem(payload, "clientEphemeralPKType");
-
   // NPT ONLY
   // ignore timeout param for now
   // END NPT ONLY
-
-  // verify signature of payload
-
-  // - get public key of requesting atsign
-
-  atclient_atkey atkey;
-  atclient_atkey_init(&atkey);
-
-  if ((res = atclient_atkey_create_public_key(&atkey, "publickey", requesting_atsign, NULL)) != 0) {
-    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to create public key\n");
-    cJSON_Delete(envelope);
-    return;
-  }
 
   // temporary buffer used for multiple things:
   // - holding publickey string to populate publickey
   // - holding the signature to verify envelope
   char *buffer = NULL;
 
-  res = atclient_get_public_key(atclient, &atkey, &buffer, NULL);
-  atclient_atkey_free(&atkey);
-  if (res != 0) {
-    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to get public key\n");
-    cJSON_Delete(envelope);
-    return;
-  }
-
-  atchops_rsa_key_public_key requesting_atsign_publickey;
-  atchops_rsa_key_public_key_init(&requesting_atsign_publickey);
-
-  res = atchops_rsa_key_populate_public_key(&requesting_atsign_publickey, buffer, strlen(buffer));
-  if (res != 0) {
-    printf("atchops_rsakey_populate_publickey (failed): %d\n", res);
-    cJSON_Delete(envelope);
-    return;
-  }
-
-  // - get hashing and signing algos from envelope
-  // - verify signature from envelop against payload as cJSON_PrintUnformatted
-
-  char *payloadstr = cJSON_PrintUnformatted(payload);
-  char *signature_str = cJSON_GetStringValue(signature);
-  char *hashing_algo_str = cJSON_GetStringValue(hashing_algo);
-  char *signing_algo_str = cJSON_GetStringValue(signing_algo);
-
-  size_t valueolen = 0;
-  res = atchops_base64_decode((unsigned char *)signature_str, strlen(signature_str), (unsigned char *)buffer,
-                              strlen(buffer), &valueolen);
-
-  if (res != 0) {
-    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "atchops_base64_decode: %d\n", res);
-    cJSON_Delete(envelope);
-    cJSON_free(payloadstr);
-    free(buffer);
-    return;
-  }
-
-  res = verify_envelope_signature(requesting_atsign_publickey, (const unsigned char *)payloadstr,
-                                  (unsigned char *)buffer, hashing_algo_str, signing_algo_str);
-  free(buffer);
-  if (res != 0) {
-    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to verify envelope signature\n");
-    cJSON_Delete(envelope);
-    atchops_rsa_key_public_key_free(&requesting_atsign_publickey);
-    cJSON_free(payloadstr);
-    return;
-  }
-
-  atchops_rsa_key_public_key_free(&requesting_atsign_publickey);
-
-  bool authenticate_to_rvd = cJSON_IsTrue(auth_to_rvd);
-  bool encrypt_rvd_traffic = cJSON_IsTrue(encrypt_traffic);
-
-  if (!encrypt_rvd_traffic) {
-    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR,
-                 "Encrypt rvd traffic flag is false, this feature must be enabled\n");
-    cJSON_Delete(envelope);
-    cJSON_free(payloadstr);
-    return;
-  }
+  bool authenticate_to_rvd = cJSON_IsTrue(cJSON_GetObjectItem(payload, "authenticateToRvd"));
+  bool encrypt_rvd_traffic = cJSON_IsTrue(cJSON_GetObjectItem(payload, "encryptRvdTraffic"));
 
   char *rvd_auth_string;
   if (authenticate_to_rvd) {
-    has_valid_values = cJSON_IsString(client_nonce) && cJSON_IsString(rvd_nonce);
-
-    if (!has_valid_values) {
-      atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR,
-                   "Missing nonce values, cannot create auth string for rvd\n");
-      cJSON_Delete(envelope);
-      cJSON_free(payloadstr);
-      return;
-    }
-
-    cJSON *rvd_auth_payload = cJSON_CreateObject();
-    // FIXME: leaks : these 3 calls
-    cJSON_AddItemReferenceToObject(rvd_auth_payload, "sessionId", session_id);
-    cJSON_AddItemReferenceToObject(rvd_auth_payload, "clientNonce", client_nonce);
-    cJSON_AddItemReferenceToObject(rvd_auth_payload, "rvdNonce", rvd_nonce);
-
-    cJSON *res_envelope = cJSON_CreateObject();
-    cJSON_AddItemReferenceToObject(res_envelope, "payload", rvd_auth_payload);
-
-    char *signing_input = cJSON_PrintUnformatted(rvd_auth_payload);
-
-    unsigned char signature[256];
-    memset(signature, 0, BYTES(256));
-    res = atchops_rsa_sign(&signing_key, ATCHOPS_MD_SHA256, (unsigned char *)signing_input,
-                           strlen((char *)signing_input), signature);
+    res = create_rvd_auth_string(envelope, &signing_key, &rvd_auth_string);
     if (res != 0) {
-      atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to sign the auth string payload\n");
-      cJSON_free(signing_input);
-      cJSON_Delete(res_envelope);
-      cJSON_Delete(rvd_auth_payload);
       cJSON_Delete(envelope);
-      cJSON_free(payloadstr);
       return;
     }
-
-    unsigned char base64signature[384];
-    memset(base64signature, 0, BYTES(384));
-
-    size_t sig_len;
-    res = atchops_base64_encode(signature, 256, base64signature, 384, &sig_len);
-    if (res != 0) {
-      atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to base64 encode the auth string payload\n");
-      cJSON_free(signing_input);
-      cJSON_Delete(res_envelope);
-      cJSON_Delete(rvd_auth_payload);
-      cJSON_Delete(envelope);
-      cJSON_free(payloadstr);
-      return;
-    }
-
-    cJSON_AddItemToObject(res_envelope, "signature", cJSON_CreateString((char *)base64signature));
-    cJSON_AddItemToObject(res_envelope, "hashingAlgo", cJSON_CreateString("sha256"));
-    cJSON_AddItemToObject(res_envelope, "signingAlgo", cJSON_CreateString("rsa2048"));
-    rvd_auth_string = cJSON_PrintUnformatted(res_envelope);
-    cJSON_free(signing_input);
-    cJSON_Delete(res_envelope);
-    cJSON_Delete(rvd_auth_payload);
-    cJSON_free(payloadstr);
+    // allocated: rvd_auth_string
   }
 
-  unsigned char key[32];
-  unsigned char session_aes_key[49], *session_aes_key_encrypted, *session_aes_key_base64;
-  unsigned char iv[16];
-  unsigned char session_iv[25], *session_iv_encrypted, *session_iv_base64;
+  // TODO pick up from here moving things into handler_commons
+  // TODO pass these into the common handler
   bool free_session_base64 = false;
-  size_t session_aes_key_len, session_iv_len, session_aes_key_encrypted_len, session_iv_encrypted_len;
-  if (!encrypt_rvd_traffic) {
-    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "encryptRvdTraffic=false is not supported by this daemon\n");
-    if (authenticate_to_rvd) {
-      cJSON_free(rvd_auth_string);
-    }
-    cJSON_Delete(envelope);
-    return;
-  }
-
-  has_valid_values = cJSON_IsString(client_ephemeral_pk) && cJSON_IsString(client_ephemeral_pk_type);
-  if (!has_valid_values) {
-    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR,
-                 "encryptRvdTraffic was requested, but no client ephemeral public key / key type was provided\n");
-
-    if (authenticate_to_rvd) {
-      cJSON_free(rvd_auth_string);
-    }
-    cJSON_Delete(envelope);
-    return;
-  }
-
-  memset(key, 0, BYTES(32));
-  if ((res = atchops_aes_generate_key(key, ATCHOPS_AES_256)) != 0) {
-    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to generate session aes key\n");
-    if (authenticate_to_rvd) {
-      cJSON_free(rvd_auth_string);
-    }
-    cJSON_Delete(envelope);
-    return;
-  }
-
-  memset(session_aes_key, 0, BYTES(49));
-  res = atchops_base64_encode(key, 32, session_aes_key, 49, &session_aes_key_len);
-  if (res != 0) {
-    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to generate session aes key\n");
-    if (authenticate_to_rvd) {
-      cJSON_free(rvd_auth_string);
-    }
-    cJSON_Delete(envelope);
-    return;
-  }
-
-  memset(iv, 0, BYTES(16));
-  if ((res = atchops_iv_generate(iv)) != 0) {
-    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to generate session iv\n");
-    if (authenticate_to_rvd) {
-      cJSON_free(rvd_auth_string);
-    }
-    cJSON_Delete(envelope);
-    return;
-  }
-
-  memset(session_iv, 0, BYTES(25));
-  res = atchops_base64_encode(iv, 16, session_iv, 25, &session_iv_len);
-  if (res != 0) {
-    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to generate session iv\n");
-    if (authenticate_to_rvd) {
-      cJSON_free(rvd_auth_string);
-    }
-    cJSON_Delete(envelope);
-    return;
-  }
-
-  char *pk_type = cJSON_GetStringValue(client_ephemeral_pk_type);
-  char *pk = cJSON_GetStringValue(client_ephemeral_pk);
-
-  bool is_valid = false;
-  switch (strlen(pk_type)) {
-  case 7: { // rsa2048 is the only valid type right now
-    if (strncmp(pk_type, "rsa2048", 7) == 0) {
-      is_valid = true;
-      atchops_rsa_key_public_key ac;
-      atchops_rsa_key_public_key_init(&ac);
-
-      res = atchops_rsa_key_populate_public_key(&ac, pk, strlen(pk));
-      if (res != 0) {
-        atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to populate client ephemeral pk\n");
-        atchops_rsa_key_public_key_free(&ac);
-        if (authenticate_to_rvd) {
-          cJSON_free(rvd_auth_string);
-        }
-        cJSON_Delete(envelope);
-        return;
-      }
-
-      session_aes_key_encrypted = malloc(BYTES(256));
-      if (session_aes_key_encrypted == NULL) {
-        atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR,
-                     "Failed to allocate memory to encrypt the session aes key\n");
-        atchops_rsa_key_public_key_free(&ac);
-        if (authenticate_to_rvd) {
-          cJSON_free(rvd_auth_string);
-        }
-        cJSON_Delete(envelope);
-        return;
-      }
-
-      res = atchops_rsa_encrypt(&ac, session_aes_key, session_aes_key_len, session_aes_key_encrypted);
-      if (res != 0) {
-        atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to encrypt the session aes key\n");
-        atchops_rsa_key_public_key_free(&ac);
-        if (authenticate_to_rvd) {
-          cJSON_free(rvd_auth_string);
-        }
-        free(session_aes_key_encrypted);
-        cJSON_Delete(envelope);
-        return;
-      }
-
-      session_aes_key_encrypted_len = 256;
-      session_aes_key_len = session_aes_key_encrypted_len * 3 / 2; // reusing this since we can
-
-      session_aes_key_base64 = malloc(BYTES(session_aes_key_len));
-      if (session_aes_key_base64 == NULL) {
-        atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR,
-                     "Failed to allocate memory to base64 encode the session aes key\n");
-        atchops_rsa_key_public_key_free(&ac);
-        if (authenticate_to_rvd) {
-          cJSON_free(rvd_auth_string);
-        }
-        free(session_aes_key_encrypted);
-        cJSON_Delete(envelope);
-        return;
-      }
-      memset(session_aes_key_base64, 0, session_aes_key_len);
-
-      size_t session_aes_key_base64_len;
-      res = atchops_base64_encode(session_aes_key_encrypted, session_aes_key_encrypted_len, session_aes_key_base64,
-                                  session_aes_key_len, &session_aes_key_base64_len);
-      if (res != 0) {
-        atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to base64 encode the session aes key\n");
-        atchops_rsa_key_public_key_free(&ac);
-        if (authenticate_to_rvd) {
-          cJSON_free(rvd_auth_string);
-        }
-        free(session_aes_key_base64);
-        free(session_aes_key_encrypted);
-        cJSON_Delete(envelope);
-        return;
-      }
-
-      // No longer need this
-      free(session_aes_key_encrypted);
-
-      session_iv_encrypted = malloc(BYTES(256));
-      if (session_iv_encrypted == NULL) {
-        atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to allocate memory to encrypt the session iv\n");
-        atchops_rsa_key_public_key_free(&ac);
-        if (authenticate_to_rvd) {
-          cJSON_free(rvd_auth_string);
-        }
-        free(session_aes_key_base64);
-        cJSON_Delete(envelope);
-        return;
-      }
-      memset(session_iv_encrypted, 0, BYTES(256));
-
-      res = atchops_rsa_encrypt(&ac, session_iv, session_iv_len, session_iv_encrypted);
-      atchops_rsa_key_public_key_free(&ac);
-      if (res != 0) {
-        atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to encrypt the session iv\n");
-        if (authenticate_to_rvd) {
-          cJSON_free(rvd_auth_string);
-        }
-        free(session_iv_encrypted);
-        free(session_aes_key_base64);
-        cJSON_Delete(envelope);
-        return;
-      }
-
-      session_iv_encrypted_len = 256;
-      session_iv_len = session_iv_encrypted_len * 3 / 2; // reusing this since we can
-      session_iv_base64 = malloc(BYTES(session_iv_len));
-      if (session_iv_base64 == NULL) {
-        atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR,
-                     "Failed to allocate memory to base64 encode the session iv\n");
-        if (authenticate_to_rvd) {
-          cJSON_free(rvd_auth_string);
-        }
-        free(session_iv_encrypted);
-        free(session_aes_key_base64);
-        cJSON_Delete(envelope);
-        return;
-      }
-      memset(session_iv_base64, 0, session_iv_len);
-
-      size_t session_iv_base64_len;
-      res = atchops_base64_encode(session_iv_encrypted, session_iv_encrypted_len, session_iv_base64, session_iv_len,
-                                  &session_iv_base64_len);
-      if (res != 0) {
-        atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to base64 encode the session iv\n");
-        if (authenticate_to_rvd) {
-          cJSON_free(rvd_auth_string);
-        }
-        free(session_iv_base64);
-        free(session_iv_encrypted);
-        free(session_aes_key_base64);
-        cJSON_Delete(envelope);
-        return;
-      }
-      // No longer need this
-      free(session_iv_encrypted);
-      free_session_base64 = true;
-    } // rsa2048 - allocates (session_iv_base64, session_aes_key_base64)
-  } // case 7
-  } // switch
-
-  if (!is_valid) {
-    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR,
-                 "%s is not an accepted key type for encrypting the aes key\n", pk_type);
-    if (authenticate_to_rvd) {
-      cJSON_free(rvd_auth_string);
-    }
-    cJSON_Delete(envelope);
-    return;
+  unsigned char *session_aes_key, *session_iv; // TODO pass these into the common handler
+  unsigned char *session_aes_key_base64, *session_iv_base64;
+  if (encrypt_rvd_traffic) {
+    // TODO call the common handler
+  } else {
+    sprintf((char *)session_aes_key, "no");
+    sprintf((char *)session_iv, "encrypt");
   }
 
   // At this point, allocated memory:
@@ -522,9 +134,8 @@ void handle_npt_request(atclient *atclient, pthread_mutex_t *atclient_lock, sshn
       free(session_aes_key_base64);
       free(session_iv_base64);
     }
-
-    char *rvd_host_str = cJSON_GetStringValue(rvd_host);
-    uint16_t rvd_port_int = cJSON_GetNumberValue(rvd_port);
+    char *rvd_host_str = cJSON_GetStringValue(cJSON_GetObjectItem(payload, "rvdHost"));
+    uint16_t rvd_port_int = cJSON_GetNumberValue(cJSON_GetObjectItem(payload, "rvdPort"));
 
     char *requested_host_str = cJSON_GetStringValue(requested_host);
     uint16_t requested_port_int = cJSON_GetNumberValue(requested_port);
@@ -563,6 +174,7 @@ void handle_npt_request(atclient *atclient, pthread_mutex_t *atclient_lock, sshn
       goto cancel;
     }
 
+    // TODO consolidate this into a common handler
     char *identifier = cJSON_GetStringValue(session_id);
     cJSON *final_res_payload = cJSON_CreateObject();
     cJSON_AddStringToObject(final_res_payload, "status", "connected");

@@ -1,11 +1,22 @@
 #ifndef HANDLER_COMMONS_H
 #define HANDLER_COMMONS_H
+#include <atclient/cjson.h>
 #include <atclient/monitor.h>
 #include <pthread.h>
 
 #define BYTES(x) (sizeof(unsigned char) * x)
 
+int verify_envelope_signature_from(cJSON *envelope, char *requesting_atsign, atclient *atclient);
 int verify_envelope_signature(atchops_rsa_key_public_key publickey, const unsigned char *payload,
                               unsigned char *signature, const char *hashing_algo, const char *signing_algo);
 
+enum payload_type { payload_type_ssh, payload_type_npt };
+
+cJSON *extract_envelope_from_notification(atclient_monitor_response *message);
+
+int verify_envelope_contents(cJSON *envelope, enum payload_type type);
+
+int verify_payload_contents(cJSON *payload, enum payload_type type);
+
+int create_rvd_auth_string(cJSON *payload, atchops_rsa_key_private_key *signing_key, char **rvd_auth_string);
 #endif
