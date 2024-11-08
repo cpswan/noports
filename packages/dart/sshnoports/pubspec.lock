@@ -725,11 +725,12 @@ packages:
   socket_connector:
     dependency: "direct main"
     description:
-      name: socket_connector
-      sha256: "3c641546699aa58e9ab8be9841627a30af3c1ffcf4461ca5d00d7c56392ab63a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.0"
+      path: "."
+      ref: "gkc/2.3.0"
+      resolved-ref: "193a5294ea0a1b36818797063142cee137e35967"
+      url: "https://github.com/atsign-foundation/socket_connector"
+    source: git
+    version: "2.3.0"
   source_map_stack_trace:
     dependency: transitive
     description:

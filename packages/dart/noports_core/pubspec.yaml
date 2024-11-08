@@ -27,6 +27,10 @@ dependencies:
   json_annotation: ^4.9.0
 
 dependency_overrides:
+  socket_connector:
+    git:
+      url: https://github.com/atsign-foundation/socket_connector
+      ref: gkc/2.3.0
   dartssh2:
     git:
       url: https://github.com/atsign-foundation/dartssh2

@@ -635,6 +635,7 @@ class SrvImplDart implements Srv<SocketConnector> {
     List<InternetAddress> hosts,
     String request,
   ) async {
+    request = request.trim();
     List<String> args = request.split(":");
     switch (args.first) {
       case 'connect':
