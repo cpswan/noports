@@ -1,3 +1,7 @@
+## 0.2.3
+
+- Update to atSDK v0.3.1 with type fixes
+
 ## 0.2.2
 
 - Fix 32bit support for device_info
