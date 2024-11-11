@@ -22,8 +22,8 @@
 #define LOGGER_TAG "SSH_REQUEST"
 
 void handle_ssh_request(atclient *atclient, pthread_mutex_t *atclient_lock, sshnpd_params *params,
-                        bool *is_child_process, atclient_monitor_response *message, char *home_dir, FILE *authkeys_file,
-                        char *authkeys_filename, atchops_rsa_key_private_key signing_key) {
+                        bool *is_child_process, atclient_monitor_response *message,
+                        atchops_rsa_key_private_key signing_key) {
   int res = 0;
   if (!atclient_atnotification_is_from_initialized(&message->notification) && message->notification.from != NULL) {
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to initialize the from field of the notification\n");
@@ -497,7 +497,6 @@ void handle_ssh_request(atclient *atclient, pthread_mutex_t *atclient_lock, sshn
 
   pid_t pid = fork();
   int status;
-  bool free_envelope = true;
 
   if (pid == 0) {
     // child process

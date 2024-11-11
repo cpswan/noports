@@ -83,9 +83,8 @@ int parse_permitopen(char *input, char ***permitopen_hosts, uint16_t **permitope
 }
 
 bool should_permitopen(permitopen_params *params) {
-  const char *TAG = "should_permitopen";
 
-  for (int i = 0; i < params->permitopen_len; i++) {
+  for (size_t i = 0; i < params->permitopen_len; i++) {
     // permitopen_port[i] = 0 is equivalent to '*'
     if (params->permitopen_ports[i] == 0 || params->permitopen_ports[i] == params->requested_port) {
       if (params->permitopen_hosts[i][0] == '*' && strlen(params->permitopen_hosts[i]) == 1) {
