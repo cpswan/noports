@@ -1,10 +1,10 @@
+#include <errno.h>
 #include <sshnpd/params.h>
 #include <sshnpd/permitopen.h>
 #include <sshnpd/version.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/errno.h>
 
 #define default_permitopen "localhost:22,localhost:3389"
 void apply_default_values_to_sshnpd_params(sshnpd_params *params) {

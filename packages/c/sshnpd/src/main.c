@@ -557,8 +557,7 @@ void main_loop() {
           atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Executing handle_npt_request\n");
           // No permitopen here... since we need to parse the json first in order to check, it happens inside
           // handle_npt_request
-          handle_npt_request(&worker, &atclient_lock, &params, &is_child_process, &message, home_dir, authkeys_file,
-                             authkeys_filename, signingkey);
+          handle_npt_request(&worker, &atclient_lock, &params, &is_child_process, &message, signingkey);
           break;
         case NK_NONE:
           break;

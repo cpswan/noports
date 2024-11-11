@@ -1,8 +1,8 @@
 #include "sshnpd/permitopen.h"
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/errno.h>
 
 int parse_permitopen(char *input, char ***permitopen_hosts, uint16_t **permitopen_ports, size_t *permitopen_len,
                      bool is_logger_available) {
