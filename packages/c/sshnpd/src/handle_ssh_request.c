@@ -16,6 +16,7 @@
 #include <sshnpd/run_srv_process.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 #define LOGGER_TAG "SSH_REQUEST"
