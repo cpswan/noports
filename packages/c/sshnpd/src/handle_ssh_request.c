@@ -9,15 +9,13 @@
 #include <atclient/notify.h>
 #include <atclient/string_utils.h>
 #include <atlogger/atlogger.h>
+#include <errno.h>
 #include <pthread.h>
 #include <sshnpd/handle_ssh_request.h>
 #include <sshnpd/handler_commons.h>
 #include <sshnpd/run_srv_process.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/errno.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 #include <unistd.h>
 
 #define LOGGER_TAG "SSH_REQUEST"
