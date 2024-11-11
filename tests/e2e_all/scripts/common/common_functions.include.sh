@@ -57,7 +57,7 @@ getBaseSshnpCommand() {
 
 getBaseNptCommand() {
   if (($# < 1 || $# > 2)); then
-      logErrorAndExit "getBaseNptCommand requires 1 mandatory argument (clientBinaryPath) and optionally a second argument (encryptRvdTraffic)"
+    logErrorAndExit "getBaseNptCommand requires 1 mandatory argument (clientBinaryPath) and optionally a second argument (encryptRvdTraffic)"
   fi
   clientBinaryPath="$1"
   l1="$clientBinaryPath/npt -f $clientAtSign -d $deviceName"
@@ -208,13 +208,13 @@ getVersionDescription() {
   if (($# != 1)); then logErrorAndExit "getVersionDescription requires 1 parameter"; fi
   IFS=: read -r type version <<<"$1"
   case $type in
-    d) desc="Dart " ;;
-    c) desc="C" ;;
-    *) desc="$type (?) " ;;
+  d) desc="Dart " ;;
+  c) desc="C" ;;
+  *) desc="$type (?) " ;;
   esac
   case $version in
-    current) desc="${desc} (branch)" ;;
-    *) desc="${desc} v${version}" ;;
+  current) desc="${desc} (branch)" ;;
+  *) desc="${desc} v${version}" ;;
   esac
   echo "$desc"
 }
@@ -337,30 +337,30 @@ getPathToBinariesForTypeAndVersion() {
   IFS=: read -r type version <<<"$typeAndVersion"
 
   case "$version" in
-    current)
-      case "$type" in
-        d) # dart
-          getDartCompilationOutputDir
-          ;;
-        c)
-          getCCompilationOutputDir
-          ;;
-        *)
-          logErrorAndExit "Don't know how to getPathToBinariesForTypeAndVersion for $typeAndVersion"
-          ;;
-      esac
+  current)
+    case "$type" in
+    d) # dart
+      getDartCompilationOutputDir
+      ;;
+    c)
+      getCCompilationOutputDir
       ;;
     *)
-      case "$type" in
-        d) # dart
-          getDartReleaseBinDirForVersion "$version"
-          ;;
-        # c);; # Not supported yet (soon)
-        *)
-          logErrorAndExit "Don't know how to getPathToBinariesForTypeAndVersion for $typeAndVersion"
-          ;;
-      esac
+      logErrorAndExit "Don't know how to getPathToBinariesForTypeAndVersion for $typeAndVersion"
       ;;
+    esac
+    ;;
+  *)
+    case "$type" in
+    d) # dart
+      getDartReleaseBinDirForVersion "$version"
+      ;;
+    # c);; # Not supported yet (soon)
+    *)
+      logErrorAndExit "Don't know how to getPathToBinariesForTypeAndVersion for $typeAndVersion"
+      ;;
+    esac
+    ;;
   esac
 }
 
@@ -489,12 +489,12 @@ downloadDartBinaries() {
   # Unzip if not already unzipped
   if ! [ -d "$versionBinDir/sshnp" ]; then
     case "$EXT" in
-      zip)
-        unzip -qo "$versionBinDir/$downloadZipName" -d "$versionBinDir"
-        ;;
-      tgz | tar.gz)
-        tar -zxf "$versionBinDir/$downloadZipName" -C "$versionBinDir"
-        ;;
+    zip)
+      unzip -qo "$versionBinDir/$downloadZipName" -d "$versionBinDir"
+      ;;
+    tgz | tar.gz)
+      tar -zxf "$versionBinDir/$downloadZipName" -C "$versionBinDir"
+      ;;
     esac
   fi
 
@@ -566,6 +566,8 @@ buildCurrentCBinaries() {
     cmake -B $build_dir -S $base_dir -DCMAKE_C_COMPILER=gcc -DCMAKE_C_FLAGS="-Wall -Wextra -Werror-implicit-function-declaration" -DBUILD_TESTS=off
     cmake --build $build_dir
     if [ $? -ne 0 ]; then
+      logInfo "cmake cache:"
+      logInfo "$(cmake -L -N $base_dir)"
       logErrorAndExit "cmake build failed"
     fi
     cp $build_dir/sshnpd "$binaryOutputDir/"
@@ -579,15 +581,15 @@ buildCurrentCBinaries() {
 setup_type_and_version() {
   IFS=: read -r type version <<<"$1"
   case "$type" in
-    d) # dart
-      setupDartVersion "$version" || logErrorAndExit "Failed to set up binaries for dart version [$version]"
-      ;;
-    c) # c
-      setupCVersion "$version" || logErrorAndExit "Failed to set up binaries for c version [$version]"
-      ;;
-    *)
-      logErrorAndExit "This script doesn't know where to find NoPorts daemon binary for [$typeAndVersion]"
-      exit 1
-      ;;
+  d) # dart
+    setupDartVersion "$version" || logErrorAndExit "Failed to set up binaries for dart version [$version]"
+    ;;
+  c) # c
+    setupCVersion "$version" || logErrorAndExit "Failed to set up binaries for c version [$version]"
+    ;;
+  *)
+    logErrorAndExit "This script doesn't know where to find NoPorts daemon binary for [$typeAndVersion]"
+    exit 1
+    ;;
   esac
 }
