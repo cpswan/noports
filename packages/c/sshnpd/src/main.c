@@ -23,6 +23,7 @@
 #include <atclient/notify.h>
 #include <atclient/string_utils.h>
 #include <atlogger/atlogger.h>
+#include <errno.h>
 #include <libgen.h>
 #include <pthread.h>
 #include <signal.h>
@@ -31,8 +32,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/errno.h>
-#include <sys/wait.h>
 #include <unistd.h>
 
 #define FILENAME_BUFFER_SIZE 500
