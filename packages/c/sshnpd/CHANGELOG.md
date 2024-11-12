@@ -1,3 +1,8 @@
+## 0.2.4
+
+- fix: Disabled clang-tidy missing-includes, as it malformed header includes
+- fix: Restore the malformed headers
+
 ## 0.2.3
 
 - Update to atSDK v0.3.1 with type fixes

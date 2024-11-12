@@ -1,10 +1,10 @@
+#include <errno.h>
 #include <sshnpd/params.h>
 #include <sshnpd/permitopen.h>
 #include <sshnpd/version.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/errno.h>
 
 #define default_permitopen "localhost:22,localhost:3389"
 void apply_default_values_to_sshnpd_params(sshnpd_params *params) {
@@ -28,6 +28,8 @@ int parse_sshnpd_params(sshnpd_params *params, int argc, const char **argv) {
   char *permitopen = NULL;
   char *ephemeral_permissions = NULL;
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmissing-field-initializers"
   ArgparseOption options[] = {
       OPT_HELP(),
       OPT_STRING('k', "key-file", &params->key_file, "Path to the key file"),
@@ -55,6 +57,7 @@ int parse_sshnpd_params(sshnpd_params *params, int argc, const char **argv) {
       OPT_BOOLEAN('u', "un-hide", NULL, NULL),
       OPT_END(),
   };
+#pragma clang diagnostic pop
 
   Argparse argparse;
   argparse_init(&argparse, options, NULL, 0);
@@ -94,7 +97,7 @@ int parse_sshnpd_params(sshnpd_params *params, int argc, const char **argv) {
   }
 
   printf("permitting open:\n");
-  for (int i = 0; i < params->permitopen_len; i++) {
+  for (size_t i = 0; i < params->permitopen_len; i++) {
     if (params->permitopen_ports[i] == 0) {
       printf("%s:*\n", params->permitopen_hosts[i]);
     } else {

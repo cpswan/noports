@@ -53,7 +53,7 @@ void *refresh_device_entry(void *void_refresh_device_entry_params) {
     pthread_exit(NULL);
   }
 
-  int index;
+  size_t index;
   for (index = 0; index < num_managers; index++) {
     // device_info
     size_t buffer_len = strlen(params->params->manager_list[index]) + infokey_base_len;
@@ -144,7 +144,7 @@ void *refresh_device_entry(void *void_refresh_device_entry_params) {
 
       fflush(stdout);
 
-      for (int i = 0; i < num_managers; i++) {
+      for (size_t i = 0; i < num_managers; i++) {
         if (params->params->hide) {
           ret = atclient_delete(params->atclient, infokeys + i, NULL, NULL);
         } else {
