@@ -487,6 +487,7 @@ class SrvImplDart implements Srv<SocketConnector> {
           logger.info('_runClientSideSingle authenticating'
               ' new connection to rvd');
           sideB.socket.writeln(rvdAuthString);
+          await sideB.socket.flush();
         }
       },
     );
@@ -507,6 +508,7 @@ class SrvImplDart implements Srv<SocketConnector> {
       logger.info('_runClientSideMulti authenticating'
           ' control socket connection to rvd');
       sessionControlSocket.writeln(rvdAuthString);
+      await sessionControlSocket.flush();
     }
 
     if (sessionAESKeyString != null && sessionIVString != null) {
@@ -555,7 +557,7 @@ class SrvImplDart implements Srv<SocketConnector> {
       logger: ioSinkForLogger(logger),
       multi: multi,
       timeout: timeout,
-      beforeJoining: (Side sideA, Side sideB) {
+      beforeJoining: (Side sideA, Side sideB) async {
         logger.info('_runClientSideMulti Sending connect request');
         sessionControlSocket
             .add(Uint8List.fromList('connect:no:encrypt\n'.codeUnits));
@@ -564,6 +566,7 @@ class SrvImplDart implements Srv<SocketConnector> {
           logger
               .info('_runClientSideMulti authenticating new connection to rvd');
           sideB.socket.writeln(rvdAuthString);
+          await sideB.socket.flush();
         }
       },
     );
@@ -608,7 +611,8 @@ class SrvImplDart implements Srv<SocketConnector> {
       logger: ioSinkForLogger(logger),
       multi: multi,
       timeout: timeout,
-      beforeJoining: (Side sideA, Side sideB) {
+      // backlog: 4096,
+      beforeJoining: (Side sideA, Side sideB) async {
         logger.info('_runClientSideMulti Sending connect request');
 
         String socketAESKey =
@@ -622,6 +626,7 @@ class SrvImplDart implements Srv<SocketConnector> {
           logger
               .info('_runClientSideMulti authenticating new connection to rvd');
           sideB.socket.writeln(rvdAuthString);
+          await sideB.socket.flush();
         }
         sideA.transformer = createEncrypter(socketAESKey, socketIV);
         sideB.transformer = createDecrypter(socketAESKey, socketIV);
@@ -655,6 +660,7 @@ class SrvImplDart implements Srv<SocketConnector> {
             logger.info('_runDaemonSideMulti authenticating'
                 ' new socket connection to rvd');
             sc.connections.last.sideB.socket.writeln(rvdAuthString);
+            await sc.connections.last.sideB.socket.flush();
           }
           return;
         } else {
@@ -681,6 +687,7 @@ class SrvImplDart implements Srv<SocketConnector> {
             logger.info('_runDaemonSideMulti authenticating'
                 ' new socket connection to rvd');
             sc.connections.last.sideB.socket.writeln(rvdAuthString);
+            await sc.connections.last.sideB.socket.flush();
           }
         }
         break;
@@ -705,6 +712,7 @@ class SrvImplDart implements Srv<SocketConnector> {
       logger.info('_runDaemonSideMulti authenticating'
           ' control socket connection to rvd');
       sessionControlSocket.writeln(rvdAuthString);
+      await sessionControlSocket.flush();
     }
 
     if (sessionAESKeyString != null && sessionIVString != null) {
@@ -796,6 +804,9 @@ class SrvImplDart implements Srv<SocketConnector> {
           await _handleMultiConnectRequest(sc, hosts, 'connect:$request');
         }
       }
+    } catch (e, st) {
+      logger.shout('Caught (will rethrow) error: $e\nStack Trace:\n$st');
+      rethrow;
     } finally {
       controlStreamMutex.release();
     }
@@ -822,6 +833,7 @@ class SrvImplDart implements Srv<SocketConnector> {
     if (rvdAuthString != null) {
       logger.info('_runDaemonSideSingle authenticating socketB to rvd');
       socketConnector.connections.first.sideB.socket.writeln(rvdAuthString);
+      await socketConnector.connections.first.sideB.socket.flush();
     }
 
     return socketConnector;

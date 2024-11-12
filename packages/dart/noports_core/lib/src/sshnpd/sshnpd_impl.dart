@@ -16,6 +16,7 @@ import 'package:noports_core/sshnpd.dart';
 import 'package:noports_core/npa.dart';
 import 'package:noports_core/utils.dart';
 import 'package:noports_core/src/version.dart';
+import 'package:socket_connector/socket_connector.dart';
 import 'package:uuid/uuid.dart';
 
 @protected
@@ -596,21 +597,37 @@ class SshnpdImpl implements Sshnpd {
                 'No handling for ephemeralPKType ${req.clientEphemeralPKType}');
         }
       }
-      // Connect to rendezvous point using background process.
-      // This program can then exit without causing an issue.
-      Process rv = await Srv.exec(
-        req.rvdHost,
-        req.rvdPort,
-        localPort: req.requestedPort,
-        bindLocalPort: false,
-        localHost: req.requestedHost,
-        rvdAuthString: rvdAuthString,
-        sessionAESKeyString: sessionAESKey,
-        sessionIVString: sessionIV,
-        multi: true,
-        timeout: req.timeout,
-      ).run();
-      logger.info('Started rv - pid is ${rv.pid}');
+      if (Platform.environment['INLINE_SRV'] == 'true') {
+        SocketConnector sc = await Srv.dart(
+          req.rvdHost,
+          req.rvdPort,
+          localPort: req.requestedPort,
+          bindLocalPort: false,
+          localHost: req.requestedHost,
+          rvdAuthString: rvdAuthString,
+          sessionAESKeyString: sessionAESKey,
+          sessionIVString: sessionIV,
+          multi: true,
+          timeout: req.timeout,
+        ).run();
+        logger.info('Started rv INLINE - socket connector $sc');
+      } else {
+        // Connect to rendezvous point using background process.
+        // This program can then exit without causing an issue.
+        Process rv = await Srv.exec(
+          req.rvdHost,
+          req.rvdPort,
+          localPort: req.requestedPort,
+          bindLocalPort: false,
+          localHost: req.requestedHost,
+          rvdAuthString: rvdAuthString,
+          sessionAESKeyString: sessionAESKey,
+          sessionIVString: sessionIV,
+          multi: true,
+          timeout: req.timeout,
+        ).run();
+        logger.info('Started rv - pid is ${rv.pid}');
+      }
 
       /// - Send response message to the sshnp client which includes the
       ///   ephemeral private key
