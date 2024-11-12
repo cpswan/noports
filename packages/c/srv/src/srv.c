@@ -93,7 +93,7 @@ int run_srv_daemon_side_multi(srv_params_t *params) {
   // This socket will decrypt the messages comming from the other side
   // which provide the information to create new sockets
   side_t control_side;
-  side_hints_t hints_control = {1, 0, params->host, params->port};
+  side_hints_t hints_control = {1, 0, params->host, params->port, NULL};
   if (params->rv_e2ee) {
     hints_control.transformer = &decrypter;
   }
@@ -166,7 +166,7 @@ int run_srv_daemon_side_multi(srv_params_t *params) {
       goto exit;
     }
 
-    for (int i = 0; i < nrequests; i++) {
+    for (size_t i = 0; i < nrequests; i++) {
       // Now process each of those requests
       res = parse_control_message(requests[i], &messagetype, &new_session_aes_key_string, &new_session_aes_iv_string);
       if (res != 0) {
@@ -246,14 +246,13 @@ exit:
 int socket_to_socket(const srv_params_t *params, const char *auth_string, chunked_transformer_t *encrypter,
                      chunked_transformer_t *decrypter, bool is_srv_ready) {
   side_t sides[2];
-  side_hints_t hints_a = {1, 0, params->local_host, params->local_port};
-  side_hints_t hints_b = {0, 0, params->host, params->port};
+  side_hints_t hints_a = {1, 0, params->local_host, params->local_port, NULL};
+  side_hints_t hints_b = {0, 0, params->host, params->port, NULL};
 
   if (params->rv_e2ee) {
     hints_a.transformer = encrypter;
     hints_b.transformer = decrypter;
   }
-
   atlogger_log(TAG, INFO, "Initializing connection for side a\n");
   int res = srv_side_init(&hints_a, &sides[0]);
   if (res != 0) {
@@ -270,7 +269,8 @@ int socket_to_socket(const srv_params_t *params, const char *auth_string, chunke
 
   int fds[2], tidx;
   int exit_res = 0;
-  pthread_t threads[2], tid;
+  pthread_t threads[2];
+  pthread_t tid = NULL;
   pipe(fds);
 
   srv_link_sides(&sides[0], &sides[1], fds);
@@ -350,10 +350,13 @@ exit:
   return 0;
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-parameter"
 int server_to_socket(const srv_params_t *params, const char *auth_string, chunked_transformer_t *encrypter,
                      chunked_transformer_t *decrypter) {
   return 0;
 }
+#pragma clang diagnostic pop
 
 int create_encrypter_and_decrypter(const char *session_aes_key_string, const char *session_aes_iv_string,
                                    chunked_transformer_t *encrypter, chunked_transformer_t *decrypter) {
@@ -438,7 +441,6 @@ int aes_ctr_crypt_stream(const chunked_transformer_t *self, size_t len, const un
 
 static int process_multiple_requests(char *original, char **requests[], size_t *num_out_requests) {
   int ret = -1;
-  int num_requests = 0;
 
   char *temp = NULL;
   char *saveptr = original;
