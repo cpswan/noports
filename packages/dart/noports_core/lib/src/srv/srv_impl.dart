@@ -611,7 +611,6 @@ class SrvImplDart implements Srv<SocketConnector> {
       logger: ioSinkForLogger(logger),
       multi: multi,
       timeout: timeout,
-      // backlog: 4096,
       beforeJoining: (Side sideA, Side sideB) async {
         logger.info('_runClientSideMulti Sending connect request');
 

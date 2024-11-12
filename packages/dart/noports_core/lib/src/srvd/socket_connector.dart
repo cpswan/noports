@@ -100,7 +100,6 @@ void socketConnector(ConnectorParams connectorParams) async {
     logTraffic: logTraffic,
     socketAuthVerifierA: socketAuthVerifierA,
     socketAuthVerifierB: socketAuthVerifierB,
-    // backlog: 20000,
   );
 
   /// Get the assigned ports from the socket connector
