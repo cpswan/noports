@@ -269,8 +269,8 @@ int socket_to_socket(const srv_params_t *params, const char *auth_string, chunke
 
   int fds[2], tidx;
   int exit_res = 0;
-  pthread_t threads[2];
-  pthread_t tid = NULL;
+  pthread_t threads[2], tid;
+  bool cancel_first = false;
   pipe(fds);
 
   srv_link_sides(&sides[0], &sides[1], fds);
@@ -299,6 +299,7 @@ int socket_to_socket(const srv_params_t *params, const char *auth_string, chunke
   res = pthread_create(&threads[1], NULL, srv_side_handle, &sides[1]);
   if (res != 0) {
     atlogger_log(TAG, ERROR, "Failed to create thread: 1\n");
+    cancel_first = true;
     exit_res = res;
     goto cancel;
   }
@@ -316,10 +317,13 @@ int socket_to_socket(const srv_params_t *params, const char *auth_string, chunke
   read(fds[0], &tid, sizeof(pthread_t));
 
   atlogger_log(TAG, DEBUG, "Joining exited thread\n");
+
+  // When a thread exits, join it.
   res = pthread_join(tid, (void *)&retval);
 
 cancel:
-  if (pthread_equal(threads[0], tid) > 0) {
+  // Then figure out which thread didn't close
+  if (!cancel_first && pthread_equal(threads[0], tid) > 0) {
     // If threads[0] exited normally then we will cancel threads[1]
     // In all other cases, cancel threads[0] (could be because threads[1] exited or errored)
     tidx = 1;
@@ -327,6 +331,7 @@ cancel:
     tidx = 0;
   }
 
+  // Then cancel the other thread
   atlogger_log(TAG, DEBUG, "Cancelling remaining open thread: %d\n", tidx);
   if (pthread_cancel(threads[tidx]) != 0) {
     atlogger_log(TAG, WARN, "Failed to cancel thread: %d\n", tidx);
