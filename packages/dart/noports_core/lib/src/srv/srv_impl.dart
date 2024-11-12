@@ -480,14 +480,13 @@ class SrvImplDart implements Srv<SocketConnector> {
       transformBtoA: decrypter,
       multi: multi,
       timeout: timeout,
-      beforeJoining: (Side sideA, Side sideB) async {
+      beforeJoining: (Side sideA, Side sideB) {
         logger.info('beforeJoining called');
         // Authenticate the sideB socket (to the rvd)
         if (rvdAuthString != null) {
           logger.info('_runClientSideSingle authenticating'
               ' new connection to rvd');
           sideB.socket.writeln(rvdAuthString);
-          await sideB.socket.flush();
         }
       },
     );
@@ -557,7 +556,7 @@ class SrvImplDart implements Srv<SocketConnector> {
       logger: ioSinkForLogger(logger),
       multi: multi,
       timeout: timeout,
-      beforeJoining: (Side sideA, Side sideB) async {
+      beforeJoining: (Side sideA, Side sideB) {
         logger.info('_runClientSideMulti Sending connect request');
         sessionControlSocket
             .add(Uint8List.fromList('connect:no:encrypt\n'.codeUnits));
@@ -566,7 +565,6 @@ class SrvImplDart implements Srv<SocketConnector> {
           logger
               .info('_runClientSideMulti authenticating new connection to rvd');
           sideB.socket.writeln(rvdAuthString);
-          await sideB.socket.flush();
         }
       },
     );
@@ -611,7 +609,7 @@ class SrvImplDart implements Srv<SocketConnector> {
       logger: ioSinkForLogger(logger),
       multi: multi,
       timeout: timeout,
-      beforeJoining: (Side sideA, Side sideB) async {
+      beforeJoining: (Side sideA, Side sideB) {
         logger.info('_runClientSideMulti Sending connect request');
 
         String socketAESKey =
@@ -625,7 +623,6 @@ class SrvImplDart implements Srv<SocketConnector> {
           logger
               .info('_runClientSideMulti authenticating new connection to rvd');
           sideB.socket.writeln(rvdAuthString);
-          await sideB.socket.flush();
         }
         sideA.transformer = createEncrypter(socketAESKey, socketIV);
         sideB.transformer = createDecrypter(socketAESKey, socketIV);
