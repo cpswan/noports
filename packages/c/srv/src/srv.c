@@ -298,6 +298,7 @@ int socket_to_socket(const srv_params_t *params, const char *auth_string, chunke
 
   res = pthread_create(&threads[1], NULL, srv_side_handle, &sides[1]);
   if (res != 0) {
+    atlogger_log(TAG, ERROR, "Failed to create thread: 1\n");
     cancel_first = true;
     exit_res = res;
     goto cancel;
