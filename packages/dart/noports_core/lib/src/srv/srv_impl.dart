@@ -604,7 +604,7 @@ class SrvImplDart implements Srv<SocketConnector> {
       portA: localPort,
       addressB: hosts[0],
       portB: streamingPort,
-      verbose: true,
+      verbose: Platform.environment['NP_TRACE'] == 'true',
       logger: ioSinkForLogger(logger),
       multi: multi,
       timeout: timeout,
