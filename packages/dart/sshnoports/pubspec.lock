@@ -606,7 +606,7 @@ packages:
       path: "../noports_core"
       relative: true
     source: path
-    version: "6.2.0"
+    version: "6.2.1"
   openssh_ed25519:
     dependency: transitive
     description:
@@ -738,11 +738,10 @@ packages:
   socket_connector:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "fix-2.3.2"
-      resolved-ref: df601ce7b7b1e3ffab71a46e395f853abedb24b0
-      url: "https://github.com/atsign-foundation/socket_connector"
-    source: git
+      name: socket_connector
+      sha256: ff14b1e5578c6ec677aed4f8dc30cbb59c7663c8118ab4e60bf302f4b6dd1dfc
+      url: "https://pub.dev"
+    source: hosted
     version: "2.3.2"
   source_map_stack_trace:
     dependency: transitive
