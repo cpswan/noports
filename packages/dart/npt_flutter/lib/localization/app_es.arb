@@ -107,5 +107,7 @@
    "validationErrorLongField" : "El campo debe tener entre 1 y 36 caracteres",
    "validationErrorRemoteHostField" : "El campo debe ser un nombre de host parcial o completamente calificado o una dirección IP",
    "validationErrorRemotePortField" : "El campo debe estar entre 1-65535",
+   "fileFormatInvalid" : "El formato del documento no es válido. Por favor, suba un archivo válido.",
+   "fileFormatInvalidDetails" : "La sección de perfiles falta o está mal formateada. Por favor, revise el documento.",
    "yaml" : "YAML"
 }

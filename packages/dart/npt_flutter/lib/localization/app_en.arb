@@ -36,6 +36,8 @@
    "exportLogs" : "Export Logs",
    "faq" : "faq",
    "feedback" : "Feedback",
+   "fileFormatInvalid" : "The document format is invalid. Please upload a valid file.",
+   "fileFormatInvalidDetails" : "The profiles section is missing or incorrectly formatted. Please check the document.",
    "getStarted" : "Get Started",
    "import" : "Import",
    "json" : "JSON",

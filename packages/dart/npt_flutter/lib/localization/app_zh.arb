@@ -107,5 +107,7 @@
    "validationErrorLongField" : "字段长度必须为1-36个字符",
    "validationErrorRemoteHostField" : "字段必须是部分或完全合格的主机名或IP地址",
    "validationErrorRemotePortField" : "字段必须在1-65535之间",
+   "fileFormatInvalid" : "文档格式无效。请上传有效文件。",
+   "fileFormatInvalidDetails" : "配置文件部分缺失或格式不正确。请检查文档。",
    "yaml" : "YAML"
 }
