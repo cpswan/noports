@@ -474,7 +474,7 @@ class SrvImplDart implements Srv<SocketConnector> {
       portA: localPort,
       addressB: hosts[0],
       portB: streamingPort,
-      verbose: false,
+      verbose: Platform.environment['SRV_TRACE'] == 'true',
       logger: ioSinkForLogger(logger),
       transformAtoB: encrypter,
       transformBtoA: decrypter,
@@ -551,7 +551,7 @@ class SrvImplDart implements Srv<SocketConnector> {
       portA: localPort,
       addressB: hosts[0],
       portB: streamingPort,
-      verbose: false,
+      verbose: Platform.environment['SRV_TRACE'] == 'true',
       logger: ioSinkForLogger(logger),
       multi: multi,
       timeout: timeout,
@@ -604,7 +604,7 @@ class SrvImplDart implements Srv<SocketConnector> {
       portA: localPort,
       addressB: hosts[0],
       portB: streamingPort,
-      verbose: Platform.environment['NP_TRACE'] == 'true',
+      verbose: Platform.environment['SRV_TRACE'] == 'true',
       logger: ioSinkForLogger(logger),
       multi: multi,
       timeout: timeout,
@@ -649,7 +649,7 @@ class SrvImplDart implements Srv<SocketConnector> {
               portA: localPort,
               addressB: hosts[0],
               portB: streamingPort,
-              verbose: false,
+              verbose: Platform.environment['SRV_TRACE'] == 'true',
               logger: ioSinkForLogger(logger));
           if (rvdAuthString != null) {
             logger.info('_runDaemonSideMulti authenticating'
@@ -673,7 +673,7 @@ class SrvImplDart implements Srv<SocketConnector> {
               portA: localPort,
               addressB: hosts[0],
               portB: streamingPort,
-              verbose: false,
+              verbose: Platform.environment['SRV_TRACE'] == 'true',
               logger: ioSinkForLogger(logger),
               transformAtoB: createEncrypter(args[1], args[2]),
               transformBtoA: createDecrypter(args[1], args[2]));
@@ -818,7 +818,7 @@ class SrvImplDart implements Srv<SocketConnector> {
         portA: localPort,
         addressB: hosts[0],
         portB: streamingPort,
-        verbose: false,
+        verbose: Platform.environment['SRV_TRACE'] == 'true',
         logger: ioSinkForLogger(logger),
         transformAtoB: encrypter,
         transformBtoA: decrypter);

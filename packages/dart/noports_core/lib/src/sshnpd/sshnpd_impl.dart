@@ -597,7 +597,7 @@ class SshnpdImpl implements Sshnpd {
                 'No handling for ephemeralPKType ${req.clientEphemeralPKType}');
         }
       }
-      if (Platform.environment['INLINE_SRV'] == 'true') {
+      if (Platform.environment['SRV_INLINE'] == 'true') {
         SocketConnector sc = await Srv.dart(
           req.rvdHost,
           req.rvdPort,
