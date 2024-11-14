@@ -740,7 +740,7 @@ packages:
     description:
       path: "."
       ref: "fix-2.3.3"
-      resolved-ref: "74f6a9affa1e43a4690b353ff140e699e918116f"
+      resolved-ref: "10cb072d24f69a558289ffa6e397e6bda8e0f1f9"
       url: "https://github.com/atsign-foundation/socket_connector"
     source: git
     version: "2.3.3"
