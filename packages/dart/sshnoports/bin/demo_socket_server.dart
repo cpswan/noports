@@ -22,7 +22,11 @@ void main(List<String> args) async {
   server.listen((socket) {
     stdout.writeln('New socket connection');
     socket.listen((bytes) async {
-      int numKbsToSend = int.parse(String.fromCharCodes(bytes));
+      String s = String.fromCharCodes(bytes);
+      if (s.trim().isEmpty) {
+        return;
+      }
+      int numKbsToSend = int.parse(s);
       stdout.writeln('Received request to send $numKbsToSend kBytes');
       for (int i = 0; i < numKbsToSend; i++) {
         socket.add(kb);

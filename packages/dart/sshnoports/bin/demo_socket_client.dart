@@ -12,6 +12,7 @@ void main(List<String> args) async {
   // send a request for N kBytes of data to be sent to us
   int numKbsToRequest = int.parse(args[1]);
   socket.writeln('$numKbsToRequest');
+  await socket.flush();
 
   int expected = numKbsToRequest * 1024;
   int received = 0;
