@@ -17,7 +17,7 @@ void main(List<String> args) async {
   int expected = numKbsToRequest * 1024;
   int received = 0;
   socket.listen(
-        (data) {
+    (data) {
       received += data.length;
     },
     onDone: () {

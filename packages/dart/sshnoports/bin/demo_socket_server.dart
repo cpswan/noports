@@ -10,7 +10,6 @@ import 'dart:io';
 /// - dart demo_socket_server.dart 12345
 /// - dart demo_socket_client.dart 12345
 void main(List<String> args) async {
-
   int port = int.parse(args[0]);
   final server = await ServerSocket.bind(
     InternetAddress.loopbackIPv4,
