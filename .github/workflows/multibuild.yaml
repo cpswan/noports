@@ -77,6 +77,9 @@ jobs:
       - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
           node-version: '20.17.0'
+      # setup required npm version
+      - run: |
+          npm install -g npm@10.8.2
       # create directories need for build
       - run: |
           mkdir -p sshnp/web/admin
