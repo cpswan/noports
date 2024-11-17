@@ -10,7 +10,7 @@ WORKDIR /noports
 # hadolint ignore=DL3008
 RUN apt-get update; \
   apt-get install -y --no-install-recommends npm
-
+  npm install -g npm@10.8.2
 COPY . .
 
 # Build packages/dart/sshnoports
