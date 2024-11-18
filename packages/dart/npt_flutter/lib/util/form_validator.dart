@@ -67,7 +67,7 @@ class FormValidator {
 
     var port = int.tryParse(value ?? '');
     if (value?.isEmpty ?? true) {
-      return strings.validationErrorEmptyField;
+      return strings.validationErrorLocalPortField;
     } else if (port == null || !(port >= 1024 && port <= 65535)) {
       return strings.validationErrorLocalPortField;
     }
