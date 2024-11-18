@@ -203,17 +203,6 @@ int verify_payload_contents(cJSON *payload, enum payload_type type) {
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Received invalid payload format\n");
     return 1;
   }
-
-  // For backwards compatibility with v4, we don't assert these values, they are here as comments to know that they
-  // are accounted for (and future deprecation):
-
-  // cJSON *auth_to_rvd = cJSON_GetObjectItem(payload, "authenticateToRvd");
-  // cJSON *encrypt_traffic = cJSON_GetObjectItem(payload, "encryptRvdTraffic");
-  // cJSON *client_nonce = cJSON_GetObjectItem(payload, "clientNonce");
-  // cJSON *rvd_nonce = cJSON_GetObjectItem(payload, "rvdNonce");
-  // cJSON *client_ephemeral_pk = cJSON_GetObjectItem(payload, "clientEphemeralPK");
-  // cJSON *client_ephemeral_pk_type = cJSON_GetObjectItem(payload, "clientEphemeralPKType");
-
   return 0;
 }
 
