@@ -75,7 +75,7 @@ void handle_npt_request(atclient *atclient, pthread_mutex_t *atclient_lock, sshn
   char *rvd_auth_string;
 
   if (authenticate_to_rvd) {
-    res = create_rvd_auth_string(envelope, &signing_key, &rvd_auth_string);
+    res = create_rvd_auth_string(payload, &signing_key, &rvd_auth_string);
     if (res != 0) {
       cJSON_Delete(envelope);
       return;
@@ -90,9 +90,14 @@ void handle_npt_request(atclient *atclient, pthread_mutex_t *atclient_lock, sshn
   unsigned char *session_iv_base64 = NULL;
 
   if (encrypt_rvd_traffic) {
-    res = setup_rvd_session_encryption(payload, session_aes_key, session_aes_key_base64, session_iv, session_iv_base64);
+    res = setup_rvd_session_encryption(payload, &session_aes_key, &session_aes_key_base64, &session_iv,
+                                       &session_iv_base64);
     if (res != 0) {
-      atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to setup rvd session encryption");
+      atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to setup rvd session encryption\n");
+      cJSON_Delete(envelope);
+      if (authenticate_to_rvd) {
+        free(rvd_auth_string);
+      }
       return;
     }
   }
