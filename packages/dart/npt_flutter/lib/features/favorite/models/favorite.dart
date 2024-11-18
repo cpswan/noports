@@ -4,6 +4,7 @@ import 'package:meta/meta.dart';
 import 'package:npt_flutter/app.dart';
 import 'package:npt_flutter/features/favorite/favorite.dart';
 import 'package:npt_flutter/features/profile/profile.dart';
+import 'package:npt_flutter/util/profile_status.dart';
 
 part 'favorite.g.dart';
 
@@ -104,12 +105,13 @@ class FavoriteProfile extends Favorite<ProfileState> {
   @override
   String resolveStatus(ProfileState state) {
     return switch (state) {
-      ProfileLoaded _ || ProfileFailedSave _ || ProfileFailedStart _ => '[Off]',
-      ProfileStarting _ => '[Starting]',
-      ProfileStarted _ => '[On - ${(state as ProfileLoadedState).profile.localPort}]',
-      ProfileStopping _ => '[Stopping]',
-      ProfileInitial _ || ProfileLoading _ => '[Loading]',
-      ProfileFailedLoad _ => '[Failed to load]'
+      ProfileLoaded _ || ProfileFailedSave _ => ProfileStatus.off.message,
+      ProfileStarting _ => ProfileStatus.starting.message,
+      ProfileStarted _ => '${ProfileStatus.on.message} - ${(state as ProfileLoadedState).profile.localPort}]',
+      ProfileStopping _ => ProfileStatus.stopping.message,
+      ProfileInitial _ || ProfileLoading _ => ProfileStatus.loading.message,
+      ProfileFailedStart _ => ProfileStatus.failedToStart.message,
+      ProfileFailedLoad _ => ProfileStatus.failedToLoad.message
     };
   }
 
