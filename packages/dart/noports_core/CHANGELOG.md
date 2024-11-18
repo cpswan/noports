@@ -1,3 +1,5 @@
+# 6.2.1
+- fix: multiple enhancements for stability of `npt` under heavy concurrent load
 # 6.2.0
 - feat: allow hyphens in device name
 # 6.1.1
