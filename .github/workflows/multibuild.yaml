@@ -334,7 +334,6 @@ jobs:
     name: Clean up temporary branch
     needs: [main_build, other_build]
     runs-on: ubuntu-latest
-    if: ${{ always() }}
     permissions:
       contents: write # Needed to delete workflow branch
     steps:
