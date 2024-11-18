@@ -28,7 +28,7 @@ class ProfileDisplayName extends StatelessWidget {
           },
           builder: (BuildContext context, String? displayName) {
             if (displayName == null) return gap0;
-            return Text(displayName);
+            return Tooltip(message: displayName, child: Text(displayName));
           },
         ),
       ),
