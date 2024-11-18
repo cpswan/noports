@@ -283,7 +283,7 @@ class SshnpdParams {
 
     parser.addOption(
       'ephemeral-permissions',
-      mandatory: false
+      mandatory: false,
       defaultsTo: '',
       help: 'The permissions which will be added to the authorized_keys file'
           ' for the ephemeral public keys which are generated when a client'
