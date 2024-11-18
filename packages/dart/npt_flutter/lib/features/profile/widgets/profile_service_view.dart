@@ -20,7 +20,8 @@ class ProfileServiceView extends StatelessWidget {
         }, builder: (BuildContext context, (int, String, int)? triple) {
           if (triple == null) return gap0;
           var (localPort, remoteHost, remotePort) = triple;
-          return Text('$localPort:$remoteHost:$remotePort');
+          return Tooltip(
+              message: '$localPort:$remoteHost:$remotePort', child: Text('$localPort:$remoteHost:$remotePort'));
         }),
       ),
     );

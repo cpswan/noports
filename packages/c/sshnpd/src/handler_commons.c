@@ -74,7 +74,7 @@ int verify_envelope_signature_from(cJSON *envelope, char *requesting_atsign, atc
 }
 
 int verify_envelope_signature(atchops_rsa_key_public_key publickey, const unsigned char *payload,
-                              unsigned char *signature, const char *hashing_algo, const char *signing_algo) {
+                              unsigned char *signature, const char *hashing_algo) {
   int ret = 0;
 
   atchops_md_type mdtype;
@@ -86,7 +86,7 @@ int verify_envelope_signature(atchops_rsa_key_public_key publickey, const unsign
     return -1;
   }
 
-  ret = atchops_rsa_verify(&publickey, ATCHOPS_MD_SHA256, payload, strlen((char *)payload), signature);
+  ret = atchops_rsa_verify(&publickey, mdtype, payload, strlen((char *)payload), signature);
   if (ret != 0) {
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "verify_envelope_signature (failed)\n");
     return -1;

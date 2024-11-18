@@ -3,9 +3,9 @@
 #include <atclient/cjson.h>
 #include <atclient/string_utils.h>
 #include <atlogger/atlogger.h>
+#include <errno.h>
 #include <stdio.h>
 #include <string.h>
-#include <sys/errno.h>
 #include <unistd.h>
 
 #define LOGGER_TAG "RUN SRV"
