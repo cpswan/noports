@@ -48,6 +48,14 @@ class ProfileStatusIndicator extends StatelessWidget {
             icon: PhosphorIcons.circle(PhosphorIconsStyle.fill),
           );
         }
+        if (state is ProfileFailedLoad) {
+          return StatusMessage(
+            tooltip: strings.profileFailedUnknownMessage,
+            status: strings.profileStatusFailedLoad,
+            color: Colors.red,
+            icon: PhosphorIcons.circle(PhosphorIconsStyle.fill),
+          );
+        }
         if (state is ProfileStarting) {
           return StatusMessage(
             tooltip: state.status ?? strings.profileFailedUnknownMessage,
