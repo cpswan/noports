@@ -70,6 +70,7 @@
    "profileName" : "Profile Name",
    "profileNameDescription" : "This will be the name of you configurations",
    "profileRunningActionDeniedMessage" : "Cannot perform this action while profile is running",
+   "profileStatusFailedLoad": "Failed to load",
    "profileStatusFailedSave": "Failed to Save",
    "profileStatusFailedStart": "Failed to start",
    "profileStatusLoaded" : "Disconnected",

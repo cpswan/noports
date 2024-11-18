@@ -37,6 +37,8 @@
    "failedToLoad" : "加載失敗",
    "faq" : "常見問題",
    "feedback" : "反饋",
+   "fileFormatInvalid" : "文件格式無效。請上傳有效的文件。",
+   "fileFormatInvalidDetails" : "配置文件部分缺失或格式不正確。請檢查文件。",
    "getStarted" : "開始",
    "import" : "導入",
    "json" : "JSON",
@@ -69,6 +71,7 @@
    "profileName" : "配置文件名稱",
    "profileNameDescription" : "這將是你的配置名稱",
    "profileRunningActionDeniedMessage" : "配置文件運行時無法執行此操作",
+   "profileStatusFailedLoad": "加載失敗",
    "profileStatusFailedSave": "保存失敗",
    "profileStatusFailedStart": "啟動失敗",
    "profileStatusLoaded" : "已斷開",
@@ -107,7 +110,5 @@
    "validationErrorLongField" : "字段必須為1-36個字符長",
    "validationErrorRemoteHostField" : "字段必須是部分或完全合格的主機名或IP地址",
    "validationErrorRemotePortField" : "字段必須在1-65535之間",
-   "fileFormatInvalid" : "文件格式無效。請上傳有效的文件。",
-   "fileFormatInvalidDetails" : "配置文件部分缺失或格式不正確。請檢查文件。",
    "yaml" : "YAML"
 }
