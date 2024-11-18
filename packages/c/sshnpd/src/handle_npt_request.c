@@ -36,7 +36,7 @@ void handle_npt_request(atclient *atclient, pthread_mutex_t *atclient_lock, sshn
   atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Received envelope: %s\n", cJSON_Print(envelope));
 
   char *requesting_atsign = message->notification.from;
-  res = verify_envelope_signature_from(envelope, requesting_atsign, atclient);
+  res = verify_envelope_signature_from(envelope, requesting_atsign, atclient, atclient_lock);
   if (res != 0) {
     cJSON_Delete(envelope);
     return;

@@ -7,7 +7,8 @@
 
 #define BYTES(x) (sizeof(unsigned char) * x)
 
-int verify_envelope_signature_from(cJSON *envelope, char *requesting_atsign, atclient *atclient);
+int verify_envelope_signature_from(cJSON *envelope, char *requesting_atsign, atclient *atclient,
+                                   pthread_mutex_t *atclient_lock);
 int verify_envelope_signature(atchops_rsa_key_public_key *publickey, const unsigned char *payload,
                               unsigned char *signature, const char *hashing_algo, const char *signing_algo);
 

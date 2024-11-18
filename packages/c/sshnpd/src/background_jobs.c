@@ -48,7 +48,8 @@ void *refresh_device_entry(void *void_refresh_device_entry_params) {
   }
   ret = pthread_mutex_lock(params->atclient_lock);
   if (ret != 0) {
-    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to lock the atclient\n");
+    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR,
+                 "Failed to lock the atclient for initial device entry refresh\n");
     *params->should_run = 0;
     pthread_exit(NULL);
   }
@@ -130,9 +131,9 @@ void *refresh_device_entry(void *void_refresh_device_entry_params) {
     if (counter == 0) {
       ret = pthread_mutex_lock(params->atclient_lock);
       if (ret != 0) {
-        atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to get a lock on atclient\n");
-        *params->should_run = 0;
-        break;
+        atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR,
+                     "Failed to get a lock on atclient, will try again at next iteration\n");
+        continue;
       }
       // once an hour the counter will reset
       if (params->params->hide) {
@@ -156,9 +157,10 @@ void *refresh_device_entry(void *void_refresh_device_entry_params) {
         }
       }
 
-      ret = pthread_mutex_unlock(params->atclient_lock);
+      ret = pthread_cond_signal(params->refresh_cond);
+      ret = ret + pthread_mutex_unlock(params->atclient_lock);
       if (ret != 0) {
-        atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to release atclient lock\n");
+        atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Bad pthread state, exiting to prevent deadlock");
         *params->should_run = 0;
         break;
       }

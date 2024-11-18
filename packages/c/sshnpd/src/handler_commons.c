@@ -16,7 +16,8 @@
 
 #define LOGGER_TAG "HANDLER_COMMONS"
 
-int verify_envelope_signature_from(cJSON *envelope, char *requesting_atsign, atclient *atclient) {
+int verify_envelope_signature_from(cJSON *envelope, char *requesting_atsign, atclient *atclient,
+                                   pthread_mutex_t *atclient_lock) {
   cJSON *signature = cJSON_GetObjectItem(envelope, "signature");
   cJSON *hashing_algo = cJSON_GetObjectItem(envelope, "hashingAlgo");
   cJSON *signing_algo = cJSON_GetObjectItem(envelope, "signingAlgo");
@@ -31,12 +32,30 @@ int verify_envelope_signature_from(cJSON *envelope, char *requesting_atsign, atc
     return 1;
   }
 
+  res = pthread_mutex_lock(atclient_lock);
+  if (res != 0) {
+    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR,
+                 "Failed to get a lock on atclient for sending a notification\n");
+    atclient_atkey_free(&atkey);
+    return 1;
+  } else {
+    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Locked the atclient\n");
+  }
+  // TODO lock wrap
   char *buffer = NULL;
   res = atclient_get_public_key(atclient, &atkey, &buffer, NULL);
   atclient_atkey_free(&atkey);
   if (res != 0) {
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to get public key\n");
     return 1;
+  }
+
+  res = pthread_mutex_unlock(atclient_lock);
+  if (res != 0) {
+    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to release atclient lock\n");
+    exit(1);
+  } else {
+    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Released the atclient lock\n");
   }
 
   atchops_rsa_key_public_key requesting_atsign_publickey;
@@ -558,6 +577,7 @@ int send_success_payload(cJSON *payload, atclient *atclient, pthread_mutex_t *at
   ret = pthread_mutex_unlock(atclient_lock);
   if (ret != 0) {
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to release atclient lock\n");
+    exit(1);
   } else {
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Released the atclient lock\n");
   }

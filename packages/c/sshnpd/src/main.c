@@ -51,6 +51,7 @@ static struct {
 // static unsigned long min(unsigned long a, unsigned long b) { return a < b ? a : b; }
 
 static pthread_mutex_t atclient_lock = PTHREAD_MUTEX_INITIALIZER;
+static pthread_cond_t refresh_cond = PTHREAD_COND_INITIALIZER;
 static int lock_atclient(void);
 static int unlock_atclient(int);
 
@@ -283,8 +284,8 @@ int main(int argc, char **argv) {
     atclient_atkey_init(usernamekeys + i);
   }
 
-  struct refresh_device_entry_params refresh_params = {&worker,  &atclient_lock, &params,  ping_response,
-                                                       username, &should_run,    infokeys, usernamekeys};
+  struct refresh_device_entry_params refresh_params = {
+      &worker, &atclient_lock, &refresh_cond, &params, ping_response, username, &should_run, infokeys, usernamekeys};
   res = pthread_create(&refresh_tid, NULL, refresh_device_entry, (void *)&refresh_params);
   if (res != 0) {
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to start refresh device entry thread\n");
@@ -415,8 +416,25 @@ void main_loop() {
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Waiting for next monitor thread message\n");
     atclient_monitor_response_init(&message);
 
+    int ret;
+    int count = 0;
+    do {
+      if (count == 100) {
+        atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR,
+                     "Failed to lock atclient after 100 attempts, exiting to prevent deadlock");
+      }
+      count++;
+      ret = lock_atclient();
+      if (ret != 0) {
+        ret = pthread_cond_wait(&refresh_cond, &atclient_lock);
+        if (ret != 0) {
+          atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Bad state: pthread_cond_wait failure");
+        }
+      }
+    } while (ret != 0);
     // Read the next monitor message
-    atclient_monitor_read(&monitor_ctx, &worker, &message, &monitor_hooks);
+    ret = atclient_monitor_read(&monitor_ctx, &worker, &message, &monitor_hooks);
+    unlock_atclient(ret);
 
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Received message of type: %d\n", message.type);
 
@@ -581,6 +599,7 @@ static int unlock_atclient(int ret) {
   ret = pthread_mutex_unlock(&atclient_lock);
   if (ret != 0) {
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to release atclient lock\n");
+    exit(1);
   } else {
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Released the atclient lock\n");
   }
