@@ -157,8 +157,7 @@ void *refresh_device_entry(void *void_refresh_device_entry_params) {
         }
       }
 
-      ret = pthread_cond_signal(params->refresh_cond);
-      ret = ret + pthread_mutex_unlock(params->atclient_lock);
+      ret = pthread_mutex_unlock(params->atclient_lock);
       if (ret != 0) {
         atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Bad pthread state, exiting to prevent deadlock");
         *params->should_run = 0;

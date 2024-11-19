@@ -416,25 +416,11 @@ void main_loop() {
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Waiting for next monitor thread message\n");
     atclient_monitor_response_init(&message);
 
-    int ret;
-    int count = 0;
-    do {
-      if (count == 100) {
-        atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR,
-                     "Failed to lock atclient after 100 attempts, exiting to prevent deadlock");
-      }
-      count++;
-      ret = lock_atclient();
-      if (ret != 0) {
-        ret = pthread_cond_wait(&refresh_cond, &atclient_lock);
-        if (ret != 0) {
-          atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Bad state: pthread_cond_wait failure");
-        }
-      }
-    } while (ret != 0);
     // Read the next monitor message
-    ret = atclient_monitor_read(&monitor_ctx, &worker, &message, &monitor_hooks);
-    unlock_atclient(ret);
+    int ret = atclient_monitor_read(&monitor_ctx, &worker, &message, &monitor_hooks);
+    if (ret != 0) {
+      atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Possible bad state: monitor read failed\n");
+    }
 
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Received message of type: %d\n", message.type);
 
