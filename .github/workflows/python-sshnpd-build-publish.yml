@@ -125,13 +125,17 @@ jobs:
       with:
         name: sshnpd-python-package
         path: dist/
-    - name: Install Syft
-      uses: anchore/sbom-action/download-syft@fc46e51fd3cb168ffb36c6d1915723c47db58abb # v0.17.7
-    - name: Generate SBOMs
-      run: |
-        syft scan file:./packages/python/sshnpd/requirements.txt \
-          -o 'spdx-json=dist/python_sshnpd_sbom.spdx.json' \
-          -o 'cyclonedx-json=dist/python_sshnpd_sbom.cyclonedx.json'
+    - name: Generate SBOM
+      uses: sbomify/github-action@a04e82ca42a0d9e6bdb57a2cb1a8978e96b4f45c # v0.3.0
+      env:
+        TOKEN: ${{ secrets.SBOMIFY_TOKEN }}
+        COMPONENT_ID: 'jqh6pn8rti'
+        LOCK_FILE: './packages/python/sshnpd/requirements.txt'
+        SBOM_VERSION: ${{github.ref_name}}
+        OUTPUT_FILE: 'dist/noports_python-${{github.ref_name}}-sbom.cdx.json'
+        AUGMENT: true
+        ENRICH: true
+        UPLOAD: true
     - name: Generate SHA256 checksums
       working-directory: dist
       run: sha256sum * > checksums.txt

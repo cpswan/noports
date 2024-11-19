@@ -74,15 +74,9 @@ jobs:
         with:
           ref: multibuild-${{github.run_number}}
       - uses: dart-lang/setup-dart@0a8a0fc875eb934c15d08629302413c671d3f672 # v1.6.5
-      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
-        with:
-          node-version: '20.17.0'
-      # setup required npm version
+      # create directories needed for build
       - run: |
-          npm install -g npm@10.8.2
-      # create directories need for build
-      - run: |
-          mkdir -p sshnp/web/admin
+          mkdir sshnp
           mkdir tarball
       - if: ${{ matrix.os != 'windows-latest' }}
         run: mkdir sshnp/debug
@@ -103,11 +97,6 @@ jobs:
         run: |
           dart pub get --enforce-lockfile
           dart compile exe bin/np_admin.dart -v -o ../../../packages/dart/sshnoports/sshnp/np_admin${{ matrix.ext }}
-      - name: build admin webapp
-        working-directory: ./apps/admin/webapp
-        run: |
-          npm ci
-          npm run build
       - if: ${{ matrix.os != 'windows-latest' }}
         run: |
           dart compile exe bin/srvd.dart -v -o sshnp/srvd${{ matrix.ext }}
@@ -116,7 +105,6 @@ jobs:
       - run: |
           cp -r bundles/core/* sshnp/
           cp -r bundles/${{ matrix.bundle }}/* sshnp/
-          cp -r ../../../apps/admin/webapp/dist/* sshnp/web/admin/
           cp LICENSE sshnp
       # codesign for apple
       - if: ${{ matrix.os == 'macos-13' || matrix.os == 'macos-14' }}
@@ -217,6 +205,38 @@ jobs:
           path: ./tarballs/${{ matrix.output-name }}.tgz
           if-no-files-found: error
 
+  web_build:
+    needs: verify_tags
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: multibuild-${{github.run_number}}
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: '20.17.0'
+      # setup required npm version
+      - run: |
+          npm install -g npm@10.8.2
+      # create directory needed for build
+      - name: build admin webapp
+        working-directory: ./apps/admin/webapp
+        run: |
+          mkdir -p sshnp/web/admin
+          mkdir tarball
+          npm ci
+          npm run build
+          cp -r dist/* sshnp/web/admin/
+          tar -cvzf tarball/sshnp-web-admin-noarch.tgz sshnp
+      # upload the build
+      - uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name:
+            sshnp-web-admin-noarch-${{github.ref_name}}-${{github.run_number
+            }}-${{github.run_attempt}}
+          path: ./apps/admin/webapp/tarball
+          if-no-files-found: error
+
   universal_sh:
     if: startsWith(github.ref, 'refs/tags/v')
     defaults:
@@ -261,7 +281,7 @@ jobs:
   github-release:
     name: >-
       Upload artifacts and generate SBOMs and checksums for provenance
-    needs: [main_build, other_build, universal_sh, universal_ps1]
+    needs: [main_build, other_build, web_build, universal_sh, universal_ps1]
     runs-on: ubuntu-latest
     outputs:
       hashes: ${{ steps.hash.outputs.hashes }}
@@ -275,17 +295,21 @@ jobs:
         with:
           sparse-checkout: packages/dart/sshnoports/pubspec.lock
           sparse-checkout-cone-mode: false
-      - name: Install Syft
-        uses: anchore/sbom-action/download-syft@fc46e51fd3cb168ffb36c6d1915723c47db58abb # v0.17.7
       - name: Download all the tarballs
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           path: tarballs/
-      - name: Generate SBOMs
-        run: |
-          syft scan file:./packages/dart/sshnoports/pubspec.lock \
-            -o 'spdx-json=tarballs/dart_sshnoports_sbom.spdx.json' \
-            -o 'cyclonedx-json=tarballs/dart_sshnoports_sbom.cyclonedx.json'
+      - name: Generate SBOM
+        uses: sbomify/github-action@a04e82ca42a0d9e6bdb57a2cb1a8978e96b4f45c # v0.3.0
+        env:
+          TOKEN: ${{ secrets.SBOMIFY_TOKEN }}
+          COMPONENT_ID: '-93khk8pUi'
+          LOCK_FILE: './packages/dart/sshnoports/pubspec.lock'
+          SBOM_VERSION: ${{github.ref_name}}
+          OUTPUT_FILE: 'tarballs/noports_dart-${{github.ref_name}}-sbom.cdx.json'
+          AUGMENT: true
+          ENRICH: true
+          UPLOAD: true
       - name: Move packages for signing
         run: |
           cd tarballs
@@ -302,7 +326,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         # Upload to GitHub Release using the `gh` CLI.
         # `tarballs/` contains the built packages, and the
-        # Syft produced SBOMs
+        # sbomify produced SBOMs
         run: >-
           gh release upload '${{ github.ref_name }}' tarballs/** --repo '${{
           github.repository }}'
@@ -330,7 +354,6 @@ jobs:
     name: Clean up temporary branch
     needs: [main_build, other_build]
     runs-on: ubuntu-latest
-    if: ${{ always() }}
     permissions:
       contents: write # Needed to delete workflow branch
     steps:
