@@ -150,8 +150,6 @@ class SizeConfig {
 
     deviceTextFactor = _mediaQueryData.textScaler.scale(20) / 20;
 
-    // print("height is::: $screenHeight");
-
     if (screenHeight < 1200) {
       blockSizeHorizontal = screenWidth / 100;
       blockSizeVertical = screenHeight / 100;
@@ -180,7 +178,6 @@ class SizeConfig {
     // }
     double res = (val / refWidth) * 100;
     double temp = res * blockSizeHorizontal;
-    // print("width$temp");
 
     return temp;
   }
@@ -205,7 +202,7 @@ class SizeConfig {
     } else {
       temp = res * safeBlockVertical + (val * 0.2473919523099851) * textFactor;
     }
-    // print('$val,$temp,$refHeight,$refWidth');
+
     final maxSize = val + Sizes.p4;
     if (temp > maxSize) {
       return maxSize;

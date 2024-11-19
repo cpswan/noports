@@ -11,8 +11,7 @@ Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings(
       overrideRelay: json['overrideRelay'] as bool,
       viewLayout: $enumDecode(_$PreferredViewLayoutEnumMap, json['viewLayout']),
       darkMode: json['darkMode'] as bool? ?? false,
-      language: $enumDecodeNullable(_$LanguageEnumMap, json['language']) ??
-          Language.english,
+      language: $enumDecode(_$LanguageEnumMap, json['language']),
     );
 
 Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
@@ -31,5 +30,7 @@ const _$PreferredViewLayoutEnumMap = {
 const _$LanguageEnumMap = {
   Language.english: 'en',
   Language.spanish: 'es',
-  Language.portuguese: 'pt-br',
+  Language.portuguese: 'pt',
+  Language.mandarin: 'cn',
+  Language.cantonese: 'hk',
 };

@@ -7,7 +7,7 @@ enum Language {
   english,
   @JsonValue("es")
   spanish,
-  @JsonValue("pt-br")
+  @JsonValue("pt")
   portuguese,
   @JsonValue("cn")
   mandarin,
