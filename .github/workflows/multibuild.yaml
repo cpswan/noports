@@ -74,8 +74,10 @@ jobs:
         with:
           ref: multibuild-${{github.run_number}}
       - uses: dart-lang/setup-dart@0a8a0fc875eb934c15d08629302413c671d3f672 # v1.6.5
-      # create directory needed for build
-      - run: mkdir tarball
+      # create directories needed for build
+      - run: |
+          mkdir sshnp
+          mkdir tarball
       - if: ${{ matrix.os != 'windows-latest' }}
         run: mkdir sshnp/debug
       # compile binaries
