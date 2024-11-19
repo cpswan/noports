@@ -52,6 +52,12 @@ class ProfileBloc extends LoggingBloc<ProfileEvent, ProfileState> {
       profile = null;
     }
 
+    if (event.copyFrom != null) {
+      var json = event.copyFrom!.toJson();
+      json["uuid"] = uuid;
+      profile = Profile.fromJson(json);
+    }
+
     if (profile == null) {
       emit(ProfileLoaded(
         uuid,

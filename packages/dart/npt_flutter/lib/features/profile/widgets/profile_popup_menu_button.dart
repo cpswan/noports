@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:npt_flutter/app.dart';
 import 'package:npt_flutter/features/profile/profile.dart';
+import 'package:npt_flutter/pages/profile_form_page.dart';
 import 'package:npt_flutter/features/profile_list/bloc/profile_list_bloc.dart';
 import 'package:npt_flutter/styles/sizes.dart';
 import 'package:npt_flutter/widgets/custom_snack_bar.dart';
@@ -10,6 +11,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../routes.dart';
 import '../../../util/export.dart';
+import '../../../util/uuid.dart';
 import '../../../widgets/confirmation_dialog.dart';
 import '../../../widgets/multi_select_dialog.dart';
 
@@ -41,10 +43,28 @@ class ProfilePopupMenuButton extends StatelessWidget {
                 }
 
                 if (context.mounted) {
-                  Navigator.of(context).pushNamed(Routes.profileForm, arguments: state.profile.uuid);
+                  Navigator.of(context)
+                      .pushNamed(Routes.profileForm, arguments: ProfileFormPageArguments(state.profile.uuid));
                 }
               },
             ),
+            PopupMenuItem(
+                child: Row(
+                  children: [
+                    PhosphorIcon(PhosphorIcons.copy()),
+                    gapW10,
+                    const Text("Duplicate"), // TODO: localizations
+                  ],
+                ),
+                onTap: () {
+                  var state = context.read<ProfileBloc>().state;
+                  if (state is! ProfileLoadedState) return;
+                  var copyFrom = state.profile;
+                  if (context.mounted) {
+                    Navigator.of(context).pushNamed(Routes.profileForm,
+                        arguments: ProfileFormPageArguments(Uuid.generate(), copyFrom: copyFrom));
+                  }
+                }),
             PopupMenuItem(
                 child: Row(
                   children: [
