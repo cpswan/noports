@@ -8,7 +8,8 @@ import 'package:npt_flutter/widgets/custom_card.dart';
 
 class ProfileFormView extends StatelessWidget {
   final String uuid;
-  const ProfileFormView(this.uuid, {super.key});
+  final Profile? copyFrom;
+  const ProfileFormView(this.uuid, {super.key, this.copyFrom});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class ProfileFormView extends StatelessWidget {
       create: (BuildContext context) =>
 
           /// Local copy of the profile which is used by the form
-          ProfileBloc(context.read<ProfileRepository>(), uuid)..add(const ProfileLoadOrCreateEvent()),
+          ProfileBloc(context.read<ProfileRepository>(), uuid)..add(ProfileLoadOrCreateEvent(copyFrom: copyFrom)),
       child: Padding(
         padding: const EdgeInsets.only(left: Sizes.p100, right: Sizes.p100),
         child: Stack(
