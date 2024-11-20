@@ -224,10 +224,11 @@ class SshnpdImpl implements Sshnpd {
     logger.info('Starting heartbeat');
     startHeartbeat();
 
-    logger.info('Subscribing to $device\\.${DefaultArgs.namespace}@');
+    String regex = '(^$device|\\.$device)\\.${DefaultArgs.namespace}@';
+    logger.info('Subscribing to $regex');
     atClient.notificationService
         .subscribe(
-            regex: '$device\\.${DefaultArgs.namespace}@', shouldDecrypt: true)
+            regex: regex, shouldDecrypt: true)
         .listen(
           _notificationHandler,
           onError: (e) => logger.severe('Notification Failed:$e'),
