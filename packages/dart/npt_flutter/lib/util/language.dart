@@ -9,9 +9,9 @@ enum Language {
   spanish,
   @JsonValue("pt-br")
   portuguese,
-  @JsonValue("cn")
+  @JsonValue("zh-hans-cn")
   mandarin,
-  @JsonValue("hk")
+  @JsonValue("zh-hant-hk")
   cantonese,
 }
 
