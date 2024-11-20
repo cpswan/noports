@@ -1,6 +1,6 @@
 import 'package:at_contacts_flutter/services/contact_service.dart';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart';
-import 'package:at_onboarding_flutter/services/onboarding_service.dart';
+import 'package:at_onboarding_flutter/at_onboarding_services.dart' hide AtOnboardingConfig;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

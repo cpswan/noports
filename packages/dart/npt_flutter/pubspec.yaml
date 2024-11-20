@@ -33,6 +33,7 @@ dependencies:
   at_contact: ^3.0.8
   at_contacts_flutter: ^4.0.15
   at_onboarding_flutter: ^6.1.8
+  at_server_status: ^1.0.5
   at_utils: ^3.0.16
   cupertino_icons: ^1.0.8
   equatable: ^2.0.5
@@ -79,7 +80,7 @@ dependency_overrides:
   at_onboarding_flutter:
     git:
       url: https://github.com/atsign-foundation/at_widgets
-      ref: trunk
+      ref: at_onboarding_flutter_layers
       path: packages/at_onboarding_flutter
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
