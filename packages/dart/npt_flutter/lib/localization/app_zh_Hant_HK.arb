@@ -26,6 +26,7 @@
    "disconnected" : "已斷開",
    "discord" : "Discord",
    "done": "完成",
+   "duplicate" : "重複",
    "edit" : "編輯",
    "email" : "電子郵件",
    "emptyProfileMessage" : "未找到配置文件\n創建或導入配置文件以開始使用NoPorts。",

@@ -26,6 +26,7 @@
    "disconnected" : "desconectado",
    "discord" : "Discord",
    "done": "Hecho",
+   "duplicate" : "Duplicar",
    "edit" : "Editar",
    "email" : "Correo electrónico",
    "emptyProfileMessage" : "No se encontraron perfiles\nCree o importe un perfil para comenzar a usar NoPorts.",

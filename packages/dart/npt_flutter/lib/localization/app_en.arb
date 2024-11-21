@@ -1,5 +1,4 @@
 {
-
    "addNew" : "Add New",
    "addNewProfile" : "Add New Profile",
    "advanced": "Advanced",
@@ -27,6 +26,7 @@
    "disconnected" : "disconnected",
    "discord" : "Discord",
    "done": "Done",
+   "duplicate" : "Duplicate",
    "edit" : "Edit",
    "email" : "Email",
    "emptyProfileMessage" : "No profiles found\nCreate or Import a profile to start using NoPorts.",
