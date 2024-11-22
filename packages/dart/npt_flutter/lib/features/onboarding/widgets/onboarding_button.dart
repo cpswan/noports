@@ -209,6 +209,7 @@ class _OnboardingButtonState extends State<OnboardingButton> {
         }
         result = await showDialog<AtOnboardingResult>(
           context: context,
+          barrierDismissible: false,
           builder: (context) => ActivateAtsignDialog(
             atSign: atsign,
             apiKey: apiKey,
