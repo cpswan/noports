@@ -4,15 +4,17 @@ import 'package:at_contacts_flutter/at_contacts_flutter.dart';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart';
 import 'package:at_onboarding_flutter/at_onboarding_screens.dart';
 import 'package:at_onboarding_flutter/at_onboarding_services.dart';
+// ignore: implementation_imports
+import 'package:at_onboarding_flutter/src/utils/at_onboarding_app_constants.dart';
 import 'package:at_server_status/at_server_status.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:npt_flutter/app.dart';
 import 'package:npt_flutter/constants.dart';
 import 'package:npt_flutter/features/onboarding/onboarding.dart';
 import 'package:npt_flutter/features/onboarding/util/atsign_manager.dart';
 import 'package:npt_flutter/features/onboarding/util/onboarding_util.dart';
+import 'package:npt_flutter/features/onboarding/widgets/activate_atsign_dialog.dart';
 import 'package:npt_flutter/features/onboarding/widgets/onboarding_dialog.dart';
 import 'package:npt_flutter/routes.dart';
 
@@ -69,7 +71,9 @@ class _OnboardingButtonState extends State<OnboardingButton> {
           ),
           iconAlignment: IconAlignment.end,
         ),
+      // TODO: localize
       _OnboardingButtonStatus.picking => const Text("Waiting for file to be picked"),
+      // TODO: localize
       _OnboardingButtonStatus.processingFile => const Text("Processing file"),
     };
   }
@@ -103,11 +107,12 @@ class _OnboardingButtonState extends State<OnboardingButton> {
 
   Future<void> onboard({required String atsign, required String rootDomain, bool isFromInitState = false}) async {
     var atSigns = await KeyChainManager.getInstance().getAtSignListFromKeychain();
+    var apiKey = await Constants.appAPIKey;
     var config = AtOnboardingConfig(
       atClientPreference: await loadAtClientPreference(rootDomain),
       rootEnvironment: RootEnvironment.Production,
       domain: rootDomain,
-      appAPIKey: Constants.appAPIKey,
+      appAPIKey: apiKey,
     );
 
     var util = NoPortsOnboardingUtil(config);
@@ -124,11 +129,10 @@ class _OnboardingButtonState extends State<OnboardingButton> {
     } else {
       onboardingResult = await handleAtsignByStatus(atsign, util);
     }
-
+    setState(() {
+      buttonStatus = _OnboardingButtonStatus.ready;
+    });
     if (!mounted) return;
-    // FIXME: determine why SnackBars aren't being rendered in this context
-    // maybe related to the popped atSign selector context being dropped from
-    // the tree
     switch (onboardingResult?.status ?? AtOnboardingResultStatus.cancel) {
       case AtOnboardingResultStatus.success:
         await initializeContactsService(rootDomain: rootDomain);
@@ -167,7 +171,8 @@ class _OnboardingButtonState extends State<OnboardingButton> {
       status = await util.atServerStatus(atsign);
     } catch (_) {
       return AtOnboardingResult.error(
-        message: "Failed to retrieve the atserver status",
+        // TODO localize
+        message: "Failed to retrieve the atserver status, make sure you have a stable internet connection",
       );
     }
     AtOnboardingResult? result;
@@ -176,20 +181,53 @@ class _OnboardingButtonState extends State<OnboardingButton> {
     switch (status.status()) {
       // Automatically start activation with the already entered atSign
       case AtSignStatus.teapot:
-        result = await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => AtOnboardingActivateScreen(
-              hideReferences: true,
-              atSign: atsign,
-              config: util.config,
-            ),
+        final apiKey = await Constants.appAPIKey;
+
+        if (apiKey == null) {
+          result = AtOnboardingResult.error(
+            // TODO localize
+            message: "The atSign you have requested, doesn't exist in this root domain",
+          );
+          break;
+        }
+        AtOnboardingConstants.setApiKey(apiKey);
+        AtOnboardingConstants.rootDomain = util.config.atClientPreference.rootDomain;
+        // TODO: localize locale - right now hardcoded to english
+        await AtOnboardingLocalizations.load(const Locale("en"));
+        if (!mounted) return null;
+        Map<String, String> apis = {
+          "root.atsign.org": "my.atsign.com",
+          "root.atsign.wtf": "my.atsign.wtf",
+        };
+        var regUrl = apis[util.config.atClientPreference.rootDomain];
+        if (regUrl == null) {
+          result ??= AtOnboardingResult.error(
+            // TODO: localize
+            message: "The specified root domain is not supported by automatic activation.",
+          );
+          break;
+        }
+        result = await showDialog<AtOnboardingResult>(
+          context: context,
+          builder: (context) => ActivateAtsignDialog(
+            atSign: atsign,
+            apiKey: apiKey,
+            config: util.config,
+            registrarUrl: regUrl,
           ),
         );
-        result ??= AtOnboardingResult.error(
-          message: "There was an error activating your atSign, please try again later.\n"
-              "If the issue persists, please contact support",
-        );
+
+        if (result is AtOnboardingResult) {
+          //Update primary atsign after onboard success
+          if (result.status == AtOnboardingResultStatus.success && result.atsign != null) {
+            var onboardingService = OnboardingService.getInstance();
+            bool res = await onboardingService.changePrimaryAtsign(atsign: result.atsign!);
+            if (!res) {
+              result = AtOnboardingResult.error(message: "Failed to switch atSigns after activation");
+            }
+          }
+        }
+      // TODO: finalize onboarding
       case AtSignStatus.activated:
         // NOTE: for now this is hard coded to do atKey file upload
         // Later on, we can add the APKAM flow, and will need to make some
@@ -198,15 +236,19 @@ class _OnboardingButtonState extends State<OnboardingButton> {
         result = await handleFileUploadStatusStream(statusStream, atsign);
       case AtSignStatus.notFound:
         result = AtOnboardingResult.error(
+          // TODO: localize
           message: "The atSign you have requested, doesn't exist in this root domain",
         );
       case AtSignStatus.unavailable:
         result = AtOnboardingResult.error(
-          message: "The atSign is unavailable, make sure you have internet connectivity",
+          // TODO: localize
+          message: "The atSign is unavailable. Make sure you have pressed \"Activate\" from your dashboard "
+              "and have a stable internet connection.",
         );
       case null: // This case should never happen, treat it as an error
       case AtSignStatus.error:
         result = AtOnboardingResult.error(
+          // TODO: localize
           message: "Failed to retrieve the atserver status",
         );
     }
@@ -222,36 +264,43 @@ class _OnboardingButtonState extends State<OnboardingButton> {
       switch (status) {
         case ErrorIncorrectKeyFile():
           result = AtOnboardingResult.error(
+            // TODO: localize
             message: "Invalid atKeys file detected",
           );
           break outer;
         case ErrorAtSignMismatch():
           result = AtOnboardingResult.error(
+            // TODO: localize
             message: "The atKeys file you uploaded did not match the atSign requested",
           );
           break outer;
         case ErrorFailedFileProcessing():
           result = AtOnboardingResult.error(
+            // TODO: localize
             message: "Failed to process the atKeys file",
           );
           break outer;
         case ErrorAtServerUnreachable():
           result = AtOnboardingResult.error(
+            // TODO: localize
             message: "Unable to connect to the atServer, make sure you have a stable internet connection",
           );
           break outer;
         case ErrorAuthFailed():
           result = AtOnboardingResult.error(
+            // TODO: localize
             message: "Authentication failed",
           );
           break outer;
         case ErrorAuthTimeout():
           result = AtOnboardingResult.error(
+            // TODO: localize
             message: "Authentication timed out",
           );
           break outer;
         case ErrorPairedAtsign _:
           result = AtOnboardingResult.error(
+            // TODO: localize
             message: "The atSign ${status.atSign ?? atsign} is already paired, please contact support.",
           );
           break outer;
@@ -259,12 +308,12 @@ class _OnboardingButtonState extends State<OnboardingButton> {
           setState(() {
             buttonStatus = _OnboardingButtonStatus.picking;
           });
-          break; // don't break outer, this is a mid progress update
+          break;
         case ProcessingAesKeyInProgress():
           setState(() {
             buttonStatus = _OnboardingButtonStatus.processingFile;
           });
-          break; // don't break outer, this is a mid progress update
+          break;
 
         // We don't really need to handle these
         case FilePickingDone():
@@ -279,9 +328,6 @@ class _OnboardingButtonState extends State<OnboardingButton> {
           break outer;
       }
     }
-    setState(() {
-      buttonStatus = _OnboardingButtonStatus.ready;
-    });
     return result;
   }
 }
