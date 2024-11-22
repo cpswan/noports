@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:npt_flutter/features/onboarding/util/activate_util.dart';
+import 'package:npt_flutter/widgets/spinner.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class ActivateAtsignDialog extends StatefulWidget {
@@ -33,6 +34,7 @@ class _ActivateAtsignDialogState extends State<ActivateAtsignDialog> {
   late final ActivateUtil util;
   ActivationStatus status = ActivationStatus.preparing;
   TextEditingController pinController = TextEditingController();
+  FocusNode pinFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -47,37 +49,62 @@ class _ActivateAtsignDialogState extends State<ActivateAtsignDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      // TODO localize
-      title: const Text("Activate your atsign"),
-      content: switch (status) {
-        // TODO localize
-        ActivationStatus.preparing => const Text(
-            "Preparing your text for activation",
-          ),
-        ActivationStatus.otpWait => SizedBox(
-            height: 90,
-            child: Column(
-              children: [
-                // TODO localize
-                const Text("Please enter the OTP from your email"),
-                PinCodeTextField(
-                  appContext: context,
-                  length: widget.pinLength,
-                  controller: pinController,
-                  onChanged: (value) {
-                    setState(() {
-                      pinController.text = value.toUpperCase();
-                    });
-                  },
-                ),
-              ],
+      title: Center(
+        child: switch (status) {
+          // TODO localize
+          ActivationStatus.preparing => const Text("Preparing for activation"),
+          ActivationStatus.otpWait => const Text("Please enter the OTP from your email"),
+          ActivationStatus.activating => const Text("Activating"),
+        },
+      ),
+      content: SizedBox(
+        height: 80,
+        width: 400,
+        child: switch (status) {
+          ActivationStatus.preparing || ActivationStatus.activating => const Spinner(),
+          ActivationStatus.otpWait => SizedBox(
+              height: 80,
+              child: Column(
+                children: [
+                  // TODO localize
+                  PinCodeTextField(
+                    focusNode: pinFocusNode,
+                    appContext: context,
+                    length: widget.pinLength,
+                    controller: pinController,
+                    onChanged: (value) {
+                      setState(() {
+                        pinController.text = value.toUpperCase();
+                      });
+                    },
+                    // Styling
+                    animationType: AnimationType.fade,
+                    pinTheme: PinTheme(
+                      shape: PinCodeFieldShape.box,
+                      borderRadius: BorderRadius.circular(5),
+                      fieldHeight: 50,
+                      fieldWidth: 40,
+                      activeFillColor: Colors.white,
+                      inactiveFillColor: Colors.white,
+                    ),
+                    cursorColor: Colors.black,
+                    animationDuration: const Duration(milliseconds: 300),
+                    enableActiveFill: true,
+                    keyboardType: TextInputType.number,
+                    boxShadows: const [
+                      BoxShadow(
+                        offset: Offset(0, 1),
+                        color: Colors.black12,
+                        blurRadius: 10,
+                      )
+                    ],
+                    beforeTextPaste: (text) => true,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ActivationStatus.activating => const Text(
-            // TODO localize
-            "Activating your atSign",
-          ),
-      },
+        },
+      ),
       actions: switch (status) {
         ActivationStatus.preparing => [cancelButton],
         ActivationStatus.otpWait => [cancelButton, resendPinButton, confirmPinButton],
@@ -109,6 +136,9 @@ class _ActivateAtsignDialogState extends State<ActivateAtsignDialog> {
           ),
         ),
       );
+    }
+    if (!pinFocusNode.hasFocus) {
+      pinFocusNode.requestFocus();
     }
   }
 
@@ -158,7 +188,6 @@ class _ActivateAtsignDialogState extends State<ActivateAtsignDialog> {
                   });
                   return;
                 }
-                // TODO cram key is set, why is authentication failing
 
                 var result = await util.onboardFromCramKey(
                   atsign: widget.atSign,
