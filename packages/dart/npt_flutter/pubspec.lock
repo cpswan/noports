@@ -72,13 +72,13 @@ packages:
     source: hosted
     version: "2.0.7"
   at_backupkey_flutter:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: at_backupkey_flutter
-      sha256: "91425f34aabec7fc37f61259af690676aae6c1776c2feac7bfea5f7ea7fc3812"
+      sha256: "674d5ebf8443e0848c86cd14e25c326e33d7fef54a2a9732c4328a138f6c4fa5"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.15"
+    version: "4.0.16"
   at_base2e15:
     dependency: transitive
     description:
