@@ -17,8 +17,7 @@ class FavoriteBloc extends LoggingBloc<FavoriteEvent, FavoritesState> {
 
   void clearAll() => emit(const FavoritesInitial());
 
-  FutureOr<void> _onLoad(
-      FavoriteLoadEvent event, Emitter<FavoritesState> emit) async {
+  FutureOr<void> _onLoad(FavoriteLoadEvent event, Emitter<FavoritesState> emit) async {
     emit(const FavoritesLoading());
 
     Map<String, Favorite>? favs;
@@ -35,8 +34,7 @@ class FavoriteBloc extends LoggingBloc<FavoriteEvent, FavoritesState> {
     emit(FavoritesLoaded(favs.values));
   }
 
-  FutureOr<void> _onAdd(
-      FavoriteAddEvent event, Emitter<FavoritesState> emit) async {
+  FutureOr<void> _onAdd(FavoriteAddEvent event, Emitter<FavoritesState> emit) async {
     if (state is! FavoritesLoaded) {
       return;
     }
@@ -49,17 +47,13 @@ class FavoriteBloc extends LoggingBloc<FavoriteEvent, FavoritesState> {
     } catch (_) {}
   }
 
-  FutureOr<void> _onRemove(
-      FavoriteRemoveEvent event, Emitter<FavoritesState> emit) async {
+  FutureOr<void> _onRemove(FavoriteRemoveEvent event, Emitter<FavoritesState> emit) async {
     if (state is! FavoritesLoaded) {
       return;
     }
 
     emit(FavoritesLoaded(
-      (state as FavoritesLoaded)
-          .favorites
-          .toSet()
-          .difference(event.toRemove.toSet()),
+      (state as FavoritesLoaded).favorites.toSet().difference(event.toRemove.toSet()),
     ));
 
     try {
