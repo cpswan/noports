@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:npt_flutter/app.dart';
 import 'package:npt_flutter/features/profile/profile.dart';
-import 'package:npt_flutter/pages/profile_form_page.dart';
 import 'package:npt_flutter/features/profile_list/bloc/profile_list_bloc.dart';
+import 'package:npt_flutter/pages/profile_form_page.dart';
 import 'package:npt_flutter/styles/sizes.dart';
 import 'package:npt_flutter/widgets/custom_snack_bar.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -53,7 +53,7 @@ class ProfilePopupMenuButton extends StatelessWidget {
                   children: [
                     PhosphorIcon(PhosphorIcons.copy()),
                     gapW10,
-                    const Text("Duplicate"), // TODO: localizations
+                    Text(strings.duplicate),
                   ],
                 ),
                 onTap: () {
