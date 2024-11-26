@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:npt_flutter/app.dart';
 import 'package:npt_flutter/features/onboarding/util/activate_util.dart';
 import 'package:npt_flutter/widgets/spinner.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -46,15 +48,16 @@ class _ActivateAtsignDialogState extends State<ActivateAtsignDialog> {
     _getPinCode();
   }
 
+  final strings = AppLocalizations.of(App.navState.currentContext!)!;
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Center(
         child: switch (status) {
-          // TODO localize
-          ActivationStatus.preparing => const Text("Preparing for activation"),
-          ActivationStatus.otpWait => const Text("Please enter the OTP from your email"),
-          ActivationStatus.activating => const Text("Activating"),
+          ActivationStatus.preparing => Text(strings.activationStatusPreparing),
+          ActivationStatus.otpWait => Text(strings.activationStatusOtpWait),
+          ActivationStatus.activating => Text(strings.activationStatusActivating),
         },
       ),
       content: SizedBox(
@@ -66,7 +69,6 @@ class _ActivateAtsignDialogState extends State<ActivateAtsignDialog> {
               height: 80,
               child: Column(
                 children: [
-                  // TODO localize
                   PinCodeTextField(
                     focusNode: pinFocusNode,
                     appContext: context,
@@ -128,11 +130,10 @@ class _ActivateAtsignDialogState extends State<ActivateAtsignDialog> {
     } else {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           backgroundColor: Colors.red,
-          // TODO localize
           content: Text(
-            "Failed to request an OTP, try resending, or contact support if the issue persists",
+            strings.errorOtpRequestFailed,
           ),
         ),
       );
@@ -144,8 +145,7 @@ class _ActivateAtsignDialogState extends State<ActivateAtsignDialog> {
 
   Widget get cancelButton => TextButton(
         key: const Key("NoPortsActivateCancelButton"),
-        // TODO localize
-        child: const Text("Cancel"),
+        child: Text(strings.cancel),
         onPressed: () {
           Navigator.of(context).pop(AtOnboardingResult.cancelled());
         },
@@ -154,8 +154,7 @@ class _ActivateAtsignDialogState extends State<ActivateAtsignDialog> {
   Widget get resendPinButton => TextButton(
         key: const Key("NoPortsActivateResendButton"),
         onPressed: _getPinCode,
-        // TODO localize
-        child: const Text("Resend Pin"),
+        child: Text(strings.resendPin),
       );
 
   Widget get confirmPinButton => TextButton(
@@ -174,11 +173,10 @@ class _ActivateAtsignDialogState extends State<ActivateAtsignDialog> {
 
                 if (cramkey == null) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
+                    SnackBar(
                       backgroundColor: Colors.red,
                       content: Text(
-                        // TODO localize
-                        "Failed to verify the OTP with the activation server, please try again. Contact support if the issue persists",
+                        strings.errorOtpVerificationFailed,
                       ),
                     ),
                   );
@@ -198,7 +196,6 @@ class _ActivateAtsignDialogState extends State<ActivateAtsignDialog> {
                 if (!mounted) return;
                 Navigator.of(context).pop(result);
               },
-        // TODO localize
-        child: const Text("Confirm"),
+        child: Text(strings.confirm),
       );
 }

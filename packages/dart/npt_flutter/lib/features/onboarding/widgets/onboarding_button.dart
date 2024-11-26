@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:at_contacts_flutter/at_contacts_flutter.dart';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart';
-import 'package:at_onboarding_flutter/at_onboarding_screens.dart';
 import 'package:at_onboarding_flutter/at_onboarding_services.dart';
 // ignore: implementation_imports
 import 'package:at_onboarding_flutter/src/utils/at_onboarding_app_constants.dart';
@@ -10,6 +9,7 @@ import 'package:at_server_status/at_server_status.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:npt_flutter/app.dart';
 import 'package:npt_flutter/constants.dart';
 import 'package:npt_flutter/features/onboarding/onboarding.dart';
 import 'package:npt_flutter/features/onboarding/util/atsign_manager.dart';
@@ -17,10 +17,10 @@ import 'package:npt_flutter/features/onboarding/util/onboarding_util.dart';
 import 'package:npt_flutter/features/onboarding/widgets/activate_atsign_dialog.dart';
 import 'package:npt_flutter/features/onboarding/widgets/onboarding_dialog.dart';
 import 'package:npt_flutter/routes.dart';
-
 import 'package:path_provider/path_provider.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+final strings = AppLocalizations.of(App.navState.currentContext!)!;
 Future<AtClientPreference> loadAtClientPreference(String rootDomain) async {
   var dir = await getApplicationSupportDirectory();
 
@@ -71,10 +71,8 @@ class _OnboardingButtonState extends State<OnboardingButton> {
           ),
           iconAlignment: IconAlignment.end,
         ),
-      // TODO: localize
-      _OnboardingButtonStatus.picking => const Text("Waiting for file to be picked"),
-      // TODO: localize
-      _OnboardingButtonStatus.processingFile => const Text("Processing file"),
+      _OnboardingButtonStatus.picking => Text(strings.onboardingButtonStatusPicking),
+      _OnboardingButtonStatus.processingFile => Text(strings.onboardingButtonStatusProcessingFile),
     };
   }
 
@@ -167,12 +165,12 @@ class _OnboardingButtonState extends State<OnboardingButton> {
 
   Future<AtOnboardingResult?> handleAtsignByStatus(String atsign, NoPortsOnboardingUtil util) async {
     AtStatus status;
+
     try {
       status = await util.atServerStatus(atsign);
     } catch (_) {
       return AtOnboardingResult.error(
-        // TODO localize
-        message: "Failed to retrieve the atserver status, make sure you have a stable internet connection",
+        message: strings.errorAtServerUnavailable,
       );
     }
     AtOnboardingResult? result;
@@ -185,8 +183,7 @@ class _OnboardingButtonState extends State<OnboardingButton> {
 
         if (apiKey == null) {
           result = AtOnboardingResult.error(
-            // TODO localize
-            message: "The atSign you have requested, doesn't exist in this root domain",
+            message: strings.errorAtSignNotExist,
           );
           break;
         }
@@ -202,8 +199,7 @@ class _OnboardingButtonState extends State<OnboardingButton> {
         var regUrl = apis[util.config.atClientPreference.rootDomain];
         if (regUrl == null) {
           result ??= AtOnboardingResult.error(
-            // TODO: localize
-            message: "The specified root domain is not supported by automatic activation.",
+            message: strings.errorRootDomainNotSupported,
           );
           break;
         }
@@ -224,7 +220,7 @@ class _OnboardingButtonState extends State<OnboardingButton> {
             var onboardingService = OnboardingService.getInstance();
             bool res = await onboardingService.changePrimaryAtsign(atsign: result.atsign!);
             if (!res) {
-              result = AtOnboardingResult.error(message: "Failed to switch atSigns after activation");
+              result = AtOnboardingResult.error(message: strings.errorSwitchAtSignFailed);
             }
           }
         }
@@ -237,20 +233,16 @@ class _OnboardingButtonState extends State<OnboardingButton> {
         result = await handleFileUploadStatusStream(statusStream, atsign);
       case AtSignStatus.notFound:
         result = AtOnboardingResult.error(
-          // TODO: localize
-          message: "The atSign you have requested, doesn't exist in this root domain",
+          message: strings.errorAtSignNotExist,
         );
       case AtSignStatus.unavailable:
         result = AtOnboardingResult.error(
-          // TODO: localize
-          message: "The atSign is unavailable. Make sure you have pressed \"Activate\" from your dashboard "
-              "and have a stable internet connection.",
+          message: strings.errorAtServerUnavailable,
         );
       case null: // This case should never happen, treat it as an error
       case AtSignStatus.error:
         result = AtOnboardingResult.error(
-          // TODO: localize
-          message: "Failed to retrieve the atserver status",
+          message: strings.errorAtServerUnavailable,
         );
     }
     return result;
@@ -265,44 +257,37 @@ class _OnboardingButtonState extends State<OnboardingButton> {
       switch (status) {
         case ErrorIncorrectKeyFile():
           result = AtOnboardingResult.error(
-            // TODO: localize
-            message: "Invalid atKeys file detected",
+            message: strings.errorAtKeysInvalid,
           );
           break outer;
         case ErrorAtSignMismatch():
           result = AtOnboardingResult.error(
-            // TODO: localize
-            message: "The atKeys file you uploaded did not match the atSign requested",
+            message: strings.errorAtKeysUploadedMismatch,
           );
           break outer;
         case ErrorFailedFileProcessing():
           result = AtOnboardingResult.error(
-            // TODO: localize
-            message: "Failed to process the atKeys file",
+            message: strings.errorAtKeysFileProcessFailed,
           );
           break outer;
         case ErrorAtServerUnreachable():
           result = AtOnboardingResult.error(
-            // TODO: localize
-            message: "Unable to connect to the atServer, make sure you have a stable internet connection",
+            message: strings.errorAtServerUnavailable,
           );
           break outer;
         case ErrorAuthFailed():
           result = AtOnboardingResult.error(
-            // TODO: localize
-            message: "Authentication failed",
+            message: strings.errorAuthenticatinFailed,
           );
           break outer;
         case ErrorAuthTimeout():
           result = AtOnboardingResult.error(
-            // TODO: localize
-            message: "Authentication timed out",
+            message: strings.errorAuthenticationTimedOut,
           );
           break outer;
         case ErrorPairedAtsign _:
           result = AtOnboardingResult.error(
-            // TODO: localize
-            message: "The atSign ${status.atSign ?? atsign} is already paired, please contact support.",
+            message: strings.errorAtSignAlreadyPaired(status.atSign ?? atsign),
           );
           break outer;
         case FilePickingInProgress():
