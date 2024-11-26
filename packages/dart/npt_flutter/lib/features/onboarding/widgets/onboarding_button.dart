@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:at_contacts_flutter/at_contacts_flutter.dart';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart';
@@ -17,6 +18,7 @@ import 'package:npt_flutter/features/onboarding/util/onboarding_util.dart';
 import 'package:npt_flutter/features/onboarding/widgets/activate_atsign_dialog.dart';
 import 'package:npt_flutter/features/onboarding/widgets/onboarding_dialog.dart';
 import 'package:npt_flutter/routes.dart';
+import 'package:npt_flutter/util/language.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -189,8 +191,8 @@ class _OnboardingButtonState extends State<OnboardingButton> {
         }
         AtOnboardingConstants.setApiKey(apiKey);
         AtOnboardingConstants.rootDomain = util.config.atClientPreference.rootDomain;
-        // TODO: localize locale - right now hardcoded to english
-        await AtOnboardingLocalizations.load(const Locale("en"));
+
+        await AtOnboardingLocalizations.load(LanguageUtil.getLanguageFromLocale(Locale(Platform.localeName)).locale);
         if (!mounted) return null;
         Map<String, String> apis = {
           "root.atsign.org": "my.atsign.com",

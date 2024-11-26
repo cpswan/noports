@@ -25,13 +25,13 @@ class OnboardingDialog extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Select or type the client atSign"),
+                  Text(strings.selectorTitleAtsign),
                   gapH16,
                   AtsignSelector(
                     options: options,
                   ),
                   gapH16,
-                  const Text("Select or type the root domain"),
+                  Text(strings.selectorTitleRootDomain),
                   AtDirectorySelector(
                     options: options,
                   ),
@@ -53,7 +53,7 @@ class OnboardingDialog extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop(true);
                   },
-                  child: const Text("Next"),
+                  child: Text(strings.next),
                 ),
               ],
             ))

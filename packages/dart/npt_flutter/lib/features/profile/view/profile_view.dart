@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:npt_flutter/features/profile/profile.dart';
 import 'package:npt_flutter/features/settings/settings.dart';
 import 'package:npt_flutter/styles/sizes.dart';
@@ -28,11 +29,11 @@ class ProfileView extends StatelessWidget {
           );
 
         case ProfileFailedLoad _:
-          return const Row(
+          return Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Failed to load this profile, please refresh manually:"),
-              ProfileRefreshButton(),
+              Text(AppLocalizations.of(context)!.errorProfileLoadFailed),
+              const ProfileRefreshButton(),
             ],
           );
 
