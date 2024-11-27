@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:at_backupkey_flutter/services/backupkey_service.dart';
-import 'package:at_contacts_flutter/services/contact_service.dart';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart';
 import 'package:at_onboarding_flutter/at_onboarding_services.dart';
 import 'package:file_picker/file_picker.dart';
@@ -138,7 +137,7 @@ class CustomTextButton extends StatelessWidget {
 
             // Get file path to write to
             String? outputFile = await FilePicker.platform.saveFile(
-              dialogTitle: 'Please select a file to export to:',
+              dialogTitle: strings.backupKeyDialogTitle,
               fileName: '${atsign}_key.atKeys',
             );
             if (outputFile == null) return;
@@ -152,8 +151,7 @@ class CustomTextButton extends StatelessWidget {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   backgroundColor: Colors.red,
-                  // TODO localize
-                  content: Text("Failed to save the atKeys file: $e"),
+                  content: Text(strings.errorAtKeySaveFailed(e.toString())),
                 ),
               );
             }
