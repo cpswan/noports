@@ -415,12 +415,16 @@ void main_loop() {
     // Read the next monitor message
     int ret = atclient_monitor_read(&monitor_ctx, &worker, &message, &monitor_hooks);
     if (ret != 0) {
-      atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Possible bad state: monitor read failed\n");
+      atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Possible bad state: monitor read failed (ret: %d)\n",
+                   ret);
     }
 
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Received message of type: %d\n", message.type);
 
     switch (message.type) {
+    case ATCLIENT_MONITOR_MESSAGE_TYPE_EMPTY:
+      // We got a timeout, nothing to read, nothing to do
+      break;
     case ATCLIENT_MONITOR_ERROR_READ:
       if (!atclient_monitor_is_connected(&monitor_ctx)) {
         atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR,
