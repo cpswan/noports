@@ -1,3 +1,7 @@
+## 0.2.5
+
+- fix: uptake some fixes in monitor
+
 ## 0.2.4
 
 - fix: Disabled clang-tidy missing-includes, as it malformed header includes
