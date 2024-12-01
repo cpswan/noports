@@ -110,6 +110,8 @@ class ProfilePopupMenuButton extends StatelessWidget {
                     CustomSnackBar.notification(content: strings.profileRunningActionDeniedMessage);
                     return;
                   }
+                  var state = context.read<ProfileBloc>().state;
+                  if (state is! ProfileLoadedState) return;
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -117,8 +119,6 @@ class ProfilePopupMenuButton extends StatelessWidget {
                           message: strings.profileDeleteMessage,
                           actionText: strings.delete,
                           action: () {
-                            var state = context.read<ProfileBloc>().state;
-                            if (state is! ProfileLoadedState) return;
                             App.navState.currentContext
                                 ?.read<ProfileListBloc>()
                                 .add(ProfileListDeleteEvent(toDelete: [state.uuid]));
