@@ -73,7 +73,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           ref: multibuild-${{github.run_number}}
-      - uses: dart-lang/setup-dart@0a8a0fc875eb934c15d08629302413c671d3f672 # v1.6.5
+      - uses: dart-lang/setup-dart@e630b99d28a3b71860378cafdc2a067c71107f94 # v1.7.0
       # create directories needed for build
       - run: |
           mkdir sshnp
