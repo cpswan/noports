@@ -202,7 +202,10 @@ install_all_binaries() {
 # SYSTEMD #
 
 post_systemd_message() {
-  echo "Systemd unit installed, make sure to configure the unit by editing $dest"
+  echo "Systemd unit installed, make sure to configure the unit by editing"
+  echo "the override.conf using:"
+  echo "  sudo systemctl edit $unit_name"
+  echo ""
   echo "Learn more in $script_dir/systemd/README.md"
   echo ""
   echo "To enable the service on next boot:"
@@ -215,9 +218,14 @@ post_systemd_message() {
 install_systemd_unit() {
   unit_name="$1"
   no_mac
-  mkdir -p "$systemd_dir"
+  mkdir -p "$systemd_dir/$unit_name.d"
   dest="$systemd_dir/$unit_name"
   cp "$script_dir/systemd/$unit_name" "$dest"
+  if [ -f "$dest/$unit_name.d" ]; then
+    echo "systemd config already in place"
+  else
+    cp "$script_dir/systemd/$unit_name.d/override.conf" "$dest/$unit_name.d"
+  fi
   post_systemd_message
 }
 

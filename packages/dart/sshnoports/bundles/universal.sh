@@ -900,20 +900,24 @@ device() {
       echo "sshnpd installed with launchd"
       ;;
     systemd)
-      systemd_service="/etc/systemd/system/sshnpd.service"
-      write_systemd_user "$systemd_service" "$user"
-      write_systemd_environment "$systemd_service" "manager_atsign" "$(norm_atsign "$client_atsign")"
-      write_systemd_environment "$systemd_service" "device_atsign" "$(norm_atsign "$device_atsign")"
-      if [ -n "$policy_atsign" ]; then
-        write_systemd_environment "$systemd_service" "delegate_policy" "-p $(norm_atsign "$policy_atsign")"
+      systemd_config="/etc/systemd/system/sshnpd.service.d/override.conf"
+      if [ -f "$systemd_config" ]; then
+        echo "systemd config for sshnpd service already in place"
+      else
+        write_systemd_user "$systemd_config" "$user"
+        write_systemd_environment "$systemd_config" "manager_atsign" "$(norm_atsign "$client_atsign")"
+        write_systemd_environment "$systemd_config" "device_atsign" "$(norm_atsign "$device_atsign")"
+        if [ -n "$policy_atsign" ]; then
+          write_systemd_environment "$systemd_config" "delegate_policy" "-p $(norm_atsign "$policy_atsign")"
+        fi
+        write_systemd_environment "$systemd_config" "device_name" "$device_name"
       fi
-      write_systemd_environment "$systemd_service" "device_name" "$device_name"
 
       systemctl enable sshnpd
       systemctl restart sshnpd
 
       echo "sshnpd installed with systemd. To see logs use:"
-      echo "journalctl -u sshnpd.service -f"
+      echo "  journalctl -u sshnpd -f"
       ;;
     tmux | headless)
       shell_script="$bin_path"/sshnpd.sh
