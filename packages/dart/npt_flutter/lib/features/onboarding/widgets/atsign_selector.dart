@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:npt_flutter/features/onboarding/cubit/onboarding_cubit.dart';
 import 'package:npt_flutter/features/onboarding/util/atsign_manager.dart';
+import 'package:npt_flutter/util/form_validator.dart';
 
 class AtsignSelector extends StatefulWidget {
   const AtsignSelector({
@@ -24,11 +25,16 @@ class _AtsignSelectorState extends State<AtsignSelector> {
       return TextFormField(
         controller: controller,
         onChanged: (atsign) {
+          if (!atsign.startsWith('@')) {
+            atsign = '@$atsign';
+          }
           context.read<OnboardingCubit>().setState(
                 atSign: atsign,
                 rootDomain: widget.options[atsign]?.rootDomain,
               );
         },
+        validator: FormValidator.validateRequiredAtsignField,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
           /// This menuAnchor is a dropdown button that allows you to quickly select
           /// existing values from [options]
