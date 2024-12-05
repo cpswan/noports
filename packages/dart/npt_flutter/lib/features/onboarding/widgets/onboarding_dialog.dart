@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:npt_flutter/features/onboarding/onboarding.dart';
 import 'package:npt_flutter/features/onboarding/util/atsign_manager.dart';
 import 'package:npt_flutter/features/onboarding/widgets/at_directory_selector.dart';
 import 'package:npt_flutter/features/onboarding/widgets/atsign_selector.dart';
 import 'package:npt_flutter/styles/sizes.dart';
+import 'package:npt_flutter/util/form_validator.dart';
 import 'package:npt_flutter/widgets/custom_container.dart';
 
 class OnboardingDialog extends StatelessWidget {
@@ -22,7 +25,7 @@ class OnboardingDialog extends StatelessWidget {
           children: [
             CustomContainer.background(
               child: Column(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(strings.selectorTitleAtsign),
@@ -39,24 +42,28 @@ class OnboardingDialog extends StatelessWidget {
               ),
             ),
             gapH10,
-            CustomContainer.background(
-                child: Row(
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(false);
-                  },
-                  child: Text(strings.cancel),
-                ),
-                const Spacer(),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(true);
-                  },
-                  child: Text(strings.next),
-                ),
-              ],
-            ))
+            BlocBuilder<OnboardingCubit, OnboardingState>(builder: (context, state) {
+              return CustomContainer.background(
+                  child: Row(
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                    child: Text(strings.cancel),
+                  ),
+                  const Spacer(),
+                  ElevatedButton(
+                    onPressed: FormValidator.validateRequiredAtsignField(state.atSign) == null
+                        ? () {
+                            Navigator.of(context).pop(true);
+                          }
+                        : null,
+                    child: Text(strings.next),
+                  ),
+                ],
+              ));
+            })
           ],
         ),
       ),

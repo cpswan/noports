@@ -14,7 +14,9 @@ class FormValidator {
 
   static String? validateRequiredAtsignField(String? value) {
     final strings = AppLocalizations.of(App.navState.currentContext!)!;
-    if (!value!.startsWith('@') || value.length < 2) {
+    if (value?.isEmpty ?? true) {
+      return strings.validationErrorEmptyField;
+    } else if (!value!.startsWith('@') || value.length < 2) {
       return strings.validationErrorAtsignField;
     }
     validateRequiredField(value);
