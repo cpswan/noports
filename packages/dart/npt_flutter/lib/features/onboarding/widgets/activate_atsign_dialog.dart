@@ -129,6 +129,10 @@ class _ActivateAtsignDialogState extends State<ActivateAtsignDialog> {
       });
     } else {
       if (!mounted) return;
+      if (status == ActivationStatus.preparing) {
+        Navigator.of(context).pop(AtOnboardingResult.error(message: "@${jsonDecode(res.body)["message"]}"));
+        return;
+      }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.red,
