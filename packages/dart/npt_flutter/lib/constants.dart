@@ -1,10 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' show dotenv;
 
 class Constants {
+  static bool dotenvLoaded = false;
+  static Future<void> loadDotenv() async {
+    if (dotenvLoaded) return;
+    try {
+      await dotenv.load();
+      dotenvLoaded = true;
+    } catch (_) {
+      dotenvLoaded = false;
+    }
+  }
+
   static String? get namespace => 'noports';
-  // TODO: issue & secure API key properly
-  static String? get appAPIKey => 'asdf';
+
+  static Future<String?> get appAPIKey async {
+    await loadDotenv();
+    return dotenv.env["APP_API_KEY"];
+  }
 
   static const pngIconDark = 'assets/noports-icon64-dark.png';
   static const icoIconDark = 'assets/noports-icon64-dark.ico';

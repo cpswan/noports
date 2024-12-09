@@ -32,6 +32,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 #define FILENAME_BUFFER_SIZE 500
@@ -77,32 +78,27 @@ static bool is_child_process = false;
 
 // Signal handling
 static volatile sig_atomic_t should_run = 1;
-// static void exit_handler(int sig) {
-//   atlogger_log("exit_handler", ATLOGGER_LOGGING_LEVEL_WARN, "Received signal: %d\n");
-//   if (should_run == 1) {
-//     atlogger_log("exit_handler", ATLOGGER_LOGGING_LEVEL_WARN, "Received SIGINT, attempting a safe exit\n");
-//     should_run = 0;
-//   } else if (should_run == 0) {
-//     atlogger_log("exit_handler", ATLOGGER_LOGGING_LEVEL_WARN, "Received SIGINT again, exiting forcefully\n");
-//     exit(1);
-//   }
-// }
-// static void child_exit_handler(int sig) {
-//   atlogger_log("child_exit_handler", ATLOGGER_LOGGING_LEVEL_WARN, "Received signal: %d\n");
-//   int status;
-//   pid_t pid = waitpid(-1, &status, WNOHANG);
-//   if (pid > 0 && WIFEXITED(status)) {
-//     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "pid %d exited\n", pid);
-//   }
-// }
+static void exit_handler(int sig) {
+  atlogger_log("exit_handler", ATLOGGER_LOGGING_LEVEL_WARN, "Received signal: %d\n", sig);
+  should_run = 0;
+  exit(1);
+}
+static void child_exit_handler(int sig) {
+  atlogger_log("child_exit_handler", ATLOGGER_LOGGING_LEVEL_WARN, "Received signal: %d\n", sig);
+  int status;
+  pid_t pid = waitpid(-1, &status, WNOHANG);
+  if (pid > 0 && WIFEXITED(status)) {
+    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "pid %d exited\n", pid);
+  }
+}
 
 int main(int argc, char **argv) {
   int res = 0;
   int exit_res = 0;
 
   // Catch sigint and pass to the handler
-  // signal(SIGINT, exit_handler);
-  // signal(SIGCHLD, child_exit_handler);
+  signal(SIGINT, exit_handler);
+  signal(SIGCHLD, child_exit_handler);
 
   // 1.  Load default values
   apply_default_values_to_sshnpd_params(&params);
@@ -419,12 +415,16 @@ void main_loop() {
     // Read the next monitor message
     int ret = atclient_monitor_read(&monitor_ctx, &worker, &message, &monitor_hooks);
     if (ret != 0) {
-      atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Possible bad state: monitor read failed\n");
+      atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Possible bad state: monitor read failed (ret: %d)\n",
+                   ret);
     }
 
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Received message of type: %d\n", message.type);
 
     switch (message.type) {
+    case ATCLIENT_MONITOR_MESSAGE_TYPE_EMPTY:
+      // We got a timeout, nothing to read, nothing to do
+      break;
     case ATCLIENT_MONITOR_ERROR_READ:
       if (!atclient_monitor_is_connected(&monitor_ctx)) {
         atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR,

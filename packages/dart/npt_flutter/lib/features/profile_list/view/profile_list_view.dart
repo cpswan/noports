@@ -27,9 +27,9 @@ class ProfileListView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Failed to load profiles"),
+                Text(strings.profilesFailedLoaded),
                 ElevatedButton(
-                  child: const Text("Reload"),
+                  child: Text(strings.reload),
                   onPressed: () {
                     context.read<ProfileListBloc>().add(const ProfileListLoadEvent());
                   },

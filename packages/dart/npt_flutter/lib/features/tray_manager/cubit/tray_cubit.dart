@@ -69,23 +69,21 @@ class TrayCubit extends LoggingCubit<TrayState> {
 
   (String, void Function(MenuItem)) _getAction(TrayAction action, AppLocalizations localizations) {
     return switch (action) {
-      TrayAction.showDashboard => (localizations.showWindow, (_) => windowManager.focus()),
+      TrayAction.showDashboard => (localizations.showWindow, (_) => windowManager.show(inactive: true)),
       TrayAction.showSettings => (
           localizations.settings,
-          (_) {
-            windowManager.focus().then((_) {
-              var context = App.navState.currentContext;
-              if (context == null) return;
-              if (context.mounted) {
-                var cubit = context.read<OnboardingCubit>();
-                if (cubit.getStatus() != OnboardingStatus.onboarded) return;
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  Routes.settings,
-                  (route) => route.isFirst,
-                );
-              }
-            });
-          }
+          (_) => windowManager.show(inactive: true).then((_) {
+                var context = App.navState.currentContext;
+                if (context == null) return;
+                if (context.mounted) {
+                  var cubit = context.read<OnboardingCubit>();
+                  if (cubit.getStatus() != OnboardingStatus.onboarded) return;
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    Routes.settings,
+                    (route) => route.isFirst,
+                  );
+                }
+              })
         ),
       TrayAction.quitApp => (
           localizations.quit,

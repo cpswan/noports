@@ -9,7 +9,7 @@ Future<void> postOnboard(String atSign, String rootDomain) async {
         status: OnboardingStatus.onboarded,
       );
   // Start loading application data in the background as soon as we have an atClient
+  App.navState.currentContext?.read<FavoriteBloc>().add(const FavoriteLoadEvent());
   App.navState.currentContext?.read<ProfileListBloc>().add(const ProfileListLoadEvent());
   App.navState.currentContext?.read<SettingsBloc>().add(const SettingsLoadEvent());
-  App.navState.currentContext?.read<FavoriteBloc>().add(const FavoriteLoadEvent());
 }
