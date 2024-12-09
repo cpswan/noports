@@ -8,14 +8,14 @@ icon: desktop-arrow-down
 
 Installing NoPorts consists of the following steps:
 
-1. [Obtain your NoPorts license](./#id-1.-obtain-your-license) from [noports.com](https://my.noports.com/no-ports-invite/14dayfreetrial)\
-   _You can start with a 14-day evaluation license, no credit-card required_
+1. [Obtain your NoPorts license](./#id-1.-obtain-your-license) from [noports.com](https://my.noports.com/no-ports-invite/30dayfreetrial)\
+   &#xNAN;_&#x59;ou can start with a 30-day evaluation license, no credit-card required_
 2. [Install NoPorts](./#id-2.-install-noports) software on your devices
    1. Install the NoPorts client\
-      _typically on your desktop_
+      &#xNAN;_&#x74;ypically on your desktop_
       1. Activate both management keys on your desktop
    2. Install the NoPorts daemon\
-      _onto the device(s) you want to connect to, repeat for each device_
+      &#xNAN;_&#x6F;nto the device(s) you want to connect to, repeat for each device_
       1. Use our enrollment tool to activate your device
 3. Use NoPorts!
 4. Reach out to us\
