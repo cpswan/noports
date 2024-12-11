@@ -23,7 +23,7 @@
     * [Automated Installation on Google Cloud Platform (GCP)](installation/cloud-installation-guides/automated-installation-on-google-cloud-platform-gcp.md)
     * [Automated Installation on Microsoft Azure](installation/cloud-installation-guides/automated-installation-on-microsoft-azure.md)
     * [Automated Installation on Oracle Cloud Infrastructure (OCI)](installation/cloud-installation-guides/automated-installation-on-oracle-cloud-infrastructure-oci.md)
-  * [Desktop App Installation (Mac & Windows)](installation/desktop-app-installation-mac-and-windows.md)
+  * [Desktop App Installation (MacOS & Windows)](installation/desktop-app-installation-macos-and-windows.md)
 * [Usage](usage/README.md)
   * [npt Usage](usage/basic-usage/README.md)
     * [Additional Configuration](usage/basic-usage/additional-configuration.md)
