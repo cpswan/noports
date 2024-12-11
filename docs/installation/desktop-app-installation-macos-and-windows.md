@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # Desktop App Installation (MacOS & Windows)
 
 ## :desktop: Desktop App Installation Instructions
