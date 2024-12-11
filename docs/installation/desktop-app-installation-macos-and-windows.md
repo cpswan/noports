@@ -1,8 +1,4 @@
-# Desktop App Installation (Mac & Windows)
-
-```
-// Some code
-```
+# Desktop App Installation (MacOS & Windows)
 
 ## :desktop: Desktop App Installation Instructions
 
