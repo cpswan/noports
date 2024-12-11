@@ -4,6 +4,8 @@ hidden: true
 
 # Desktop App Installation (MacOS & Windows)
 
+{% embed url="https://vimeo.com/1038239765" %}
+
 ## :desktop: Desktop App Installation Instructions
 
 1. To begin you will need a NoPorts subscription or Free Trial
