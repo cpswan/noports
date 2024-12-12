@@ -52,7 +52,7 @@ These guides will install the terminal based version of the NoPorts client:
 
 ### 2.2. Desktop application installation guide
 
-We have a desktop application coming soon for NoPorts:
+We have a desktop application coming soon for NoPorts.
 
 This supports all single-socket[^1] TCP applications, such as:
 
