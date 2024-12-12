@@ -50,13 +50,11 @@ These guides will install the terminal based version of the NoPorts client:
 [windows.md](windows.md)
 {% endcontent-ref %}
 
-### 2.2. Desktop application installation guides
+### 2.2. Desktop application installation guide
 
-We have two desktop applications available for NoPorts:
+We have a desktop application coming soon for NoPorts:
 
-#### NoPorts Desktop (coming soon)
-
-This version of NoPorts supports all single-socket[^1] TCP applications, such as:
+This supports all single-socket[^1] TCP applications, such as:
 
 * Remote desktop like RDP & VNC
 * HTTP(s) like REST APIs & web applications
@@ -64,15 +62,6 @@ This version of NoPorts supports all single-socket[^1] TCP applications, such as
 * [Many more use-cases](#user-content-fn-3)[^3]
 
 The application is currently in alpha. If you would like early access, please reach out to [info@noports.com](mailto:info@noports.com).
-
-#### **SSH NoPorts**
-
-This version of NoPorts only supports SSH, with terminal windows embedded into the app.
-
-* [MacOS](https://apps.apple.com/us/app/ssh-no-ports-desktop/id6476198591?mt=12)
-* [Windows](https://apps.microsoft.com/detail/9pbx5vrvqc2z)
-* Linux - we don't have official builds, but you can [build from source](https://github.com/atsign-foundation/noports/tree/trunk/packages/dart/sshnoports)\
-  [Reach out to us](mailto:support@noports.com) if you need some assistance.
 
 ## 3. Install the NoPorts daemon
 
