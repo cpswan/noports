@@ -2,8 +2,8 @@
 
 # SCRIPT METADATA
 # DO NOT MODIFY/DELETE THIS BLOCK
-script_version="3.0.0"
-sshnp_version="5.5.0"
+script_version="3.1.0"
+sshnp_version="5.7.0"
 repo_url="https://github.com/atsign-foundation/sshnoports"
 # END METADATA
 
@@ -849,6 +849,42 @@ device() {
     device_install_type=$device_type
   fi
 
+  # install at_activate binary
+  "$extract_path"/sshnp/install.sh -b "$bin_path" -u "$user" at_activate
+
+  # install sshnpd binary and capture the installer output
+  install_output=$("$extract_path"/sshnp/install.sh -b "$bin_path" -u "$user" "$device_install_type" sshnpd)
+
+  if [ "$verbose" = true ]; then
+    echo "$install_output"
+  fi
+
+  # upgrade an existing installation if we find one
+  case "$device_install_type" in
+    launchd)
+      launchd_plist="$HOME/Library/LaunchAgents/com.atsign.sshnpd.plist"
+      if [ -f "$launchd_plist" ]; then
+        echo "launchd config already in place"
+        # TODO: restart service?
+        return
+      fi
+      ;;
+    systemd)
+      systemd_config="/etc/systemd/system/sshnpd.service.d/override.conf"
+      if [ -f "$systemd_config" ]; then
+        echo "systemd config for sshnpd service already in place"
+        echo "sshnpd systemd upgraded and restarted. To see logs use:"
+        echo "  journalctl -u sshnpd -f"
+        systemctl restart sshnpd
+        return
+      fi
+      ;;
+    tmux | headless)
+      # TODO: deal with restarting this type of service
+      ;;
+  esac
+
+  # Get atSigns for fresh install
   if [ -z "$client_atsign" ]; then
     get_atsign_manually "client"
     client_atsign="$selectedatsign"
@@ -871,15 +907,7 @@ device() {
     fi
   done
 
-  "$extract_path"/sshnp/install.sh -b "$bin_path" -u "$user" at_activate
-
-  # run the device install script and capture the output
-  install_output=$("$extract_path"/sshnp/install.sh -b "$bin_path" -u "$user" "$device_install_type" sshnpd)
-
-  if [ "$verbose" = true ]; then
-    echo "$install_output"
-  fi
-
+  # configure service for fresh install
   case "$device_install_type" in
     launchd)
       if [ -n "$policy_atsign" ]; then
@@ -901,20 +929,16 @@ device() {
       ;;
     systemd)
       systemd_config="/etc/systemd/system/sshnpd.service.d/override.conf"
-      if [ -f "$systemd_config" ]; then
-        echo "systemd config for sshnpd service already in place"
-      else
-        write_systemd_user "$systemd_config" "$user"
-        write_systemd_environment "$systemd_config" "manager_atsign" "$(norm_atsign "$client_atsign")"
-        write_systemd_environment "$systemd_config" "device_atsign" "$(norm_atsign "$device_atsign")"
-        if [ -n "$policy_atsign" ]; then
-          write_systemd_environment "$systemd_config" "delegate_policy" "-p $(norm_atsign "$policy_atsign")"
-        fi
-        write_systemd_environment "$systemd_config" "device_name" "$device_name"
+      write_systemd_user "$systemd_config" "$user"
+      write_systemd_environment "$systemd_config" "manager_atsign" "$(norm_atsign "$client_atsign")"
+      write_systemd_environment "$systemd_config" "device_atsign" "$(norm_atsign "$device_atsign")"
+      if [ -n "$policy_atsign" ]; then
+        write_systemd_environment "$systemd_config" "delegate_policy" "-p $(norm_atsign "$policy_atsign")"
       fi
+      write_systemd_environment "$systemd_config" "device_name" "$device_name"
 
       systemctl enable sshnpd
-      systemctl restart sshnpd
+      systemctl start sshnpd
 
       echo "sshnpd installed with systemd. To see logs use:"
       echo "  journalctl -u sshnpd -f"
