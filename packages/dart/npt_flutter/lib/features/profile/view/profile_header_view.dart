@@ -31,11 +31,11 @@ class ProfileHeaderView extends StatelessWidget {
           );
 
         case ProfileListFailedLoad _:
-          return const Row(
+          return Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Failed to load this profile, please refresh manually:"),
-              ProfileListRefreshButton(),
+              Text(strings.errorProfileLoadFailed),
+              const ProfileListRefreshButton(),
             ],
           );
 

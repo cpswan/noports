@@ -11,6 +11,7 @@ import 'package:npt_flutter/features/onboarding/onboarding.dart';
 import 'package:npt_flutter/features/profile/profile.dart';
 import 'package:npt_flutter/features/profile_list/profile_list.dart';
 import 'package:npt_flutter/routes.dart';
+import 'package:npt_flutter/util/profile_status.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -68,23 +69,21 @@ class TrayCubit extends LoggingCubit<TrayState> {
 
   (String, void Function(MenuItem)) _getAction(TrayAction action, AppLocalizations localizations) {
     return switch (action) {
-      TrayAction.showDashboard => (localizations.showWindow, (_) => windowManager.focus()),
+      TrayAction.showDashboard => (localizations.showWindow, (_) => windowManager.show(inactive: true)),
       TrayAction.showSettings => (
           localizations.settings,
-          (_) {
-            windowManager.focus().then((_) {
-              var context = App.navState.currentContext;
-              if (context == null) return;
-              if (context.mounted) {
-                var cubit = context.read<OnboardingCubit>();
-                if (cubit.getStatus() != OnboardingStatus.onboarded) return;
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  Routes.settings,
-                  (route) => route.isFirst,
-                );
-              }
-            });
-          }
+          (_) => windowManager.show(inactive: true).then((_) {
+                var context = App.navState.currentContext;
+                if (context == null) return;
+                if (context.mounted) {
+                  var cubit = context.read<OnboardingCubit>();
+                  if (cubit.getStatus() != OnboardingStatus.onboarded) return;
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    Routes.settings,
+                    (route) => route.isFirst,
+                  );
+                }
+              })
         ),
       TrayAction.quitApp => (
           localizations.quit,
@@ -136,8 +135,27 @@ class TrayCubit extends LoggingCubit<TrayState> {
             ? profileState.profile.displayName
             : await fav.displayName;
 
-        var status = fav.status;
-        var label = '$displayName $status';
+        final status = fav.status;
+
+        final String statusIcon;
+        if (status == ProfileStatus.off.message) {
+          statusIcon = ProfileStatus.off.emoji;
+        } else if (status == ProfileStatus.starting.message) {
+          statusIcon = ProfileStatus.starting.emoji;
+        } else if (status?.contains(ProfileStatus.on.message) ?? false) {
+          statusIcon = ProfileStatus.on.emoji;
+        } else if (status == ProfileStatus.stopping.message) {
+          statusIcon = ProfileStatus.stopping.emoji;
+        } else if (status == ProfileStatus.loading.message) {
+          statusIcon = ProfileStatus.loading.emoji;
+        } else if (status == ProfileStatus.failedToStart.message) {
+          statusIcon = ProfileStatus.failedToStart.emoji;
+        } else if (status == ProfileStatus.failedToLoad.message) {
+          statusIcon = ProfileStatus.failedToLoad.emoji;
+        } else {
+          statusIcon = '';
+        }
+        var label = '$statusIcon $displayName';
         return MenuItem(
           label: label,
           toolTip: status,

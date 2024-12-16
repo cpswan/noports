@@ -1,3 +1,16 @@
+## 0.2.5
+
+- fix: uptake some fixes in monitor
+
+## 0.2.4
+
+- fix: Disabled clang-tidy missing-includes, as it malformed header includes
+- fix: Restore the malformed headers
+
+## 0.2.3
+
+- Update to atSDK v0.3.1 with type fixes
+
 ## 0.2.2
 
 - Fix 32bit support for device_info

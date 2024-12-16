@@ -1,6 +1,11 @@
-import 'package:at_contacts_flutter/services/contact_service.dart';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:at_backupkey_flutter/services/backupkey_service.dart';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart';
-import 'package:at_onboarding_flutter/services/onboarding_service.dart';
+import 'package:at_onboarding_flutter/at_onboarding_services.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -123,11 +128,38 @@ class CustomTextButton extends StatelessWidget {
         //   break;
         case CustomListTileType.backupYourKey:
           if (context.mounted) {
-            BackupKeyWidget(atsign: ContactService().currentAtsign).showBackupDialog(context);
+            var atsign = context.read<OnboardingCubit>().getAtSign();
+            // Build file data
+            var aesEncryptedKeys = await BackUpKeyService.getEncryptedKeys(atsign);
+            var keyString = jsonEncode(aesEncryptedKeys);
+            final List<int> codeUnits = keyString.codeUnits;
+            final Uint8List data = Uint8List.fromList(codeUnits);
+
+            // Get file path to write to
+            String? outputFile = await FilePicker.platform.saveFile(
+              dialogTitle: strings.backupKeyDialogTitle,
+              fileName: '${atsign}_key.atKeys',
+            );
+            if (outputFile == null) return;
+            // Create and write the file
+            try {
+              var f = File(outputFile);
+              await f.create(recursive: true);
+              await f.writeAsBytes(data);
+            } catch (e) {
+              if (!context.mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  backgroundColor: Colors.red,
+                  content: Text(strings.errorAtKeySaveFailed(e.toString())),
+                ),
+              );
+            }
           }
           break;
         case CustomListTileType.resetAtsign:
           final futurePreference = await loadAtClientPreference(rootDomain!);
+          final apiKey = await Constants.appAPIKey;
           if (context.mounted) {
             final result = await AtOnboarding.reset(
               context: context,
@@ -135,7 +167,7 @@ class CustomTextButton extends StatelessWidget {
                 atClientPreference: futurePreference,
                 rootEnvironment: RootEnvironment.Testing,
                 domain: rootDomain,
-                appAPIKey: Constants.appAPIKey,
+                appAPIKey: apiKey,
               ),
             );
             final OnboardingService onboardingService = OnboardingService.getInstance();

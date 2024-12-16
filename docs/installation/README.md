@@ -9,13 +9,13 @@ icon: desktop-arrow-down
 Installing NoPorts consists of the following steps:
 
 1. [Obtain your NoPorts license](./#id-1.-obtain-your-license) from [noports.com](https://my.noports.com/no-ports-invite/14dayfreetrial)\
-   _You can start with a 14-day evaluation license, no credit-card required_
+   &#xNAN;_&#x59;ou can start with a 30-day evaluation license, no credit-card required_
 2. [Install NoPorts](./#id-2.-install-noports) software on your devices
    1. Install the NoPorts client\
-      _typically on your desktop_
+      &#xNAN;_&#x74;ypically on your desktop_
       1. Activate both management keys on your desktop
    2. Install the NoPorts daemon\
-      _onto the device(s) you want to connect to, repeat for each device_
+      &#xNAN;_&#x6F;nto the device(s) you want to connect to, repeat for each device_
       1. Use our enrollment tool to activate your device
 3. Use NoPorts!
 4. Reach out to us\
@@ -31,9 +31,8 @@ During registration, you will receive two atSigns, these are the identifiers tha
 
 There are two options for registration:
 
-1. [Register for the 14-day evaluation](https://my.noports.com/no-ports-invite/14dayfreetrial)
-2. Or for additional licenses, use [the main portal](https://my.noports.com/login)\
-   after signing in, click "Buy atSigns"
+1. [Sign up for the 30-day evaluation](https://my.noports.com/no-ports-invite/30dayfreetrial).
+2. Select from one of our [paid packages](https://my.noports.com/no-ports-plans).
 
 ## 2. Install the NoPorts client
 
@@ -64,7 +63,7 @@ This version of NoPorts supports all single-socket[^1] TCP applications, such as
 * [File sharing with SMB](#user-content-fn-2)[^2]
 * [Many more use-cases](#user-content-fn-3)[^3]
 
-The application is currently in alpha, if you would like early access, please reach out to [info@noports.com](mailto:info@noports.com).
+The application is currently in alpha. If you would like early access, please reach out to [info@noports.com](mailto:info@noports.com).
 
 #### **SSH NoPorts**
 
