@@ -27,15 +27,18 @@ class _ProfileRelayAtSignTextFieldState extends State<ProfileRelayAtSignTextFiel
         Future.microtask(() => controller.text = relayAtsign);
         return SizedBox(
           width: Sizes.p200,
-          height: Sizes.p50,
+          height: Sizes.p100,
           child: TextFormField(
               controller: controller,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               decoration: const InputDecoration(
                 errorMaxLines: 2,
               ),
-              validator: FormValidator.validateEmptyAtsignField,
+              validator: FormValidator.validateEmptyRelayField,
               onChanged: (value) {
+                if (!value.startsWith('@')) {
+                  value = '@$value';
+                }
                 var bloc = context.read<ProfileBloc>();
                 bloc.add(ProfileEditEvent(
                   profile: (bloc.state as ProfileLoadedState).profile.copyWith(relayAtsign: value),

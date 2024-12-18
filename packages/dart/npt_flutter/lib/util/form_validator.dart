@@ -100,6 +100,14 @@ class FormValidator {
     return null;
   }
 
-  // TODO: Add validators for relay field
-  // TODO: Add @ to rv_field
+  static String? validateEmptyRelayField(String? value) {
+    final strings = AppLocalizations.of(App.navState.currentContext!)!;
+    if (value?.isEmpty ?? true) {
+      return null;
+    } else if (!value!.startsWith('@') || value.length < 2) {
+      return strings.validationErrorRelayField;
+    }
+    validateRequiredField(value);
+    return null;
+  }
 }
