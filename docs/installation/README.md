@@ -8,7 +8,7 @@ icon: desktop-arrow-down
 
 Installing NoPorts consists of the following steps:
 
-1. [Obtain your NoPorts license](./#id-1.-obtain-your-license) from [noports.com](https://my.noports.com/no-ports-invite/14dayfreetrial)\
+1. [Obtain your NoPorts license](./#id-1.-obtain-your-license) from [noports.com](https://my.noports.com/no-ports-invite/30dayfreetrial)\
    &#xNAN;_&#x59;ou can start with a 30-day evaluation license, no credit-card required_
 2. [Install NoPorts](./#id-2.-install-noports) software on your devices
    1. Install the NoPorts client\
