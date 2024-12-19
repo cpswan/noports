@@ -4,9 +4,9 @@
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/atsign-foundation/noports/badge)](https://api.securityscorecards.dev/projects/github.com/atsign-foundation/noports)
 [![SLSA 3](https://slsa.dev/images/gh-badge-level3.svg)](https://slsa.dev)
 
-# NoPorts Cli Binaries
+# NoPorts CLI Binaries
 
-This is the source code for the NoPorts cli binaries.
+This is the source code for the NoPorts Command Line Interface (CLI) binaries.
 See [the website](https://noports.com) for more information, or its companion
 [documentation site](https://docs.noports.com) for technical and usage
 information.
