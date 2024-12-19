@@ -19,6 +19,7 @@
    "cancel": "Cancel",
    "confirm": "Confirm",
    "connected": "Connected",
+   "custom": "Custom",
    "dashboard": "Dashboard",
    "dashboardView": "Dashboard View",
    "debugDumpLogTitle": "Dev: Dump Logs to terminal",

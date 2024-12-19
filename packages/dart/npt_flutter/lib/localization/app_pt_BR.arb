@@ -19,6 +19,7 @@
   "cancel": "Cancelar",
   "confirm": "Confirmar",
   "connected": "Conectado",
+  "custom": "Personalizado",
   "dashboard": "Painel",
   "dashboardView": "Visualização do Painel",
   "debugDumpLogTitle": "Dev: Despejar Logs no terminal",

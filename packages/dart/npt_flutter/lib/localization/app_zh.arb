@@ -19,6 +19,7 @@
   "cancel": "取消",
   "confirm": "确认",
   "connected": "已连接",
+  "custom": "自定义",
   "dashboard": "仪表板",
   "dashboardView": "仪表板视图",
   "debugDumpLogTitle": "开发：将日志转储到终端",

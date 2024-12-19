@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:npt_flutter/features/profile/profile.dart';
 import 'package:npt_flutter/styles/sizes.dart';
 import 'package:npt_flutter/util/form_validator.dart';
@@ -27,11 +28,12 @@ class _ProfileRelayAtSignTextFieldState extends State<ProfileRelayAtSignTextFiel
         Future.microtask(() => controller.text = relayAtsign);
         return SizedBox(
           width: Sizes.p200,
-          height: Sizes.p100,
+          height: Sizes.p70,
           child: TextFormField(
               controller: controller,
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.custom,
                 errorMaxLines: 2,
               ),
               validator: FormValidator.validateEmptyRelayField,
