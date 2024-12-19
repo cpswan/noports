@@ -11,6 +11,8 @@ class NptAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Color? settingsSelectedColor;
   final bool isNavigateBack;
   final bool showSettings;
+  // The width factor of the settings icon. This is used to calculate the right padding of the settings icon.
+  final double settingsIconWidthFactor;
 
   const NptAppBar({
     super.key,
@@ -18,6 +20,7 @@ class NptAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.settingsSelectedColor,
     this.isNavigateBack = true,
     this.showSettings = true,
+    this.settingsIconWidthFactor = Sizes.settingsIconPaddingFactor,
   });
 
   @override
@@ -84,7 +87,7 @@ class NptAppBar extends StatelessWidget implements PreferredSizeWidget {
             ? Padding(
                 padding: EdgeInsets.only(
                   bottom: Sizes.p30,
-                  right: MediaQuery.of(context).size.width * Sizes.settingsIconPaddingFactor,
+                  right: MediaQuery.of(context).size.width * settingsIconWidthFactor,
                 ),
                 child: TextButton.icon(
                   label: Text(strings.settings),

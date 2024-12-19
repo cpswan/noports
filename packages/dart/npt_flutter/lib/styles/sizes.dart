@@ -70,6 +70,7 @@ class Sizes {
   static const settingsCardWidthFactor = 654 / 1053;
   static const settingsCardHeightFactor = 438 / 691;
   static const settingsIconPaddingFactor = 89 / 1053;
+  static const dashboardIconPaddingFactor = 40 / 1053;
 }
 
 const gap0 = SizedBox();
