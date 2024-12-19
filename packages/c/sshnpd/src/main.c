@@ -427,7 +427,7 @@ void main_loop() {
       if (ret != 0) {
         timeout_counter = MONITOR_NOOP_TIMEOUT_MS / MONITOR_READ_TIMEOUT_MS + 1;
         atclient_monitor_response_free(&message);
-        break;
+        continue;
       } else {
         timeout_counter = 0;
       }
