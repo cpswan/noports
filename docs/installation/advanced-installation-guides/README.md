@@ -4,6 +4,8 @@ icon: wrench
 
 # Manual Installation Guides
 
+These guides also use shell scripts for installation, but they require manual invocation. If you want a truly manual process
+
 ### Device Side
 
 {% content-ref url="device-installation-sshnpd/" %}
