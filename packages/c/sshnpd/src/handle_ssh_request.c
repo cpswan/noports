@@ -3,10 +3,10 @@
 #include <atchops/base64.h>
 #include <atchops/iv.h>
 #include <atchops/rsa_key.h>
-#include <atclient/cjson.h>
 #include <atclient/monitor.h>
 #include <atclient/notify.h>
 #include <atclient/string_utils.h>
+#include <atcommons/json.h>
 #include <atlogger/atlogger.h>
 #include <errno.h>
 #include <pthread.h>
