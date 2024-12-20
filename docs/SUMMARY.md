@@ -2,6 +2,7 @@
 
 * [Home](README.md)
 * [Installation](installation/README.md)
+  * [Quick Start for MacOS and Windows](installation/quick-start-for-macos-and-windows.md)
   * [MacOS Installation Guides](installation/macos/README.md)
     * [MacOS Desktop Client Installation](installation/macos/desktop.md)
     * [MacOS CLI Client Installation](installation/macos/cli-client.md)
