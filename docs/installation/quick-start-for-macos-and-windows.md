@@ -20,6 +20,10 @@ Download the NoPorts desktop app using one of the links below:
 
 [Link to Windows Store](https://apps.microsoft.com/detail/9n69scrrgv6r)
 
+{% hint style="info" %}
+For Linux please follow the [Linux Installation Guide](https://docs.noports.com/installation/linux).
+{% endhint %}
+
 ## 3. Login to the NoPorts desktop application
 
 1. Launch the NoPorts desktop app and click **Get Started**.
