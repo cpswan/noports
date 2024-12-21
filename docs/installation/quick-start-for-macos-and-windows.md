@@ -24,7 +24,7 @@ Download the NoPorts desktop app using one of the links below:
 For Linux please follow the [Linux Installation Guide](https://docs.noports.com/installation/linux).
 {% endhint %}
 
-## 3. Login to the NoPorts desktop application
+## 3. Log into the NoPorts desktop application
 
 1. Launch the NoPorts desktop app and click **Get Started**.
 2. Enter your **client atSign** into the text field (e.g., @pluto83\_client), and then click **Next**.
