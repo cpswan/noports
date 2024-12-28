@@ -27,7 +27,7 @@ For Linux please follow the [Linux Installation Guide](https://docs.noports.com/
 ## 3. Log into the NoPorts desktop application
 
 1. Launch the NoPorts desktop app and click **Get Started**.
-2. Enter your **client atSign** into the text field (e.g., @pluto83\_client), and then click **Next**.
+2. Enter your **client atSign** into the text field (e.g., @pluto83\_client), leave the root domain as is, and then click **Next**.
 3. A **one-time password (OTP)** will be sent to you via email. Enter this OTP into the app and then click **Confirm**.&#x20;
 
 ## 4. Save a copy of your atKeys
