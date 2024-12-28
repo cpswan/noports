@@ -44,6 +44,6 @@ Your atKeys (cryptographic keys) will be used to pair your atSign with this and 
 2. Return to the NoPorts app **Dashboard**.
 3. Click **Import** and select the test connection profile that you just downloaded.
 4. Click the **Connect Icon ▶️** to establish a connection.
-5. Open a web browser and navigate to [http://localhost:8080](https://localhost:8080).
+5. Open a web browser and navigate to [http://localhost:8080](http://localhost:8080).
 
 Congratulations! You're connected to a hidden webpage via NoPorts!&#x20;
