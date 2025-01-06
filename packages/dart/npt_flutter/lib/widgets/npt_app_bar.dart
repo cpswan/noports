@@ -29,81 +29,86 @@ class NptAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final strings = AppLocalizations.of(context)!;
-    return AppBar(
-      titleSpacing: 0,
-      leading: gap0,
-      toolbarHeight: isNavigateBack ? Sizes.p150 : Sizes.p100,
-      title: Row(
-        children: [
-          Column(
-            children: [
-              gapH16,
-              SvgPicture.asset(
-                'assets/noports_logo.svg',
-                height: Sizes.p54,
-                width: Sizes.p175,
-              ),
-              gapH16,
-              isNavigateBack
-                  ? TextButton.icon(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      label: Text(
-                        strings.back,
-                      ),
-                      icon: const Icon(
-                        Icons.arrow_back_ios,
-                      ),
-                      style: StyleConstants.backButtonStyle,
-                    )
-                  : gap0,
-            ],
-          ),
-          gapW27,
-          Column(
-            children: [
-              Container(
-                color: AppColor.dividerColor,
-                height: Sizes.p38,
-                width: Sizes.p2,
-              ),
-              gapH25
-            ],
-          ),
-          gapW20,
-          Column(
-            children: [
-              Text(
-                title,
-              ),
-              gapH25,
-            ],
-          ),
-        ],
-      ),
-      actions: [
-        showSettings
-            ? Padding(
-                padding: EdgeInsets.only(
-                  bottom: Sizes.p30,
-                  right: MediaQuery.of(context).size.width * settingsIconWidthFactor,
+    return SizedBox(
+      width: Sizes.p853,
+      child: AppBar(
+        titleSpacing: 0,
+        leading: gap0,
+        toolbarHeight: isNavigateBack ? Sizes.p150 : Sizes.p100,
+        title: Row(
+          // mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Column(
+              children: [
+                gapH16,
+                SvgPicture.asset(
+                  'assets/noports_logo.svg',
+                  height: Sizes.p54,
+                  width: Sizes.p175,
                 ),
-                child: TextButton.icon(
-                  label: Text(strings.settings),
-                  icon: Icon(
-                    Icons.settings_outlined,
-                    color: settingsSelectedColor,
+                gapH16,
+                isNavigateBack
+                    ? TextButton.icon(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        label: Text(
+                          strings.back,
+                        ),
+                        icon: const Icon(
+                          Icons.arrow_back_ios,
+                        ),
+                        style: StyleConstants.backButtonStyle,
+                      )
+                    : gap0,
+              ],
+            ),
+            gapW27,
+            Column(
+              children: [
+                Container(
+                  color: AppColor.dividerColor,
+                  height: Sizes.p38,
+                  width: Sizes.p2,
+                ),
+                gapH25
+              ],
+            ),
+            gapW20,
+            Column(
+              children: [
+                Text(
+                  title,
+                ),
+                gapH25,
+              ],
+            ),
+          ],
+        ),
+        actions: [
+          showSettings
+              ? Padding(
+                  padding: EdgeInsets.only(
+                    bottom: Sizes.p30,
+                    right: MediaQuery.of(context).size.width * settingsIconWidthFactor,
                   ),
-                  onPressed: () {
-                    // the primary color is used when the navbar is on the settings screen and therefore the settings icon is not clickable.
-                    if (settingsSelectedColor != AppColor.primaryColor) Navigator.pushNamed(context, '/settings');
-                  },
-                ),
-              )
-            : gap0,
-      ],
-      centerTitle: true,
+                  child: TextButton.icon(
+                    label: Text(strings.settings),
+                    icon: Icon(
+                      Icons.settings_outlined,
+                      color: settingsSelectedColor,
+                    ),
+                    onPressed: () {
+                      // the primary color is used when the navbar is on the settings screen and therefore the settings icon is not clickable.
+                      if (settingsSelectedColor != AppColor.primaryColor) Navigator.pushNamed(context, '/settings');
+                    },
+                  ),
+                )
+              : gap0,
+        ],
+        centerTitle: true,
+      ),
     );
   }
 }

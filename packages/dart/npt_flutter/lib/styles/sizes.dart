@@ -36,12 +36,13 @@ class Sizes {
   static const p43 = 43.0;
   static const p50 = 50.0;
   static const p54 = 54.0;
-
   static const p70 = 70.0;
   static const p80 = 80.0;
   // static const p99 = 99.0;
   static const p100 = 100.0;
+  static const p103 = 103.0;
   static const p108 = 108.0;
+  static const p143 = 143.0;
   static const p150 = 150.0;
   static const p175 = 175.0;
   static const p177 = 177.0;
@@ -61,11 +62,14 @@ class Sizes {
 
   static const p654 = 654.0;
   static const p664 = 664.0;
+  static const p743 = 743.0;
+  static const p853 = 853.0;
   static const p941 = 941.0;
   // The below size factors are constants that are used to determine the height or width based on the device size.
   static const dashboardCardHeightFactor = 489 / 691;
   static const dashboardCardWidthFactor = 941 / 1053;
   static const profileFieldsWidthFactor = 136 / 1053;
+  static const statusFieldsWidthFactor = 150 / 1053;
   static const profileFieldsWidthFactorAlt = 300 / 1053;
   static const settingsCardWidthFactor = 654 / 1053;
   static const settingsCardHeightFactor = 438 / 691;
@@ -87,7 +91,8 @@ const gapW27 = SizedBox(width: Sizes.p27);
 // const gapW34 = SizedBox(width: Sizes.p34);
 const gapW38 = SizedBox(width: Sizes.p38);
 const gapW40 = SizedBox(width: Sizes.p40);
-// const gapW64 = SizedBox(width: Sizes.p64);
+const gapW103 = SizedBox(width: Sizes.p103);
+const gapW143 = SizedBox(width: Sizes.p143);
 
 // /// Constant gap heights
 const gapH4 = SizedBox(height: Sizes.p4);
@@ -109,6 +114,7 @@ const gapH40 = SizedBox(height: Sizes.p40);
 const gapH108 = SizedBox(height: Sizes.p108);
 
 const kWindowsMinWindowSize = Size(684, 541);
+const kAppMinWindowSize = Size(1053, 663);
 
 /// A class defined to get dimensions for the screen size displayed,
 /// using the proportion of the designed screen size.
@@ -116,6 +122,27 @@ class SizeConfig {
   SizeConfig._();
 
   static final SizeConfig _instance = SizeConfig._();
+
+  static double setDashboardWidth() {
+    final calculation = MediaQuery.of(App.navState.currentContext!).size.width * Sizes.dashboardCardWidthFactor;
+
+    if (calculation > 1351) {
+      return 1351;
+    } else {
+      return calculation;
+    }
+  }
+
+  static double setProfileFieldWidth({bool statusField = false}) {
+    final calculation = MediaQuery.of(App.navState.currentContext!).size.width *
+        (statusField ? Sizes.statusFieldsWidthFactor : Sizes.profileFieldsWidthFactor);
+
+    if (calculation > 252) {
+      return 252;
+    } else {
+      return calculation;
+    }
+  }
 
   factory SizeConfig() => _instance;
   late MediaQueryData _mediaQueryData;
