@@ -10,7 +10,7 @@ description: >-
 
 {% embed url="https://vimeo.com/1038239765" %}
 
-### :desktop: MacOS Desktop App Client Installation Instructions
+## :desktop: MacOS Desktop App Client Installation Instructions
 
 1. Note your client atSign (i.e. @name\_client)
    1. Client atSign is used to login and will automatically be activated once used to login to the desktop app
