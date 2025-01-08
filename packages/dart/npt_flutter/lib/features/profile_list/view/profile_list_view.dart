@@ -57,7 +57,7 @@ class ProfileListView extends StatelessWidget {
                     children: [
                       CustomCard.dashboardContent(
                         height: deviceSize.height * Sizes.dashboardCardHeightFactor,
-                        width: deviceSize.width * Sizes.dashboardCardWidthFactor,
+                        width: SizeConfig.setDashboardWidth(),
                         child: Column(
                           children: [
                             isFullProfile

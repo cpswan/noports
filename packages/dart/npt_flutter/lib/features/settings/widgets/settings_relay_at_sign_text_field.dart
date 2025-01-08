@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:npt_flutter/features/settings/settings.dart';
 import 'package:npt_flutter/styles/sizes.dart';
 import 'package:npt_flutter/util/form_validator.dart';
@@ -24,18 +25,25 @@ class _SettingsRelayAtSignTextFieldState extends State<SettingsRelayAtSignTextFi
       },
       builder: (BuildContext context, String? relayAtsign) {
         if (relayAtsign == null) return gap0;
-        controller.text = relayAtsign;
-        return TextFormField(
-            controller: controller,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            validator: FormValidator.validateRequiredAtsignField,
-            onChanged: (value) {
-              var bloc = context.read<SettingsBloc>();
-              bloc.add(SettingsEditEvent(
-                settings: (bloc.state as SettingsLoadedState).settings.copyWith(relayAtsign: value),
-                save: true,
-              ));
-            });
+        Future.microtask(() => controller.text = relayAtsign);
+        return SizedBox(
+          width: Sizes.p200,
+          height: Sizes.p70,
+          child: TextFormField(
+              controller: controller,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: FormValidator.validateRequiredAtsignField,
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.custom,
+              ),
+              onChanged: (value) {
+                var bloc = context.read<SettingsBloc>();
+                bloc.add(SettingsEditEvent(
+                  settings: (bloc.state as SettingsLoadedState).settings.copyWith(relayAtsign: value),
+                  save: true,
+                ));
+              }),
+        );
       },
     );
   }
