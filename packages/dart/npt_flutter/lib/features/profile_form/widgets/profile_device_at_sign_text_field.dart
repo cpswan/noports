@@ -48,6 +48,10 @@ class _ProfileDeviceAtSignTextFieldState extends State<ProfileDeviceAtSignTextFi
                     if (!value.startsWith('@')) {
                       value = '@$value';
                     }
+                    setState(() {
+                      value = value.trim();
+                    });
+
                     var bloc = context.read<ProfileBloc>();
                     bloc.add(ProfileEditEvent(
                       profile: (bloc.state as ProfileLoadedState).profile.copyWith(sshnpdAtsign: value),
