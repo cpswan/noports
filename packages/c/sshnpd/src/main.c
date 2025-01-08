@@ -193,7 +193,7 @@ int main(int argc, char **argv) {
   // 7.b Initialize the worker atclient
   atclient_init(&worker);
   bool free_ping_response = false;
-  res = atclient_pkam_authenticate(&worker, params.atsign, &atkeys, NULL);
+  res = atclient_pkam_authenticate(&worker, params.atsign, &atkeys, NULL, NULL);
   if (res != 0 || !should_run) {
     exit_res = res;
     goto cancel_atclient;
@@ -610,7 +610,7 @@ static int reconnect_atclient() {
 
   if (!atclient_is_connected(&worker)) {
     atlogger_log(TAG, ATLOGGER_LOGGING_LEVEL_INFO, "Worker client is not connected, attempting to reconnect:\n");
-    ret = atclient_pkam_authenticate(&worker, params.atsign, &atkeys, NULL);
+    ret = atclient_pkam_authenticate(&worker, params.atsign, &atkeys, NULL, NULL);
 
     if (ret != 0) {
       atlogger_log(TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to reconnect to the atServer.\n");
