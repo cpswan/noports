@@ -48,7 +48,6 @@ class ProfileHeaderView extends StatelessWidget {
               return null;
             },
             builder: (BuildContext context, PreferredViewLayout? viewLayout) {
-              print('header rebuild');
               return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
                 final width = SizeConfig.setProfileFieldWidth();
                 return switch (viewLayout) {
