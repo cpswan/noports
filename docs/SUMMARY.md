@@ -33,7 +33,6 @@
     * [Automated Installation on Microsoft Azure](installation/cloud-installation-guides/automated-installation-on-microsoft-azure.md)
     * [Automated Installation on Oracle Cloud Infrastructure (OCI)](installation/cloud-installation-guides/automated-installation-on-oracle-cloud-infrastructure-oci.md)
   * [Available Releases](installation/available-releases.md)
-  * [Desktop App Installation (MacOS & Windows)](installation/desktop-app-installation-macos-and-windows.md)
 * [Installation FAQ](installation-faq/README.md)
   * [How to activate an atSign](installation-faq/activating-your-atsigns.md)
   * [Reuse your client atSign on another machine](installation-faq/reuse-your-client-atsign-on-another-machine.md)
