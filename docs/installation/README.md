@@ -12,7 +12,7 @@ description: >-
 
 To complete an installation of NoPorts and set up remote access from a client to a remote device, we must perform an installation on both the client and device machines. We will also obtain two atSigns during registration: one client atSign and one device atSign. Once we have the client and device atSigns, we are ready to begin installation.
 
-1. [Obtain your NoPorts license](./#id-1.-obtain-your-license) from [noports.com](https://my.noports.com/no-ports-invite/30dayfreetrial)\
+1. [Obtain your NoPorts license](./#id-1.-obtain-your-license) from [noports.com](https://my.noports.com/no-ports-plans)\
    &#xNAN;_&#x59;ou can start with a 30-day evaluation license, no credit-card required_
 2. [Install NoPorts](./#id-2.-install-noports) software on your devices
    1. Install the NoPorts client\
