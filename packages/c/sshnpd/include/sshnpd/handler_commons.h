@@ -1,8 +1,8 @@
 #ifndef HANDLER_COMMONS_H
 #define HANDLER_COMMONS_H
 #include "sshnpd/params.h"
-#include <atclient/cjson.h>
 #include <atclient/monitor.h>
+#include <atcommons/json.h>
 #include <pthread.h>
 
 #define BYTES(x) (sizeof(unsigned char) * x)
