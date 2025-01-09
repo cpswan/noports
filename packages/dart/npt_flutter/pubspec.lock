@@ -67,10 +67,10 @@ packages:
     dependency: "direct main"
     description:
       name: at_auth
-      sha256: f4fec32e2a1ca8827604b5e54a7611ddad092c6ba607c138675c1cba5215b038
+      sha256: "4d23e7ffd799104ccc74ce006a8a286dcefaeafcc8f72c6bcbbc6a893244abeb"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.7"
+    version: "2.0.10"
   at_backupkey_flutter:
     dependency: "direct main"
     description:
@@ -91,18 +91,18 @@ packages:
     dependency: transitive
     description:
       name: at_chops
-      sha256: "7660aa2722fe5612e12e666bff2f19165f41ae8f90dd4b9c59dfd03365fb998e"
+      sha256: "99a2c3cdefd9b8da22944348e1dab7db012be38823b189861365fc9fde807dad"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.0"
+    version: "2.2.0"
   at_client:
     dependency: transitive
     description:
       name: at_client
-      sha256: "50c7e5988fde978f41c4c3a12cc367f92b235193e9bc1567551765dc453b5f91"
+      sha256: "32cc7619091e19d23348c3363e6e63f0a57b102f41a06eb327ce47dd50f3d2b7"
       url: "https://pub.dev"
     source: hosted
-    version: "3.3.0"
+    version: "3.4.0"
   at_client_mobile:
     dependency: "direct main"
     description:
@@ -123,10 +123,10 @@ packages:
     dependency: transitive
     description:
       name: at_commons
-      sha256: bf3ad3e13075833c47783b19b53f01f23b6c329e6fc050aa8ede249fffd18768
+      sha256: "6e0a53c26726e05727a2cfbb6d0062fb67205225fbe061315bfe0f187128e5bd"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.1"
+    version: "5.1.2"
   at_contact:
     dependency: "direct main"
     description:
@@ -180,10 +180,10 @@ packages:
     dependency: transitive
     description:
       name: at_persistence_secondary_server
-      sha256: f312dc1827648bbdeb55f8e9867c232ef38f0dde64025ff5b3d339050483c5ea
+      sha256: bf6aac91a74416239da4e0d1cf9c483a4a336c3e10d3d326d1b2664b1900a184
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.65"
+    version: "3.1.0"
   at_persistence_spec:
     dependency: transitive
     description:
