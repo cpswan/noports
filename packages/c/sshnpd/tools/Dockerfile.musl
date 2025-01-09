@@ -18,7 +18,7 @@ RUN set -eux; \
   cmake --build build; \
   mkdir /tarball; \
   cd build; \
-  tar -cvzf /tarball/sshnpd-linux-${ARCH}-musl.tgz sshnpd
+  tar -cvzf /tarball/sshnpd-linux-${ARCH}-musl.tgz sshnpd atactivate at_auth_cli
 
 FROM scratch
 COPY --from=build /tarball/* /
