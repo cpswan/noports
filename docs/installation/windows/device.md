@@ -4,4 +4,4 @@
 Official support coming soon!
 {% endhint %}
 
-If you would like early access to the Windows installer, please contact us at [info@noports.com](mailto:info@noports.com).
+The beta version of our Windows installer is almost ready for launch. If you would like early access to it, please contact us at [info@noports.com](mailto:info@noports.com).
