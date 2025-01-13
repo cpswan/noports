@@ -1,6 +1,17 @@
 ---
 icon: forward
 description: This guide shows you how to quickly set up NoPorts for MacOS and Windows.
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
 ---
 
 # Quick Start for MacOS and Windows
