@@ -1,3 +1,7 @@
+## 0.3.0
+
+- feat: Add at_activate
+
 ## 0.2.6
 
 - fix: stabilize monitor connection
