@@ -1,6 +1,10 @@
+---
+description: These guides cover our most commonly asked NoPorts installation questions
+---
+
 # Installation FAQ
 
-Here are some helpful guides which may aid you if you get stuck during the installation process
+
 
 {% content-ref url="activating-your-atsigns.md" %}
 [activating-your-atsigns.md](activating-your-atsigns.md)
