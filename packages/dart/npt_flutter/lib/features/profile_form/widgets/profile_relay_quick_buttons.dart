@@ -39,7 +39,7 @@ class ProfileRelayQuickButtons extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   controller: controller,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: Sizes.p10),
+                    padding: const EdgeInsets.only(bottom: Sizes.p10),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -66,7 +66,10 @@ class ProfileRelayQuickButtons extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const ProfileRelayAtSignTextField(),
+                        const Padding(
+                          padding: EdgeInsets.only(top: Sizes.p4),
+                          child: ProfileRelayAtSignTextField(),
+                        ),
                       ],
                     ),
                   )),

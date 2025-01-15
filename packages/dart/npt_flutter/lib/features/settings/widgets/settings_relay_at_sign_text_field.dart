@@ -34,7 +34,7 @@ class _SettingsRelayAtSignTextFieldState extends State<SettingsRelayAtSignTextFi
           child: TextFormField(
               controller: controller,
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: FormValidator.validateRequiredAtsignField,
+              validator: FormValidator.validateEmptyRelayField,
               decoration: InputDecoration(
                 labelText: AppLocalizations.of(context)!.custom,
                 errorMaxLines: 2,
