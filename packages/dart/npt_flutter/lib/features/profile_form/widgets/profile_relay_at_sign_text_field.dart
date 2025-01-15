@@ -25,7 +25,8 @@ class _ProfileRelayAtSignTextFieldState extends State<ProfileRelayAtSignTextFiel
       },
       builder: (BuildContext context, String? relayAtsign) {
         if (relayAtsign == null) return gap0;
-        Future.microtask(() => controller.text = relayAtsign);
+        Future.microtask(() => controller.value =
+            TextEditingValue(text: relayAtsign, selection: TextSelection.collapsed(offset: relayAtsign.length)));
         return SizedBox(
           width: Sizes.p200,
           height: Sizes.p70,
