@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:npt_flutter/features/profile/profile.dart';
 import 'package:npt_flutter/styles/sizes.dart';
 import 'package:npt_flutter/util/form_validator.dart';
+import 'package:npt_flutter/util/general_extensions.dart';
 
 class ProfileRelayAtSignTextField extends StatefulWidget {
   const ProfileRelayAtSignTextField({super.key});
@@ -39,9 +40,9 @@ class _ProfileRelayAtSignTextFieldState extends State<ProfileRelayAtSignTextFiel
               ),
               validator: FormValidator.validateEmptyRelayField,
               onChanged: (value) {
-                if (!value.startsWith('@')) {
-                  value = '@$value';
-                }
+                value = value.atsignify();
+                controller.value =
+                    TextEditingValue(text: value, selection: TextSelection.collapsed(offset: value.length));
                 var bloc = context.read<ProfileBloc>();
                 bloc.add(ProfileEditEvent(
                   profile: (bloc.state as ProfileLoadedState).profile.copyWith(relayAtsign: value),
