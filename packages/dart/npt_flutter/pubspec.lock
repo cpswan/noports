@@ -106,10 +106,11 @@ packages:
   at_client_mobile:
     dependency: "direct main"
     description:
-      name: at_client_mobile
-      sha256: "41f45cc094bfc7748303ce263e490d9744bb6014e4c1183df9e983488714fb7e"
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/at_client_mobile"
+      ref: "8e8b68d2f00db0aeca266685be1e9c0b103ad301"
+      resolved-ref: "8e8b68d2f00db0aeca266685be1e9c0b103ad301"
+      url: "https://github.com/atsign-foundation/at_client_sdk.git"
+    source: git
     version: "3.2.19"
   at_common_flutter:
     dependency: transitive
@@ -481,6 +482,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.2"
+  duration:
+    dependency: transitive
+    description:
+      name: duration
+      sha256: "13e5d20723c9c1dde8fb318cf86716d10ce294734e81e44ae1a817f3ae714501"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.3"
   ecdsa:
     dependency: transitive
     description:
@@ -1585,6 +1594,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
+  visibility_detector:
+    dependency: "direct main"
+    description:
+      name: visibility_detector
+      sha256: dd5cc11e13494f432d15939c3aa8ae76844c42b723398643ce9addb88a5ed420
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0+2"
   vm_service:
     dependency: transitive
     description:

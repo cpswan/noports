@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:npt_flutter/features/authorisation/widgets/authorisation_app_bar_button.dart';
+import 'package:npt_flutter/routes.dart';
 import 'package:npt_flutter/styles/app_color.dart';
 import 'package:npt_flutter/styles/style_constants.dart';
 
@@ -29,6 +31,7 @@ class NptAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final strings = AppLocalizations.of(context)!;
+    final isDashboard = ModalRoute.of(context)?.settings.name == Routes.dashboard;
     return SizedBox(
       width: Sizes.p853,
       child: AppBar(
@@ -87,25 +90,19 @@ class NptAppBar extends StatelessWidget implements PreferredSizeWidget {
           ],
         ),
         actions: [
-          showSettings
-              ? Padding(
-                  padding: EdgeInsets.only(
-                    bottom: Sizes.p30,
-                    right: MediaQuery.of(context).size.width * settingsIconWidthFactor,
-                  ),
-                  child: TextButton.icon(
-                    label: Text(strings.settings),
-                    icon: Icon(
-                      Icons.settings_outlined,
-                      color: settingsSelectedColor,
-                    ),
-                    onPressed: () {
-                      // the primary color is used when the navbar is on the settings screen and therefore the settings icon is not clickable.
-                      if (settingsSelectedColor != AppColor.primaryColor) Navigator.pushNamed(context, '/settings');
-                    },
-                  ),
-                )
-              : gap0,
+          if (isDashboard) const AuthorisationAppBarButton(),
+          if (showSettings && isDashboard)
+            IconButton(
+              tooltip: strings.settings,
+              icon: Icon(
+                Icons.settings_outlined,
+                color: settingsSelectedColor,
+              ),
+              onPressed: () {
+                Navigator.pushNamed(context, Routes.settings);
+              },
+            ),
+          SizedBox(width: MediaQuery.of(context).size.width * settingsIconWidthFactor),
         ],
         centerTitle: true,
       ),
