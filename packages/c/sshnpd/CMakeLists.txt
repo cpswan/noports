@@ -32,6 +32,7 @@ set(ARGPARSE_DIR ${CMAKE_CURRENT_LIST_DIR}/../3rdparty/argparse)
 set(SRV_DIR ${CMAKE_CURRENT_LIST_DIR}/../srv)
 
 # 1e. Set compile definitions
+set(ATAUTH_BUILD_EXECUTABLES OFF)
 
 # ON=>builds tests by running the tests/CMakeLists.txt file and generates a
 # `tests/` folder in the build directory where `ctest` can be ran in that
@@ -151,3 +152,10 @@ if(SSHNPD_BUILD_TESTS)
   enable_testing()
   add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/tests)
 endif()
+
+# setup atauth binaries
+add_executable(atactivate ${CMAKE_CURRENT_LIST_DIR}/src/atactivate.c)
+target_link_libraries(atactivate PRIVATE atauth)
+
+add_executable(at_auth_cli ${CMAKE_CURRENT_LIST_DIR}/src/at_auth_cli.c)
+target_link_libraries(at_auth_cli PRIVATE atauth)
