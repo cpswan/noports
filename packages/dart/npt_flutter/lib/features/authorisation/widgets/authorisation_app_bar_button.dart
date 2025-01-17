@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -36,9 +35,11 @@ class AuthorisationAppBarButtonState extends State<AuthorisationAppBarButton> {
         }
       },
       child: StreamBuilder(
-        stream: context.read<AuthorisationService>().enrollmentRequests(statusFilters: [EnrollmentStatus.pending]),
+        // TODO(zambrella): Implement the stream and make sure to cache it in init state
+        // stream: context.read<AuthorisationService>().enrollmentRequests(statusFilters: [EnrollmentStatus.pending]),
+        stream: Stream.value(null),
         builder: (context, snapshot) {
-          // TODO: On new request, display a notification
+          // TODO(zambrella): On new request, display a notification
           return BlocBuilder<PendingRequestsCountCubit, Count>(
             builder: (context, authorisationNotificationCount) {
               return IconButton(

@@ -35,7 +35,7 @@ class App extends StatelessWidget {
           create: (_) => FavoriteRepository(),
         ),
         RepositoryProvider<AuthorisationService>(
-          create: (_) => AuthorisationService(AtClientManager.getInstance().atClient)..init(),
+          create: (_) => AuthorisationService(),
         ),
       ],
       child: MultiBlocProvider(
