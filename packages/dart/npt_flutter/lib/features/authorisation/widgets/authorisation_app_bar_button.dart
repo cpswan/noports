@@ -39,13 +39,13 @@ class AuthorisationAppBarButtonState extends State<AuthorisationAppBarButton> {
         stream: context.read<AuthorisationService>().enrollmentRequests(statusFilters: [EnrollmentStatus.pending]),
         builder: (context, snapshot) {
           // TODO: On new request, display a notification
-          return BlocBuilder<PendingRequestsCountCubit, int>(
+          return BlocBuilder<PendingRequestsCountCubit, Count>(
             builder: (context, authorisationNotificationCount) {
               return IconButton(
                 tooltip: strings.authorisation,
                 icon: Badge.count(
-                  count: authorisationNotificationCount,
-                  isLabelVisible: authorisationNotificationCount > 0,
+                  count: authorisationNotificationCount.count,
+                  isLabelVisible: authorisationNotificationCount.count > 0,
                   backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                   textColor: Theme.of(context).colorScheme.primary,
                   child: const Icon(Icons.key_outlined),
