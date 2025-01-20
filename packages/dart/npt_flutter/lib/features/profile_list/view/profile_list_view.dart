@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -46,6 +48,7 @@ class ProfileListView extends StatelessWidget {
 
             final profiles = state.profiles.toList();
             final isFullProfile = profiles.isNotEmpty;
+            log('profile: isFullProfile: $isFullProfile');
 
             return Stack(
               children: [
@@ -67,8 +70,6 @@ class ProfileListView extends StatelessWidget {
                                       ProfileListAddButton(),
                                       gapW10,
                                       ProfileListImportButton(),
-                                      gapW10,
-                                      ProfileListRefreshButton(),
                                       gapW10,
                                       ProfileSelectedExportButton(),
                                       gapW10,
