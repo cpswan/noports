@@ -97,12 +97,12 @@ add_library(${PROJECT_NAME}-lib STATIC ${SSHNPD_SRCS})
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   target_link_libraries(
     ${PROJECT_NAME}-lib
-    PRIVATE atclient atchops atlogger srv-lib argparse::argparse-static
+    PRIVATE atclient atchops atlogger cjson srv-lib argparse::argparse-static
   )
 else()
   target_link_libraries(
     ${PROJECT_NAME}-lib
-    PRIVATE atclient atchops atlogger srv-lib argparse::argparse-static
+    PRIVATE atclient atchops atlogger cjson srv-lib argparse::argparse-static
   )
 endif()
 
@@ -144,6 +144,7 @@ target_link_libraries(
     atclient
     atchops
     atlogger
+    cjson
     argparse::argparse-static
 )
 

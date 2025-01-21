@@ -3,7 +3,7 @@
 # SCRIPT METADATA
 # DO NOT MODIFY/DELETE THIS BLOCK
 script_version="3.1.0"
-sshnp_version="5.7.0"
+sshnp_version="5.8.0"
 repo_url="https://github.com/atsign-foundation/sshnoports"
 # END METADATA
 
@@ -15,6 +15,9 @@ repo_url="https://github.com/atsign-foundation/sshnoports"
 # shellcheck disable=SC2034
 GREP_COLOR=never
 unset GREP_OPTIONS
+
+### Constants
+systemd_config_path="/etc/systemd/system/sshnpd.service.d/override.conf"
 
 ### Environment based variables
 arg_zero="$0"
@@ -38,6 +41,8 @@ unset is_dotssh_created
 unset is_dotsshnp_created
 unset is_dotatsign_created
 unset is_dotatsignkeys_created
+unset is_overrideconf_created
+
 
 ### Input Variables
 verbose=false
@@ -238,6 +243,7 @@ parse_env() {
   [ -d $user_home/.sshnp/ ] && is_dotsshnp_created=true || is_dotsshnp_created=false
   [ -d $user_home/.atsign/ ] && is_dotatsign_created=true || is_dotatsign_created=false
   [ -d $user_home/.atsign/keys/ ] && is_dotatsignkeys_created=true || is_dotatsignkeys_created=false
+  [ -f "$systemd_config_path" ] && is_overrideconf_created=true || is_overrideconf_created=false
 }
 
 is_valid_source_mode() {
@@ -562,7 +568,11 @@ write_systemd_environment() {
   file=$1
   variable=$2
   value=$3
-  sedi "s|Environment=$variable=\".*\"|Environment=$variable=\"$value\"|g" "$file"
+  if grep  -q "Environment=$variable=" < "$file"; then
+    sedi "s|Environment=$variable=\".*\"|Environment=$variable=\"$value\"|g" "$file"
+  else
+    echo "Environment=$variable=\"$value\"" >"$file"
+  fi
 }
 
 get_atsign_manually() {
@@ -870,8 +880,7 @@ device() {
       fi
       ;;
     systemd)
-      systemd_config="/etc/systemd/system/sshnpd.service.d/override.conf"
-      if [ -f "$systemd_config" ]; then
+      if [ "$is_overrideconf_created" = true ]; then
         echo "systemd config for sshnpd service already in place"
         echo "sshnpd systemd upgraded and restarted. To see logs use:"
         echo "  journalctl -u sshnpd -f"
@@ -928,14 +937,13 @@ device() {
       echo "sshnpd installed with launchd"
       ;;
     systemd)
-      systemd_config="/etc/systemd/system/sshnpd.service.d/override.conf"
-      write_systemd_user "$systemd_config" "$user"
-      write_systemd_environment "$systemd_config" "manager_atsign" "$(norm_atsign "$client_atsign")"
-      write_systemd_environment "$systemd_config" "device_atsign" "$(norm_atsign "$device_atsign")"
+      write_systemd_user "$systemd_config_path" "$user"
+      write_systemd_environment "$systemd_config_path" "manager_atsign" "$(norm_atsign "$client_atsign")"
+      write_systemd_environment "$systemd_config_path" "device_atsign" "$(norm_atsign "$device_atsign")"
       if [ -n "$policy_atsign" ]; then
-        write_systemd_environment "$systemd_config" "delegate_policy" "-p $(norm_atsign "$policy_atsign")"
+        write_systemd_environment "$systemd_config_path" "delegate_policy" "-p $(norm_atsign "$policy_atsign")"
       fi
-      write_systemd_environment "$systemd_config" "device_name" "$device_name"
+      write_systemd_environment "$systemd_config_path" "device_name" "$device_name"
 
       systemctl enable sshnpd
       systemctl start sshnpd
