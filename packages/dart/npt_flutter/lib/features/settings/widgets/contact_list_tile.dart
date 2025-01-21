@@ -33,11 +33,6 @@ class ContactListTile extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(Sizes.p8.toFont),
                     ),
-                    // leading: CircleAvatar(
-                    //   radius: Sizes.p18.toFont,
-                    //   backgroundColor: AppColor.primaryColor,
-                    //   backgroundImage: snapshot.data!['image'] != null ? MemoryImage(snapshot.data!['image']) : null,
-                    // ),
                     title: Text(
                       snapshot.data?['name'] ?? '',
                       style: bodyMedium.copyWith(fontSize: 8.toFont),
@@ -50,9 +45,6 @@ class ContactListTile extends StatelessWidget {
             );
           } else {
             return ListTile(
-              // leading: const CircleAvatar(
-              //   child: Icon(Icons.person),
-              // ),
               title: Text(strings.noName),
               subtitle: Text(strings.noAtsign),
             );
