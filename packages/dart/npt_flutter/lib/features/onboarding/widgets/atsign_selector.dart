@@ -21,7 +21,8 @@ class _AtsignSelectorState extends State<AtsignSelector> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<OnboardingCubit, OnboardingState>(builder: (context, state) {
-      controller.value = TextEditingValue(text: state.atSign);
+      controller.value =
+          TextEditingValue(text: state.atSign, selection: TextSelection.collapsed(offset: state.atSign.length));
       return TextFormField(
         controller: controller,
         onChanged: (atsign) {

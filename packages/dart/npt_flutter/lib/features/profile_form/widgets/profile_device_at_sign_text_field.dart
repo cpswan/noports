@@ -36,7 +36,8 @@ class _ProfileDeviceAtSignTextFieldState extends State<ProfileDeviceAtSignTextFi
           },
           builder: (BuildContext context, String? state) {
             if (state == null) return gap0;
-            Future.microtask(() => controller.text = state);
+            Future.microtask(() => controller.value =
+                TextEditingValue(text: state, selection: TextSelection.collapsed(offset: state.length)));
             return SizedBox(
               width: Sizes.p300,
               height: Sizes.p80,

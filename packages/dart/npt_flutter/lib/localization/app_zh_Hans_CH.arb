@@ -128,6 +128,7 @@
   "status": "状态",
   "stopping": "正在关闭",
   "submit": "提交",
+  "syncInProgress": "同步进行中。",
   "validationErrorAtsignField": "字段必须是以 @ 开头的有效 atsign",
   "validationErrorDeviceNameField": "字段只能包含小写字母、数字和下划线。",
   "validationErrorEmptyField": "此字段不能为空",

@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -46,7 +49,8 @@ class ProfileListView extends StatelessWidget {
 
             final profiles = state.profiles.toList();
             final isFullProfile = profiles.isNotEmpty;
-
+            log('profile: isFullProfile: $isFullProfile');
+            AtClientManager.getInstance().atClient.syncService.isInSync();
             return Stack(
               children: [
                 Align(
@@ -67,8 +71,6 @@ class ProfileListView extends StatelessWidget {
                                       ProfileListAddButton(),
                                       gapW10,
                                       ProfileListImportButton(),
-                                      gapW10,
-                                      ProfileListRefreshButton(),
                                       gapW10,
                                       ProfileSelectedExportButton(),
                                       gapW10,
@@ -106,13 +108,34 @@ class ProfileListView extends StatelessWidget {
                                         alignment: Alignment.center,
                                         child: SvgPicture.asset('assets/empty_state_profile_bg.svg'),
                                       ),
-                                      Align(
-                                        alignment: Alignment.bottomCenter,
-                                        child: Text(
-                                          strings.emptyProfileMessage,
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
+                                      FutureBuilder(
+                                          future: AtClientManager.getInstance().atClient.syncService.isInSync(),
+                                          builder: (context, AsyncSnapshot<bool> snapshot) {
+                                            if (snapshot.connectionState == ConnectionState.waiting) {
+                                              return const CircularProgressIndicator();
+                                            }
+                                            if (snapshot.hasData && snapshot.data == false) {
+                                              return Align(
+                                                alignment: Alignment.bottomCenter,
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      strings.syncInProgress,
+                                                      textAlign: TextAlign.center,
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            }
+                                            return Align(
+                                              alignment: Alignment.bottomCenter,
+                                              child: Text(
+                                                strings.emptyProfileMessage,
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            );
+                                          }),
                                     ],
                                   ),
                           ],
