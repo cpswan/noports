@@ -1,12 +1,10 @@
 extension StringExtension on String {
   String atsignify() {
-    var value = this;
+    var value = trim();
     if (!startsWith('@')) {
       value = '@$this';
     }
-    if (endsWith(' ')) {
-      value = trim();
-    }
+
     return value;
   }
 }
