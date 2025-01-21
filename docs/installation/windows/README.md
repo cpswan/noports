@@ -4,7 +4,7 @@ icon: windows
 
 # Windows Installation Guide
 
-Desktop App Installation
+### Desktop App Installation
 
 If this is your first time using NoPorts, we recommend you start here:
 
@@ -12,8 +12,19 @@ If this is your first time using NoPorts, we recommend you start here:
 [desktop.md](desktop.md)
 {% endcontent-ref %}
 
-### :warning: CLI Client & Device Support Coming soon <a href="#installation" id="installation"></a>
+### CLI Client Installation
 
-Outside of the desktop app, the current installer for Windows is an unstable method, and has limited support.
+If you are more comfortable with the CLI, you can follow this guide to install the binaries:
 
-We are in the process of building a better installer for Windows, when that becomes available, this page will include those installation methods. If you would like early access to that installer, please contact us at [info@noports.com](mailto:info@noports.com).
+{% content-ref url="cli-client.md" %}
+[cli-client.md](cli-client.md)
+{% endcontent-ref %}
+
+### Device Installation
+
+If you want to setup access to your Windows device, follow this guide:
+
+{% content-ref url="device.md" %}
+[device.md](device.md)
+{% endcontent-ref %}
+
