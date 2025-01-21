@@ -1,3 +1,12 @@
+## 0.3.2
+
+- chore: Fix version numbers
+
+## 0.3.1
+
+- chore: explicitly link cjson
+- ci: Use arm64 runners for arm builds
+
 ## 0.3.0
 
 - feat: Add at_activate
