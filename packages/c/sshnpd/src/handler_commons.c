@@ -8,7 +8,7 @@
 #include "sshnpd/sshnpd.h"
 #include <atchops/constants.h>
 #include <atchops/rsa_key.h>
-#include <atclient/cjson.h>
+#include <atcommons/json.h>
 #include <atlogger/atlogger.h>
 #include <sshnpd/handler_commons.h>
 #include <stdlib.h>

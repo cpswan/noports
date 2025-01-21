@@ -1,3 +1,12 @@
+## 0.3.0
+
+- feat: Add at_activate
+
+## 0.2.6
+
+- fix: stabilize monitor connection
+  - automatic failover / reconnect after ~40 seconds of down time
+
 ## 0.2.5
 
 - fix: uptake some fixes in monitor
