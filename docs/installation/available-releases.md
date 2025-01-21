@@ -30,5 +30,9 @@ This includes all binaries for NoPorts.
 
 These releases are subject to potential instability or breaking changes as we mature the product-line.
 
-(New products coming soon!)
+| Type                                  | Download Location                                                                                                |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Windows CLI Client / Device Installer | [GitHub](https://github.com/atsign-foundation/noports/releases/latest/download/NoPortsInstaller-windows-x64.zip) |
+|                                       |                                                                                                                  |
+|                                       |                                                                                                                  |
 
