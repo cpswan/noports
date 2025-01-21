@@ -10,9 +10,9 @@ class ProfileProgressListener extends SyncProgressListener {
   void onSyncProgressEvent(SyncProgress syncProgress) {
     final profileListBlock = App.navState.currentContext!.read<ProfileListBloc>();
 
-    final profileListState = profileListBlock.state as ProfileListLoaded;
-
-    if (syncProgress.syncStatus == SyncStatus.success && profileListState.profiles.isEmpty) {
+    if (syncProgress.syncStatus == SyncStatus.success &&
+        (profileListBlock.state is ProfileListLoaded &&
+            (profileListBlock.state as ProfileListLoaded).profiles.isEmpty)) {
       profileListBlock.add(const ProfileListLoadEvent());
       log('ProfileProgressListener: ProfileListLoadEvent triggered to reload profiles');
     }
