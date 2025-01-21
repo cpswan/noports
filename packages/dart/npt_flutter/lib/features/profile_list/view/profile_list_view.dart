@@ -115,13 +115,13 @@ class ProfileListView extends StatelessWidget {
                                               return const CircularProgressIndicator();
                                             }
                                             if (snapshot.hasData && snapshot.data == false) {
-                                              return const Align(
+                                              return Align(
                                                 alignment: Alignment.bottomCenter,
                                                 child: Row(
                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
                                                     Text(
-                                                      'Sync in progress',
+                                                      strings.syncInProgress,
                                                       textAlign: TextAlign.center,
                                                     ),
                                                   ],

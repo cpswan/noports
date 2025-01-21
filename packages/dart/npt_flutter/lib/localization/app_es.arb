@@ -128,6 +128,7 @@
   "status": "Estado",
   "stopping": "Apagando",
   "submit": "Enviar",
+  "syncInProgress": "Sincronización en curso.",
   "validationErrorAtsignField": "El campo debe ser un atSign válido que comience con @",
   "validationErrorDeviceNameField": "El campo solo puede contener letras minúsculas, dígitos, guiones bajos.",
   "validationErrorEmptyField": "Este campo no puede quedar vacío",
