@@ -1,3 +1,7 @@
+## 0.3.3
+
+- ci: Move armv7 build back to amd64 runner
+
 ## 0.3.2
 
 - chore: Fix version numbers
