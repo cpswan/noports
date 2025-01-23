@@ -183,10 +183,6 @@ jobs:
         include:
           - platform: linux/amd64
             output-name: sshnpd-linux-x64-musl
-          #20250123 armv7 not working correctly on arm64 runners
-          #Moving back to amd64 as a workaround until fix found
-          - platform: linux/arm/v7
-            output-name: sshnpd-linux-arm-musl
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -217,10 +213,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          #20250123 armv7 not working correctly on arm64 runners
-          #Moving back to amd64 as a workaround until fix found
-          #- platform: linux/arm/v7
-          #  output-name: sshnpd-linux-arm-musl
+          - platform: linux/arm/v7
+            output-name: sshnpd-linux-arm-musl
           - platform: linux/arm64
             output-name: sshnpd-linux-arm64-musl
           - platform: linux/riscv64
