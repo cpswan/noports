@@ -1,5 +1,6 @@
 ---
 icon: file-import
+description: A review of two available methods
 ---
 
 # Reuse your client atSign on another machine

@@ -1,10 +1,13 @@
 ---
 icon: memo-circle-info
+description: >-
+  Each device atSign can be used for multiple devices and so each device needs a
+  unique name.
 ---
 
 # How to name a device
 
-Each device atSign can be used for multiple devices and so each device needs a unique name. The device name is limited to alphanumeric [snake case](https://www.tuple.nl/knowledge-base/snake-case) (lowercase alphanumeric separated by \_ ) up to 36 characters.
+The device name is limited to alphanumeric [snake case](https://www.tuple.nl/knowledge-base/snake-case) (lowercase alphanumeric separated by \_ ) up to 36 characters.
 
 Example snake case device names
 

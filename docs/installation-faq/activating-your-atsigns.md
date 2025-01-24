@@ -1,5 +1,6 @@
 ---
 icon: at
+description: Steps for client and device atSigns
 ---
 
 # How to activate an atSign

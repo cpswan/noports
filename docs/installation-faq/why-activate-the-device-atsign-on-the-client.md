@@ -1,10 +1,14 @@
 ---
 icon: computer
+description: >-
+  When you activate an atSign, you are doing a handful of steps to prepare the
+  atSign for use. One of these steps is cutting a unique set of cryptographic
+  keys.
 ---
 
 # Why activate the device atSign on the client?
 
-When you activate an atSign, you are doing a handful of steps to prepare the atSign for use. One of these steps is cutting a unique set of cryptographic keys.
+
 
 The first time you activate, this set of keys that gets generated is a set of management keys. These keys have full permissions to your atServer, the personalized service which powers your atSign.
 
