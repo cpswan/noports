@@ -148,7 +148,7 @@ jobs:
         run:
           ditto -c -k --keepParent sshnp tarball/${{ matrix.output-name }}.zip
       - name: Compress to tgz (Linux only)
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+        if: ${{ matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-24.04-arm'  }}
         run: tar -cvzf tarball/${{ matrix.output-name }}.tgz sshnp
       - name: Compress to zip (Windows Only)
         if: ${{ matrix.os == 'windows-latest' }}
