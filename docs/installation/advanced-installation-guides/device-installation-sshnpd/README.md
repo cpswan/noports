@@ -1,12 +1,13 @@
 ---
 icon: server
+description: Begin with the three steps below
 ---
 
 # Device installation
 
 ## Overview
 
-The NoPorts daemon (a.k.a. sshnpd) is installable as a background service in many ways depending on your environment you can choice your best option. The service may be installed as a `systemd unit`, `docker container`, `tmux session`, or as a background job using `cron` and `nohup`. The binaries can also be installed standalone so that you can install your own custom background service.
+The NoPorts daemon (a.k.a. sshnpd) is installable as a background service in many ways. Choose the best option for your environment. The service may be installed as a `systemd unit`, `docker container`, `tmux session`, or as a background job using `cron` and `nohup`. The binaries can also be installed standalone so that you can install your own custom background service.
 
 ### :warning: This guide doesn't support Windows
 

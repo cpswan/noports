@@ -1,5 +1,6 @@
 ---
 icon: table-rows
+description: Includes stable and beta releases
 ---
 
 # Available Releases

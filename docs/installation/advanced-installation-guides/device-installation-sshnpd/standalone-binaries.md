@@ -1,3 +1,7 @@
+---
+description: Follow these two steps
+---
+
 # Standalone Binaries
 
 ### 1. Run the installer

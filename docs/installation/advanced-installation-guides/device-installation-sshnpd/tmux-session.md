@@ -1,3 +1,7 @@
+---
+description: Follow these four steps
+---
+
 # Tmux session
 
 ## 1. Run the installer
