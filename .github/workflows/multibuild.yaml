@@ -104,7 +104,7 @@ jobs:
         run: |
           dart pub get --enforce-lockfile
           dart compile exe bin/np_admin.dart -v -o ../../../packages/dart/sshnoports/sshnp/np_admin${{ matrix.ext }}
-      - name: Compile debug binaries (Windows only)
+      - name: Compile debug binaries (MacOS and Linux only)
         if: ${{ matrix.os != 'windows-latest' }}
         run: |
           dart compile exe bin/srvd.dart -v -o sshnp/srvd${{ matrix.ext }}
