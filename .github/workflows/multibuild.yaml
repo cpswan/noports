@@ -57,6 +57,10 @@ jobs:
             output-name: sshnp-linux-x64
             ext: ""
             bundle: "shell"
+          - os: ubuntu-24.04-arm
+            output-name: sshnp-linux-arm64
+            ext: ""
+            bundle: "shell"
           - os: macos-13
             output-name: sshnp-macos-x64
             ext: ""
@@ -169,16 +173,14 @@ jobs:
 
   other_build:
     needs: verify_tags
-    runs-on: uubuntu-24.04-arm
+    runs-on: ubuntu-24.04-arm
     strategy:
       matrix:
-        # platform: [linux/arm/v7, linux/arm64, linux/riscv64]
-        platform: [linux/arm/v7, linux/arm64]
+        # platform: [linux/arm/v7, linux/riscv64]
+        platform: [linux/arm/v7]
         include:
           - platform: linux/arm/v7
             output-name: sshnp-linux-arm
-          - platform: linux/arm64
-            output-name: sshnp-linux-arm64
 #          - platform: linux/riscv64
 #            output-name: sshnp-linux-riscv64
     steps:
