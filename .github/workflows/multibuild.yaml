@@ -181,13 +181,12 @@ jobs:
     runs-on: ubuntu-24.04-arm
     strategy:
       matrix:
-        # platform: [linux/arm/v7, linux/riscv64]
-        platform: [linux/arm/v7]
+        platform: [linux/arm/v7, linux/riscv64]
         include:
           - platform: linux/arm/v7
             output-name: sshnp-linux-arm
-#          - platform: linux/riscv64
-#            output-name: sshnp-linux-riscv64
+          - platform: linux/riscv64
+            output-name: sshnp-linux-riscv64
     steps:
       - name: Checkout multibuild branch
         if: ${{ ! inputs.main_build_only }}
