@@ -44,7 +44,6 @@ cd "$build"/openssl-*
 # Debian 12 / Ubuntu 20.x.x break the autoconf in ./config on armv7 devices
 # $ARCH passed in from Dockerfile
 # Don't use `uname -m` as we get the wrong answer on arm64 runners
-echo "ARCH is ${ARCH}"
 if [[ $ARCH == "arm" ]]
   then
     echo "Found arm architecture, configuring explicitly"
