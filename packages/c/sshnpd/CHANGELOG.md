@@ -1,3 +1,8 @@
+## 0.4.0
+
+- breaking: reimplement at_activate to conform to dart interface
+  - only onboard supported with this new interface
+
 ## 0.3.4
 
 - ci: Use TARGETARCH so armv7 builds on arm64 runner

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
 set(CMAKE_C_STANDARD 99)
 cmake_policy(SET CMP0135 NEW)
-project(sshnpd VERSION 0.0.1 LANGUAGES C)
+project(sshnpd VERSION 0.4.0 LANGUAGES C)
 
 # 1. Variables - you are free to edit anything in this step
 
@@ -155,8 +155,5 @@ if(SSHNPD_BUILD_TESTS)
 endif()
 
 # setup atauth binaries
-add_executable(atactivate ${CMAKE_CURRENT_LIST_DIR}/src/atactivate.c)
-target_link_libraries(atactivate PRIVATE atauth)
-
-add_executable(at_auth_cli ${CMAKE_CURRENT_LIST_DIR}/src/at_auth_cli.c)
-target_link_libraries(at_auth_cli PRIVATE atauth)
+add_executable(at_activate ${CMAKE_CURRENT_LIST_DIR}/src/at_activate.c)
+target_link_libraries(at_activate PRIVATE atauth)
