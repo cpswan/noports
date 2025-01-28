@@ -80,8 +80,7 @@ jobs:
           cmake --build build
           mkdir tarball
           mv build/sshnpd .
-          mv build/atactivate .
-          mv build/at_auth_cli .
+          mv build/at_activate .
       # zip the build
       - if: ${{ matrix.os == 'macOS-13' || matrix.os == 'macos-14'}}
         run:
