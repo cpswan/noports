@@ -1,5 +1,7 @@
 ---
-description: Follow these four steps
+description: >-
+  Follow these four steps to install the NoPorts daemon in a headless
+  environment
 ---
 
 # Headless
