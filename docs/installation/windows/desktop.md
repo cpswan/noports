@@ -1,3 +1,7 @@
+---
+description: Video and written directions
+---
+
 # Windows Desktop Client Installation
 
 {% embed url="https://vimeo.com/1038239765" %}

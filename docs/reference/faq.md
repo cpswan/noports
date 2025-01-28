@@ -1,5 +1,6 @@
 ---
 icon: comments-question-check
+description: Common questions about NoPorts
 ---
 
 # FAQ

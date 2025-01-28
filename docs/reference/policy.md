@@ -1,10 +1,14 @@
 ---
 icon: users-rectangle
+description: >-
+  A flexible suite of policy management tools. Use a standalone database to
+  store and manage policies using our administration interface, or integrate it
+  with your existing policy database or service.
 ---
 
 # NoPorts Policy Service
 
-The NoPorts Policy Service is a flexible suite of tools for managing policies. You can use a standalone database for storing and managing your policies using our administration interface, or you can integrate it with your existing policy database or service.&#x20;
+
 
 <figure><img src="../.gitbook/assets/NoPorts Policy Diagrams.png" alt=""><figcaption><p>High level overview of the NoPorts architecture</p></figcaption></figure>
 

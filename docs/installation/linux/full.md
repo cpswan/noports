@@ -1,3 +1,7 @@
+---
+description: Video and written directions
+---
+
 # Linux Full Installation
 
 {% include "../../.gitbook/includes/mac-linux-full-install-video.md" %}
