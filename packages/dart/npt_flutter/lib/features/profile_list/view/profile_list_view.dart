@@ -124,7 +124,7 @@ class ProfileListView extends StatelessWidget {
                               if (state == false) {
                                 return Column(
                                   children: [
-                                    gapH25,
+                                    isFullProfile ? gapH25 : gap0,
                                     Text(
                                       strings.syncInProgress,
                                       textAlign: TextAlign.center,
