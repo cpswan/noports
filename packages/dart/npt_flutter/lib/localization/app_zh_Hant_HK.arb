@@ -129,7 +129,7 @@
   "stopping": "正在關閉",
   "submit": "提交",
   "syncInProgress": "同步進行中。某些設定檔可能仍在載入。",
-  "validationErrorAtsignField": "欄位必須是以 @ 開頭的有效 atsign",
+  "validationErrorAtsignField": "欄位必須是有效的 atSign",
   "validationErrorDeviceNameField": "欄位只能包含小寫字母、數字和底線。",
   "validationErrorEmptyField": "此欄位不得為空",
   "validationErrorLocalPortField": "數字必須介於 1024 和 65535 之間",

@@ -129,7 +129,7 @@
   "stopping": "Apagando",
   "submit": "Enviar",
   "syncInProgress": "Sincronización en curso. Algunos perfiles podrían estar todavía cargando.",
-  "validationErrorAtsignField": "El campo debe ser un atSign válido que comience con @",
+  "validationErrorAtsignField": "El campo debe ser un atSign válido",
   "validationErrorDeviceNameField": "El campo solo puede contener letras minúsculas, dígitos, guiones bajos.",
   "validationErrorEmptyField": "Este campo no puede quedar vacío",
   "validationErrorLocalPortField": "El número debe estar entre 1024 y 65535",
