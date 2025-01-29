@@ -1,5 +1,5 @@
 ---
-description: Video and written directions
+description: Video and written directions for installing NoPorts on Linux/MacOS
 ---
 
 # Linux Full Installation

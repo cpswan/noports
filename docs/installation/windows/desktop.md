@@ -1,5 +1,5 @@
 ---
-description: Video and written directions
+description: Video and written directions for installing the NoPorts desktop app
 ---
 
 # Windows Desktop Client Installation
