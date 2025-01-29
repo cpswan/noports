@@ -219,10 +219,12 @@ install_systemd_unit() {
   unit_name="$1"
   systemd_unit="$systemd_dir/$unit_name"
   systemd_config="$systemd_unit.d/override.conf"
+  if ! [ -d "$systemd_unit.d" ]; then
+    mkdir -p "$systemd_unit.d"
+  fi
   no_mac
   if [ -f "$systemd_unit" ]; then
     # migrate old config from systemd unit file to override.conf
-    mkdir -p "$systemd_unit.d"
     touch "$systemd_config"
     if [ ! -s "$systemd_config" ]; then
       echo "[Service]" >> "$systemd_config"

@@ -80,8 +80,7 @@ jobs:
           cmake --build build
           mkdir tarball
           mv build/sshnpd .
-          mv build/atactivate .
-          mv build/at_auth_cli .
+          mv build/at_activate .
       # zip the build
       - if: ${{ matrix.os == 'macOS-13' || matrix.os == 'macos-14'}}
         run:
@@ -304,7 +303,7 @@ jobs:
         working-directory: tarballs
         run: |
           echo "hashes=$(cat checksums.txt | base64 -w0)" >> "$GITHUB_OUTPUT"
-      - uses: actions/attest-build-provenance@7668571508540a607bdfd90a87a560489fe372eb # v2.1.0
+      - uses: actions/attest-build-provenance@520d128f165991a6c774bcb264f323e3d70747f4 # v2.2.0
         with:
           subject-path: "tarballs/**"
 

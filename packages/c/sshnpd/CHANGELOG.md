@@ -1,3 +1,20 @@
+## 0.4.1
+
+- feat: add Dart compliant at_activate binary in place of existing ones
+
+## 0.4.0
+
+- breaking: reimplement at_activate to conform to dart interface
+  - only onboard supported with this new interface
+
+## 0.3.4
+
+- ci: Use TARGETARCH so armv7 builds on arm64 runner
+
+## 0.3.3
+
+- ci: Move armv7 build back to amd64 runner
+
 ## 0.3.2
 
 - chore: Fix version numbers
