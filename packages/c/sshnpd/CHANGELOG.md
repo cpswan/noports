@@ -1,3 +1,7 @@
+## 0.4.1
+
+- feat: add Dart compliant at_activate binary in place of existing ones
+
 ## 0.4.0
 
 - breaking: reimplement at_activate to conform to dart interface
