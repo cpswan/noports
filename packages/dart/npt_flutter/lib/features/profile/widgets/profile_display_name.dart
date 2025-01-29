@@ -15,7 +15,7 @@ class ProfileDisplayName extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: SizeConfig.setProfileFieldWidth(),
+      width: width,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: BlocSelector<ProfileBloc, ProfileState, String?>(
