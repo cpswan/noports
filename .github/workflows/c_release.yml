@@ -55,13 +55,13 @@ jobs:
       matrix:
         include:
           - os: macos-13
-            output-name: sshnp-macos-x64
+            output-name: sshnpd-macos-x64
             ext: ""
             bundle: "shell"
             compiler: "clang"
             flags: "-Wno-error -pthread"
           - os: macos-14
-            output-name: sshnp-macos-arm64
+            output-name: sshnpd-macos-arm64
             ext: ""
             bundle: "shell"
             compiler: "clang"
@@ -84,9 +84,9 @@ jobs:
       # zip the build
       - if: ${{ matrix.os == 'macOS-13' || matrix.os == 'macos-14'}}
         run:
-          ditto -c -k --keepParent sshnpd tarball/${{ matrix.output-name }}.zip
+          zip tarball/${{ matrix.output-name }}.zip sshnpd at_activate
       - if: ${{ matrix.os == 'ubuntu-latest' }}
-        run: tar -cvzf tarball/${{ matrix.output-name }}.tgz sshnpd
+        run: tar -cvzf tarball/${{ matrix.output-name }}.tgz sshnpd at_activate
       - if: ${{ matrix.os == 'windows-latest' }}
         run:
           Compress-Archive -Path sshnpd -Destination tarball/${{
