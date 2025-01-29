@@ -128,7 +128,7 @@
   "status": "Status",
   "stopping": "Desligando",
   "submit": "Enviar",
-  "syncInProgress": "Sincronização em andamento.",
+  "syncInProgress": "Sincronização em andamento. Alguns perfis ainda podem estar carregando.",
   "validationErrorAtsignField": "O campo deve ser um atSign válido que comece com @",
   "validationErrorDeviceNameField": "O campo só pode conter letras minúsculas, dígitos e underscores.",
   "validationErrorEmptyField": "Este campo não pode ser deixado em branco",
