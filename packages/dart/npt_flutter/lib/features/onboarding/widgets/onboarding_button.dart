@@ -138,6 +138,7 @@ class _OnboardingButtonState extends State<OnboardingButton> {
       case AtOnboardingResultStatus.success:
         await initializeContactsService(rootDomain: rootDomain);
         AtClientManager.getInstance().atClient.syncService.addProgressListener(ProfileProgressListener());
+        AtClientManager.getInstance().atClient.syncService.sync();
         postOnboard(onboardingResult!.atsign!, rootDomain);
         final result = await saveAtsignInformation(
           AtsignInformation(
