@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:npt_flutter/features/features.dart';
+import 'package:npt_flutter/features/profile_list/cubit/sync_cubit.dart';
 import 'package:npt_flutter/routes.dart';
 import 'package:npt_flutter/styles/app_theme.dart';
 import 'package:npt_flutter/util/language.dart';
@@ -93,6 +94,8 @@ class App extends StatelessWidget {
             BlocProvider<FavoriteBloc>(
               create: (ctx) => FavoriteBloc(ctx.read<FavoriteRepository>()),
             ),
+
+            BlocProvider<SyncCubit>(create: (_) => SyncCubit()),
           ],
           child: BlocSelector<SettingsBloc, SettingsState, Language?>(selector: (state) {
             if (state is SettingsLoadedState) {

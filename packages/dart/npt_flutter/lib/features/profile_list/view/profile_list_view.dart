@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -12,6 +11,7 @@ import 'package:npt_flutter/styles/sizes.dart';
 import 'package:npt_flutter/widgets/spinner.dart';
 
 import '../../../widgets/custom_card.dart';
+import '../cubit/sync_cubit.dart';
 
 class ProfileListView extends StatelessWidget {
   const ProfileListView({super.key});
@@ -20,7 +20,8 @@ class ProfileListView extends StatelessWidget {
   Widget build(BuildContext context) {
     final strings = AppLocalizations.of(context)!;
     final deviceSize = MediaQuery.of(context).size;
-    final bodyMedium = Theme.of(context).textTheme.labelSmall;
+    final labelSmall = Theme.of(context).textTheme.labelSmall;
+    final bodyMedium = Theme.of(context).textTheme.bodyMedium;
     SizeConfig().init();
     return BlocBuilder<ProfileListBloc, ProfileListState>(builder: (context, state) {
       return switch (state) {
@@ -50,7 +51,7 @@ class ProfileListView extends StatelessWidget {
             final profiles = state.profiles.toList();
             final isFullProfile = profiles.isNotEmpty;
             log('profile: isFullProfile: $isFullProfile');
-            AtClientManager.getInstance().atClient.syncService.isInSync();
+
             return Stack(
               children: [
                 Align(
@@ -63,6 +64,7 @@ class ProfileListView extends StatelessWidget {
                         height: deviceSize.height * Sizes.dashboardCardHeightFactor,
                         width: SizeConfig.setDashboardWidth(),
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             isFullProfile
                                 ? const Row(
@@ -102,48 +104,43 @@ class ProfileListView extends StatelessWidget {
                                     ),
                                   )
                                 : Stack(
-                                    alignment: Alignment.bottomCenter,
+                                    alignment: Alignment.center,
                                     children: [
                                       Align(
                                         alignment: Alignment.center,
                                         child: SvgPicture.asset('assets/empty_state_profile_bg.svg'),
                                       ),
-                                      FutureBuilder(
-                                          future: AtClientManager.getInstance().atClient.syncService.isInSync(),
-                                          builder: (context, AsyncSnapshot<bool> snapshot) {
-                                            if (snapshot.connectionState == ConnectionState.waiting) {
-                                              return const CircularProgressIndicator();
-                                            }
-                                            if (snapshot.hasData && snapshot.data == false) {
-                                              return Align(
-                                                alignment: Alignment.bottomCenter,
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      strings.syncInProgress,
-                                                      textAlign: TextAlign.center,
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-                                            }
-                                            return Align(
-                                              alignment: Alignment.bottomCenter,
-                                              child: Text(
-                                                strings.emptyProfileMessage,
-                                                textAlign: TextAlign.center,
-                                              ),
-                                            );
-                                          }),
+                                      Align(
+                                        alignment: Alignment.bottomCenter,
+                                        child: Text(
+                                          strings.emptyProfileMessage,
+                                          style: bodyMedium?.copyWith(fontSize: Sizes.p16),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      )
                                     ],
                                   ),
+                            BlocBuilder<SyncCubit, bool>(builder: (context, state) {
+                              if (state == false) {
+                                return Column(
+                                  children: [
+                                    isFullProfile ? gapH25 : gap0,
+                                    Text(
+                                      strings.syncInProgress,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                );
+                              }
+                              return gap0;
+                            }),
+                            gapH25,
                           ],
                         ),
                       ),
                       Text(
                         strings.allRightsReserved,
-                        style: bodyMedium?.copyWith(fontSize: bodyMedium.fontSize?.toFont),
+                        style: labelSmall?.copyWith(fontSize: labelSmall.fontSize?.toFont),
                       ),
                     ],
                   ),

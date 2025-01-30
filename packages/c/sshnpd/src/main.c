@@ -18,10 +18,10 @@
 #include <atclient/atkeys_file.h>
 #include <atclient/connection.h>
 #include <atclient/connection_hooks.h>
+#include <atclient/json.h>
 #include <atclient/monitor.h>
 #include <atclient/notify.h>
 #include <atclient/string_utils.h>
-#include <atcommons/json.h>
 #include <atlogger/atlogger.h>
 #include <errno.h>
 #include <libgen.h>
@@ -69,7 +69,7 @@ static void main_loop();
 // information to be shared between functions in this file
 static atclient worker;
 static char *atserver_host;
-static int atserver_port;
+static uint16_t atserver_port;
 static atclient_atkeys atkeys;
 static sshnpd_params params;
 static atclient monitor_ctx;

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:npt_flutter/features/onboarding/cubit/onboarding_cubit.dart';
 import 'package:npt_flutter/features/onboarding/util/atsign_manager.dart';
 import 'package:npt_flutter/util/form_validator.dart';
+import 'package:npt_flutter/util/general_extensions.dart';
 
 class AtsignSelector extends StatefulWidget {
   const AtsignSelector({
@@ -26,9 +27,8 @@ class _AtsignSelectorState extends State<AtsignSelector> {
       return TextFormField(
         controller: controller,
         onChanged: (atsign) {
-          if (!atsign.startsWith('@')) {
-            atsign = '@$atsign';
-          }
+          atsign = atsign.atsignify();
+          controller.value = TextEditingValue(text: atsign, selection: TextSelection.collapsed(offset: atsign.length));
           context.read<OnboardingCubit>().setState(
                 atSign: atsign,
                 rootDomain: widget.options[atsign]?.rootDomain,
