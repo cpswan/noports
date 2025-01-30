@@ -17,6 +17,7 @@ import 'package:npt_flutter/features/onboarding/util/atsign_manager.dart';
 import 'package:npt_flutter/features/onboarding/util/onboarding_util.dart';
 import 'package:npt_flutter/features/onboarding/util/profile_progress_listener.dart';
 import 'package:npt_flutter/features/onboarding/widgets/activate_atsign_dialog.dart';
+import 'package:npt_flutter/features/onboarding/widgets/onboarding_apkam_dialog.dart';
 import 'package:npt_flutter/features/onboarding/widgets/onboarding_dialog.dart';
 import 'package:npt_flutter/routes.dart';
 import 'package:npt_flutter/util/language.dart';
@@ -233,11 +234,30 @@ class _OnboardingButtonState extends State<OnboardingButton> {
           }
         }
       case AtSignStatus.activated:
+        print('Atsign is activated but not in keychain');
         // NOTE: for now this is hard coded to do atKey file upload
         // Later on, we can add the APKAM flow, and will need to make some
         // UX decisions about how the user picks which they want to do
-        Stream<FileUploadStatus> statusStream = util.uploadAtKeysFile(atsign);
-        result = await handleFileUploadStatusStream(statusStream, atsign);
+        final flowChoice = await _apkamFlowChoice();
+        // Wait for the modal to close
+        await Future.delayed(const Duration(milliseconds: 300));
+        if (flowChoice == APKAMFlow.atKeys) {
+          final statusStream = util.uploadAtKeysFile(atsign);
+          result = await handleFileUploadStatusStream(statusStream, atsign);
+        } else {
+          final atClientPrefernce = await loadAtClientPreference(
+            util.config.atClientPreference.rootDomain,
+          );
+          if (!mounted) return null;
+          result = await showDialog<AtOnboardingResult>(
+            context: context,
+            routeSettings: const RouteSettings(name: 'APKAM onboarding'),
+            builder: (context) => OnboardingApkamDialog(
+              atsign: atsign,
+              atClientPreference: atClientPrefernce,
+            ),
+          );
+        }
       case AtSignStatus.notFound:
         result = AtOnboardingResult.error(
           message: strings.errorAtSignNotExist,
@@ -249,6 +269,32 @@ class _OnboardingButtonState extends State<OnboardingButton> {
         );
     }
     return result;
+  }
+
+  Future<APKAMFlow> _apkamFlowChoice() async {
+    final choice = await showDialog<APKAMFlow>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Keys or APKAM?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(APKAMFlow.apkam);
+              },
+              child: Text('APKAM'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(APKAMFlow.atKeys);
+              },
+              child: Text('Keys'),
+            ),
+          ],
+        );
+      },
+    );
+    return choice ?? APKAMFlow.apkam;
   }
 
   Future<AtOnboardingResult?> handleFileUploadStatusStream(Stream<FileUploadStatus> statusStream, String atsign) async {
@@ -319,4 +365,9 @@ class _OnboardingButtonState extends State<OnboardingButton> {
     }
     return result;
   }
+}
+
+enum APKAMFlow {
+  atKeys,
+  apkam,
 }

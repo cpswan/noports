@@ -30,4 +30,7 @@ class NoPortsOnboardingUtil {
   }
 
   // TODO: implement APKAM onboarding
+  Future<void> onboardAPKAM() async {
+    throw UnimplementedError();
+  }
 }
