@@ -86,7 +86,8 @@ namespace NoPortsInstaller
                 UpdateTrustedCerts();
                 await UpdateProgressBar(progress, 75);
 				status.Content = "Creating Registries NoPorts...";
-				CreateRegistryKeys();
+                CreateRegistryKeys();
+                //UpdateConfigRegistry();
                 await UpdateProgressBar(progress, 100);
                 InstallLogger.Log($"Installation Complete");
 				if (InstallType.Equals(InstallType.Client))
@@ -194,12 +195,12 @@ namespace NoPortsInstaller
             try
             {
                 RegistryKey? registryKey = Registry.LocalMachine.OpenSubKey(@"Software\NoPorts");
-                var args = $"-a {DeviceAtsign} -m {ClientAtsign} -d {DeviceName} -sv";
+                var args = $"-a {DeviceAtsign} -m {ClientAtsign} -d {DeviceName} -v";
                 if (registryKey != null)
                 {
                     if (AdditionalArgs != "")
                     {
-                        args += AdditionalArgs;
+                        args += $" {AdditionalArgs}";
                     }
                     registryKey.SetValue("DeviceArgs", args);
                     registryKey.Close();
