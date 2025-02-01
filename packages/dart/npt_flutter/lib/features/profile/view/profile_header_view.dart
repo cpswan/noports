@@ -60,9 +60,11 @@ class ProfileHeaderView extends StatelessWidget {
                           children: [
                             const ProfileSelectAllBox(),
                             gapW10,
-                            ProfileHeaderColumn(title: strings.profileName, width: width),
+                            ProfileHeaderColumn(
+                                title: strings.profileName, width: SizeConfig.setProfileFieldWidthMinimalView()),
                             gapW10,
-                            ProfileHeaderColumn(title: strings.status, width: width),
+                            ProfileHeaderColumn(
+                                title: strings.status, width: SizeConfig.setProfileFieldWidthMinimalView()),
                           ],
                         ),
                       ),
