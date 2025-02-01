@@ -1,5 +1,8 @@
 ---
 icon: apple
+description: >-
+  How to install NoPorts on macOS. Guides for desktop app, CLI, and device
+  installation.
 ---
 
 # MacOS Installation Guides

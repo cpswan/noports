@@ -1,5 +1,6 @@
 ---
 icon: forward
+description: How to quickly install and use NoPorts on both macOS and Windows devices.
 layout:
   title:
     visible: true

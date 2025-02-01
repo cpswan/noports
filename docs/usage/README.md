@@ -1,5 +1,8 @@
 ---
 icon: person-from-portal
+description: >-
+  Learn how to use NoPorts. This guide covers some of the things you can run via
+  NoPorts, as well as how to set up the NoPorts Tunnel (npt).
 ---
 
 # Usage

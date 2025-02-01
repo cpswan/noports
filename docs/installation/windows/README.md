@@ -1,5 +1,6 @@
 ---
 icon: windows
+description: This guide walks you through installing NoPorts on Windows machines.
 ---
 
 # Windows Installation Guide
