@@ -66,7 +66,10 @@ class ProfileRelayQuickButtons extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const ProfileRelayAtSignTextField(),
+                        const Padding(
+                          padding: EdgeInsets.only(top: Sizes.p4),
+                          child: ProfileRelayAtSignTextField(),
+                        ),
                       ],
                     ),
                   )),

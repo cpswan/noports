@@ -51,7 +51,7 @@ class Sizes {
   static const p200 = 200.0;
   static const p210 = 210.0;
   static const p180 = 180.0;
-  // static const p244 = 244.0;
+  static const p234 = 234.0;
   // static const p247 = 247.0;
   // static const p286 = 286.0;
   static const p300 = 300.0;
@@ -70,7 +70,8 @@ class Sizes {
   static const dashboardCardWidthFactor = 941 / 1053;
   static const profileFieldsWidthFactor = 136 / 1053;
   static const statusFieldsWidthFactor = 150 / 1053;
-  static const profileFieldsWidthFactorAlt = 300 / 1053;
+  static const statusFieldsWidthFactorMinimalView = 300 / 1053;
+  static const profileFieldsWidthFactorMinimalView = 300 / 1053;
   static const settingsCardWidthFactor = 654 / 1053;
   static const settingsCardHeightFactor = 438 / 691;
   static const settingsIconPaddingFactor = 89 / 1053;
@@ -139,6 +140,17 @@ class SizeConfig {
 
     if (calculation > 252) {
       return 252;
+    } else {
+      return calculation;
+    }
+  }
+
+  static double setProfileFieldWidthMinimalView({bool statusField = false}) {
+    final calculation = MediaQuery.of(App.navState.currentContext!).size.width *
+        (statusField ? Sizes.statusFieldsWidthFactorMinimalView : Sizes.profileFieldsWidthFactorMinimalView);
+
+    if (calculation > 500) {
+      return 500;
     } else {
       return calculation;
     }
