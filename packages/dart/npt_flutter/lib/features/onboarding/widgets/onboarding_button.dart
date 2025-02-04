@@ -235,11 +235,12 @@ class _OnboardingButtonState extends State<OnboardingButton> {
           }
         }
       case AtSignStatus.activated:
-        print('Atsign is activated but not in keychain');
-        // NOTE: for now this is hard coded to do atKey file upload
-        // Later on, we can add the APKAM flow, and will need to make some
-        // UX decisions about how the user picks which they want to do
+        debugPrint('Atsign is activated but not in keychain');
         final flowChoice = await _apkamFlowChoice();
+        if (flowChoice == null) {
+          result = AtOnboardingResult.cancelled();
+          break;
+        }
         // Wait for the modal to close
         await Future.delayed(const Duration(milliseconds: 300));
         if (flowChoice == APKAMFlow.atKeys) {
@@ -272,30 +273,34 @@ class _OnboardingButtonState extends State<OnboardingButton> {
     return result;
   }
 
-  Future<APKAMFlow> _apkamFlowChoice() async {
-    final choice = await showDialog<APKAMFlow>(
+  Future<APKAMFlow?> _apkamFlowChoice() async {
+    final choice = await showDialog<APKAMFlow?>(
       context: context,
       builder: (BuildContext context) {
+        final strings = AppLocalizations.of(context)!;
         return AlertDialog(
-          title: Text('Keys or APKAM?'),
+          title: Text(strings.apkamOrKeysTitle),
+          content: Text(strings.apkamOrKeysDescription),
           actions: <Widget>[
-            TextButton(
+            ElevatedButton.icon(
               onPressed: () {
                 Navigator.of(context).pop(APKAMFlow.apkam);
               },
-              child: Text('APKAM'),
+              icon: Icon(PhosphorIcons.password()),
+              label: Text(strings.enroll),
             ),
-            TextButton(
+            ElevatedButton.icon(
               onPressed: () {
                 Navigator.of(context).pop(APKAMFlow.atKeys);
               },
-              child: Text('Keys'),
+              icon: Icon(PhosphorIcons.file()),
+              label: Text(strings.keys),
             ),
           ],
         );
       },
     );
-    return choice ?? APKAMFlow.apkam;
+    return choice;
   }
 
   Future<AtOnboardingResult?> handleFileUploadStatusStream(Stream<FileUploadStatus> statusStream, String atsign) async {

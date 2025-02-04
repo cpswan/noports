@@ -137,5 +137,9 @@
    "validationErrorRelayField": "Relay must be a valid atsign",
    "validationErrorRemoteHostField": "Field must be partially or fully qualified hostname or an IP address",
    "validationErrorRemotePortField": "Number must be between 1 and 65535",
-   "yaml": "YAML"
+   "yaml": "YAML",
+   "apkamOrKeysTitle": "How would you like to authenticate?",
+   "apkamOrKeysDescription": "Enroll: authenticate through an app with manager keys\nUpload atKeys: authenticate through an atKeys file",
+   "enroll": "Enroll",
+   "keys": "Upload atKeys"
 }

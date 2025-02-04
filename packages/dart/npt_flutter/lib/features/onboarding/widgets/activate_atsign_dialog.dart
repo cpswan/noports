@@ -54,13 +54,6 @@ class _ActivateAtsignDialogState extends State<ActivateAtsignDialog> {
     _getPinCode();
   }
 
-  @override
-  void dispose() {
-    pinController.dispose();
-    pinFocusNode.dispose();
-    super.dispose();
-  }
-
   final strings = AppLocalizations.of(App.navState.currentContext!)!;
 
   @override

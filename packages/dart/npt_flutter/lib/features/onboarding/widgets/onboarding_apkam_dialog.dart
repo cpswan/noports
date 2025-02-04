@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:at_auth/at_auth.dart';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart';
 import 'package:at_onboarding_flutter/at_onboarding_services.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:npt_flutter/constants.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -8,6 +11,7 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 enum OnboardingStatus {
   preparing,
   otpRequired,
+  validatingOtp,
   pendingApproval,
   success,
   denied,
@@ -35,7 +39,9 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
 
   late OnboardingStatus onboardingStatus;
   late final AtAuthServiceImpl authService;
-  late final TextEditingController pinController = TextEditingController();
+  late final TextEditingController pinController;
+
+  bool hasExpired = false;
 
   @override
   void initState() {
@@ -45,6 +51,7 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
       atsign,
       atClientPreference,
     );
+    pinController = TextEditingController();
     init();
   }
 
@@ -52,6 +59,29 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
   void dispose() {
     pinController.dispose();
     super.dispose();
+  }
+
+  Future<String> getDeviceName() async {
+    final deviceInfo = DeviceInfoPlugin();
+
+    if (Platform.isAndroid) {
+      final androidInfo = await deviceInfo.androidInfo;
+      return '${androidInfo.manufacturer} ${androidInfo.model}';
+    } else if (Platform.isIOS) {
+      final iosInfo = await deviceInfo.iosInfo;
+      return '${iosInfo.name} (${iosInfo.model})';
+    } else if (Platform.isMacOS) {
+      final macInfo = await deviceInfo.macOsInfo;
+      return macInfo.computerName;
+    } else if (Platform.isWindows) {
+      final windowsInfo = await deviceInfo.windowsInfo;
+      return windowsInfo.computerName;
+    } else if (Platform.isLinux) {
+      final linuxInfo = await deviceInfo.linuxInfo;
+      return linuxInfo.name;
+    } else {
+      return 'Unknown Device';
+    }
   }
 
   Future<void> _setStateOnStatus(EnrollmentStatus enrollmentStatus) async {
@@ -67,9 +97,9 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
       case EnrollmentStatus.revoked:
         throw UnimplementedError();
       case EnrollmentStatus.expired:
-        // TODO: Show some message about how the request has expired.
-        print('Original request has expired. Submit again');
+        debugPrint('Original request has expired. Submit again');
         setState(() {
+          hasExpired = true;
           onboardingStatus = OnboardingStatus.otpRequired;
         });
     }
@@ -96,7 +126,7 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
       onboardingStatus = OnboardingStatus.success;
     });
     // Wait for a second to show the success message
-    await Future.delayed(const Duration(milliseconds: 1000));
+    await Future.delayed(const Duration(milliseconds: 3000));
     if (mounted) {
       Navigator.of(context).pop(AtOnboardingResult.success(atsign: atsign));
     }
@@ -107,23 +137,29 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
       onboardingStatus = OnboardingStatus.denied;
     });
     // Wait for a second to show the error message
-    await Future.delayed(const Duration(milliseconds: 1000));
+    await Future.delayed(const Duration(milliseconds: 3000));
     if (mounted) {
-      Navigator.of(context).pop(AtOnboardingResult.error(message: 'Enrollment request denied'));
+      Navigator.of(context)
+          .pop(AtOnboardingResult.error(message: 'Enrollment request denied'));
     }
   }
 
   Future<void> otpSubmit(String otp) async {
     setState(() {
-      onboardingStatus = OnboardingStatus.pendingApproval;
+      onboardingStatus = OnboardingStatus.validatingOtp;
+      hasExpired = false;
     });
 
     final onboardingService = OnboardingService.getInstance();
 
+    // Device name cannot contain spaces or special characters
+    final regExp = RegExp(r'[^a-zA-Z0-9]');
+    final deviceName = (await getDeviceName()).replaceAll(regExp, '');
+    debugPrint('Device Name: $deviceName');
+
     final enrollmentRequest = EnrollmentRequest(
       appName: 'NoPorts',
-      // TODO(Zambrella): Set this is as an actual device name
-      deviceName: 'DougTest', // Cannot contain spaces!!
+      deviceName: deviceName,
       otp: otp,
       namespaces: {
         Constants.namespace!: 'rw',
@@ -131,19 +167,42 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
     );
 
     debugPrint('About to enroll with $enrollmentRequest');
+
     try {
       final enrollResponse = await onboardingService.enroll(
         atsign,
         enrollmentRequest,
-      ); // AT0011 - Invalid OTP
+      );
       debugPrint('Enroll response: $enrollResponse');
+    } on AtException catch (e, st) {
+      debugPrint('AtException - Error enrolling: $e');
+      debugPrint(st.toString());
+      if (mounted) {
+        Navigator.of(context).pop(AtOnboardingResult.error(message: e.message));
+      }
     } catch (e, st) {
       debugPrint('Error enrolling: $e');
-      debugPrint(st);
+      debugPrint(st.toString());
+
+      if (mounted) {
+        // Doesn't seem like enroll throws an `AtException`
+        if (e.toString().contains('AT0011')) {
+          debugPrint('Invalid OTP');
+          Navigator.of(context)
+              .pop(AtOnboardingResult.error(message: 'Invalid OTP'));
+        } else {
+          Navigator.of(context)
+              .pop(AtOnboardingResult.error(message: 'Unknown error'));
+        }
+      }
     }
 
+    setState(() {
+      onboardingStatus = OnboardingStatus.pendingApproval;
+    });
+
     final finalStatus = await authService.getFinalEnrollmentStatus();
-    debugPrint('Enrollment status: $finalStatus');
+    debugPrint('Final enrollment status: $finalStatus');
 
     await _setStateOnStatus(finalStatus);
   }
@@ -165,24 +224,39 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
                 OnboardingStatus.preparing => const CircularProgressIndicator(
                     key: Key('preparing'),
                   ),
-                OnboardingStatus.otpRequired => Column(
+                OnboardingStatus.otpRequired ||
+                OnboardingStatus.validatingOtp =>
+                  Column(
+                    key: const Key('otp'),
+                    mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('Enter your OTP here...'),
+                      Text(
+                        'Enter your OTP',
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Find the OTP in the app where you have manager keys',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      if (hasExpired) ...[
+                        const SizedBox(height: 4),
+                        const Text(
+                          'The original request has expired. Please submit again',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ],
                       const SizedBox(height: 16),
                       SizedBox(
                         width: 350,
                         child: PinCodeTextField(
+                          autoDisposeControllers: false,
                           appContext: context,
                           length: _kPinLength,
                           controller: pinController,
                           autoFocus: true,
                           textCapitalization: TextCapitalization.characters,
-                          onChanged: (value) {
-                            setState(() {
-                              pinController.text = value.toUpperCase();
-                            });
-                          },
                           // Styling
                           animationType: AnimationType.fade,
                           pinTheme: PinTheme(
@@ -206,12 +280,18 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
                         animation: pinController,
                         builder: (context, _) {
                           return ElevatedButton(
-                            onPressed: pinController.text.length == _kPinLength
-                                ? () async {
-                                    await otpSubmit(pinController.text);
-                                  }
-                                : null,
-                            child: const Text('Submit OTP'),
+                            onPressed:
+                                pinController.text.length == _kPinLength &&
+                                        onboardingStatus !=
+                                            OnboardingStatus.validatingOtp
+                                    ? () async {
+                                        await otpSubmit(pinController.text);
+                                      }
+                                    : null,
+                            child: onboardingStatus ==
+                                    OnboardingStatus.validatingOtp
+                                ? const CircularProgressIndicator()
+                                : const Text('Submit OTP'),
                           );
                         },
                       ),
@@ -226,15 +306,29 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
                       Text('Please approve request in app with manager keys'),
                     ],
                   ),
-                OnboardingStatus.success => const Icon(
+                OnboardingStatus.success => const Column(
                     key: Key('success'),
-                    Icons.check,
-                    color: Colors.green,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.check,
+                        color: Colors.green,
+                      ),
+                      SizedBox(height: 4),
+                      Text('Enrollment request approved')
+                    ],
                   ),
-                OnboardingStatus.denied => const Icon(
+                OnboardingStatus.denied => const Column(
                     key: Key('denied'),
-                    Icons.close,
-                    color: Colors.red,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.close,
+                        color: Colors.red,
+                      ),
+                      SizedBox(height: 4),
+                      Text('Enrollment request denied')
+                    ],
                   ),
               },
             ),
