@@ -5,6 +5,7 @@ import 'package:at_onboarding_flutter/at_onboarding_flutter.dart';
 import 'package:at_onboarding_flutter/at_onboarding_services.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:npt_flutter/constants.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
@@ -140,7 +141,7 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
     setState(() {
       onboardingStatus = OnboardingStatus.success;
     });
-    // Wait for a second to show the success message
+    // Wait for a bit to show the success message
     await Future.delayed(const Duration(milliseconds: 3000));
     if (mounted) {
       Navigator.of(context).pop(AtOnboardingResult.success(atsign: atsign));
@@ -151,10 +152,11 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
     setState(() {
       onboardingStatus = OnboardingStatus.denied;
     });
-    // Wait for a second to show the error message
+    // Wait for a bit to show the error message
     await Future.delayed(const Duration(milliseconds: 3000));
     if (mounted) {
-      Navigator.of(context).pop(AtOnboardingResult.error(message: 'Enrollment request denied'));
+      final strings = AppLocalizations.of(context)!;
+      Navigator.of(context).pop(AtOnboardingResult.error(message: strings.enrollRequestDenied));
     }
   }
 
@@ -199,12 +201,13 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
       debugPrint(st.toString());
 
       if (mounted) {
+        final strings = AppLocalizations.of(context)!;
         // Doesn't seem like enroll throws an `AtException`.
         if (e.toString().contains('AT0011')) {
           debugPrint('Invalid OTP');
-          Navigator.of(context).pop(AtOnboardingResult.error(message: 'Invalid OTP'));
+          Navigator.of(context).pop(AtOnboardingResult.error(message: strings.invalidOtp));
         } else {
-          Navigator.of(context).pop(AtOnboardingResult.error(message: 'Unknown error'));
+          Navigator.of(context).pop(AtOnboardingResult.error(message: strings.unknownError));
         }
       }
     }
@@ -222,6 +225,7 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final strings = AppLocalizations.of(context)!;
     return Center(
       child: Dialog(
         child: Padding(
@@ -243,19 +247,19 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Enter your OTP',
+                        strings.enterOtp,
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Find the OTP in the app where you have manager keys',
+                        strings.findOtp,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       if (hasExpired) ...[
                         const SizedBox(height: 4),
-                        const Text(
-                          'The original request has expired. Please submit again',
-                          style: TextStyle(color: Colors.red),
+                        Text(
+                          strings.requestExpired,
+                          style: const TextStyle(color: Colors.red),
                         ),
                       ],
                       const SizedBox(height: 16),
@@ -299,43 +303,43 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
                                 : null,
                             child: onboardingStatus == OnboardingStatus.validatingOtp
                                 ? const CircularProgressIndicator()
-                                : const Text('Submit OTP'),
+                                : Text(strings.submitOtp),
                           );
                         },
                       ),
                     ],
                   ),
-                OnboardingStatus.pendingApproval => const Column(
-                    key: Key('activating'),
+                OnboardingStatus.pendingApproval => Column(
+                    key: const Key('activating'),
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      CircularProgressIndicator(),
-                      SizedBox(height: 8),
-                      Text('Please approve request in app with manager keys'),
+                      const CircularProgressIndicator(),
+                      const SizedBox(height: 8),
+                      Text(strings.approveInstructions),
                     ],
                   ),
-                OnboardingStatus.success => const Column(
-                    key: Key('success'),
+                OnboardingStatus.success => Column(
+                    key: const Key('success'),
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.check,
                         color: Colors.green,
                       ),
-                      SizedBox(height: 4),
-                      Text('Enrollment request approved')
+                      const SizedBox(height: 4),
+                      Text(strings.enrollApproved)
                     ],
                   ),
-                OnboardingStatus.denied => const Column(
-                    key: Key('denied'),
+                OnboardingStatus.denied => Column(
+                    key: const Key('denied'),
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.close,
                         color: Colors.red,
                       ),
-                      SizedBox(height: 4),
-                      Text('Enrollment request denied')
+                      const SizedBox(height: 4),
+                      Text(strings.enrollDenied)
                     ],
                   ),
               },

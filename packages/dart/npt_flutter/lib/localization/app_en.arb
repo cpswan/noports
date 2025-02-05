@@ -142,5 +142,15 @@
    "apkamOrKeysTitle": "How would you like to authenticate?",
    "apkamOrKeysDescription": "Enroll: authenticate through an app with manager keys\nUpload atKeys: authenticate through an atKeys file",
    "enroll": "Enroll",
-   "keys": "Upload atKeys"
+   "keys": "Upload atKeys",
+   "enrollRequestDenied": "Enrollment request denied",
+   "invalidOtp": "Invalid OTP",
+   "unknownError": "An unknown error occurred",
+   "enterOtp": "Enter your OTP",
+   "findOtp": "Find the OTP in the app where you have manager keys",
+   "requestExpired": "The original request has expired. Please submit again",
+   "submitOtp": "Submit OTP",
+   "approveInstructions": "Please approve request in app with manager keys",
+   "enrollApproved": "Enrollment request approved",
+   "enrollDenied": "Enrollment request denied"
 }
