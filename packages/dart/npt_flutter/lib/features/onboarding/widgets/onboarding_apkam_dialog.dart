@@ -88,6 +88,7 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
     switch (enrollmentStatus) {
       case EnrollmentStatus.pending:
         setState(() {
+          hasExpired = false;
           onboardingStatus = OnboardingStatus.otpRequired;
         });
       case EnrollmentStatus.approved:
@@ -109,16 +110,30 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
     final sentEnrollRequest = await authService.getSentEnrollmentRequest();
     debugPrint('Sent enroll request: ${sentEnrollRequest?.toJson()}');
     if (sentEnrollRequest != null) {
-      // If the request has already been sent, we need to say wait for approval
-      setState(() {
-        onboardingStatus = OnboardingStatus.pendingApproval;
-      });
+      if (DateTime.now()
+              .toUtc()
+              .difference(DateTime.fromMillisecondsSinceEpoch(sentEnrollRequest.enrollmentSubmissionTimeEpoch))
+              .inHours >=
+          48) {
+        await _setStateOnStatus(EnrollmentStatus.expired);
+      } else {
+        // If the request has already been sent, we need to say wait for approval
+        setState(() {
+          onboardingStatus = OnboardingStatus.pendingApproval;
+        });
+      }
     }
 
+    // Returns EnrollmentStatus.expired even if no request has been sent
     final status = await authService.getFinalEnrollmentStatus();
     debugPrint('Enrollment status: $status');
-
-    await _setStateOnStatus(status);
+    if (status == EnrollmentStatus.expired && sentEnrollRequest == null) {
+      setState(() {
+        onboardingStatus = OnboardingStatus.otpRequired;
+      });
+    } else {
+      await _setStateOnStatus(status);
+    }
   }
 
   Future<void> onApproved() async {
@@ -139,8 +154,7 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
     // Wait for a second to show the error message
     await Future.delayed(const Duration(milliseconds: 3000));
     if (mounted) {
-      Navigator.of(context)
-          .pop(AtOnboardingResult.error(message: 'Enrollment request denied'));
+      Navigator.of(context).pop(AtOnboardingResult.error(message: 'Enrollment request denied'));
     }
   }
 
@@ -185,14 +199,12 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
       debugPrint(st.toString());
 
       if (mounted) {
-        // Doesn't seem like enroll throws an `AtException`
+        // Doesn't seem like enroll throws an `AtException`.
         if (e.toString().contains('AT0011')) {
           debugPrint('Invalid OTP');
-          Navigator.of(context)
-              .pop(AtOnboardingResult.error(message: 'Invalid OTP'));
+          Navigator.of(context).pop(AtOnboardingResult.error(message: 'Invalid OTP'));
         } else {
-          Navigator.of(context)
-              .pop(AtOnboardingResult.error(message: 'Unknown error'));
+          Navigator.of(context).pop(AtOnboardingResult.error(message: 'Unknown error'));
         }
       }
     }
@@ -201,6 +213,7 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
       onboardingStatus = OnboardingStatus.pendingApproval;
     });
 
+    // Should only be one of approved or denied at this point.
     final finalStatus = await authService.getFinalEnrollmentStatus();
     debugPrint('Final enrollment status: $finalStatus');
 
@@ -224,9 +237,7 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
                 OnboardingStatus.preparing => const CircularProgressIndicator(
                     key: Key('preparing'),
                   ),
-                OnboardingStatus.otpRequired ||
-                OnboardingStatus.validatingOtp =>
-                  Column(
+                OnboardingStatus.otpRequired || OnboardingStatus.validatingOtp => Column(
                     key: const Key('otp'),
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
@@ -280,16 +291,13 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
                         animation: pinController,
                         builder: (context, _) {
                           return ElevatedButton(
-                            onPressed:
-                                pinController.text.length == _kPinLength &&
-                                        onboardingStatus !=
-                                            OnboardingStatus.validatingOtp
-                                    ? () async {
-                                        await otpSubmit(pinController.text);
-                                      }
-                                    : null,
-                            child: onboardingStatus ==
-                                    OnboardingStatus.validatingOtp
+                            onPressed: pinController.text.length == _kPinLength &&
+                                    onboardingStatus != OnboardingStatus.validatingOtp
+                                ? () async {
+                                    await otpSubmit(pinController.text);
+                                  }
+                                : null,
+                            child: onboardingStatus == OnboardingStatus.validatingOtp
                                 ? const CircularProgressIndicator()
                                 : const Text('Submit OTP'),
                           );

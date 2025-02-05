@@ -109,7 +109,7 @@ dependency_overrides:
   at_client_mobile:
     git:
       url: https://github.com/atsign-foundation/at_client_sdk
-      ref: 1af8364f11d6153d4c6549217c404d5d8364768c
+      ref: 533f657eec18f13a11dafbf67c0006c6cc010dde
       path: packages/at_client_mobile
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

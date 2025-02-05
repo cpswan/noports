@@ -107,8 +107,8 @@ packages:
     dependency: "direct main"
     description:
       path: "packages/at_client_mobile"
-      ref: "1af8364f11d6153d4c6549217c404d5d8364768c"
-      resolved-ref: "1af8364f11d6153d4c6549217c404d5d8364768c"
+      ref: "533f657eec18f13a11dafbf67c0006c6cc010dde"
+      resolved-ref: "533f657eec18f13a11dafbf67c0006c6cc010dde"
       url: "https://github.com/atsign-foundation/at_client_sdk"
     source: git
     version: "3.2.19"
