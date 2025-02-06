@@ -3,7 +3,7 @@
   "configurePresets": [
     {
       "name": "dev",
-      "binaryDir": "${sourceDir}/build",
+      "binaryDir": "${sourceDir}/build/dev",
       "cacheVariables": {
         "BUILD_SHARED_LIBS": "OFF",
         "CMAKE_BUILD_TYPE": "Debug",
@@ -28,12 +28,12 @@
     },
     {
       "name": "strict",
-      "binaryDir": "${sourceDir}/build",
+      "binaryDir": "${sourceDir}/build/strict",
       "cacheVariables": {
         "BUILD_SHARED_LIBS": "OFF",
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_C_FLAGS": "-std=c99 -Wall -Wextra -Werror-implicit-function-declaration",
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "OFF",
         "ATSDK_BUILD_TESTS": "OFF",
         "ATSDK_MEMCHECK": "OFF",
         "ENABLE_TESTING": "OFF",

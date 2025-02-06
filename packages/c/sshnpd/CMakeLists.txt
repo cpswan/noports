@@ -22,6 +22,10 @@ set(
   ${CMAKE_CURRENT_LIST_DIR}/src/run_srv_process.c
 )
 
+if(SSHNPD_ENABLE_TESTING_SHUTDOWN_NOTIFICATION)
+  add_compile_definitions(SSHNPD_ENABLE_TESTING_SHUTDOWN_NOTIFICATION)
+endif()
+
 # 1b. Manually add your include directories here
 set(SSHNPD_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
 

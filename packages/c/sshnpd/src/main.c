@@ -25,6 +25,7 @@
 #include <atlogger/atlogger.h>
 #include <errno.h>
 #include <libgen.h>
+#include <mbedtls/psa_util.h>
 #include <pthread.h>
 #include <signal.h>
 #include <sshnpd/file_utils.h>
@@ -51,6 +52,7 @@ static struct {
     {"ping", NK_PING},
     {"ssh_request", NK_SSH_REQUEST},
     {"npt_request", NK_NPT_REQUEST},
+    {"graceful_shutdown", NK_GRACEFUL_SHUTDOWN},
 };
 
 // static unsigned long min(unsigned long a, unsigned long b) { return a < b ? a : b; }
@@ -397,6 +399,7 @@ exit:
   free(params.permitopen_hosts);
   free(params.permitopen_ports);
   free(params.permitopen_str);
+  mbedtls_psa_crypto_free();
   exit(exit_res);
 }
 
@@ -416,7 +419,7 @@ void main_loop() {
 
   size_t timeout_counter = 0;
 
-  while (should_run) {
+  while (should_run == 1) {
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Waiting for next monitor thread message\n");
     atclient_monitor_message_init(&message);
 
@@ -513,7 +516,13 @@ void main_loop() {
         // Do the string compare for this key in place, that way we can use a switch/case instead of endless if
         // statements
         enum notification_key notification_key = NK_NONE;
-        for (int i = 1; i < NOTIFICATION_KEYS_LEN; i++) {
+        int keys_length;
+#ifdef SSHNPD_ENABLE_TESTING_SHUTDOWN_NOTIFICATION
+        keys_length = NOTIFICATION_KEYS_LEN + 1;
+#else
+        keys_length = NOTIFICATION_KEYS_LEN;
+#endif
+        for (int i = 1; i < keys_length; i++) {
           if (strcmp(key, notification_key_map[i].str) == 0) {
             notification_key = notification_key_map[i].key;
             break;
@@ -561,6 +570,13 @@ void main_loop() {
           // No permitopen here... since we need to parse the json first in order to check, it happens inside
           // handle_npt_request
           handle_npt_request(&worker, &atclient_lock, &params, &is_child_process, &message, signingkey);
+          break;
+        case NK_GRACEFUL_SHUTDOWN:
+#ifdef SSHNPD_ENABLE_TESTING_SHUTDOWN_NOTIFICATION
+#warning BINARY COMPILED WITH SHUTDOWN NOTIFICATION ENABLED NOT FOR PRODUCTION USE
+          atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "TRIGGERING GRACEFUL SHUTDOWN\n");
+          should_run = 0;
+#endif
           break;
         case NK_NONE:
           break;
