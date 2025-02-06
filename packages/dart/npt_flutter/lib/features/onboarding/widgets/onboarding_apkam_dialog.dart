@@ -7,6 +7,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:npt_flutter/constants.dart';
+import 'package:npt_flutter/features/onboarding/widgets/enrollment_dialog.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 enum OnboardingStatus {
@@ -226,126 +227,221 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
   @override
   Widget build(BuildContext context) {
     final strings = AppLocalizations.of(context)!;
-    return Center(
-      child: Dialog(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: AnimatedSize(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              switchInCurve: Curves.easeInOut,
-              switchOutCurve: Curves.easeInOut,
-              child: switch (onboardingStatus) {
-                OnboardingStatus.preparing => const CircularProgressIndicator(
-                    key: Key('preparing'),
-                  ),
-                OnboardingStatus.otpRequired || OnboardingStatus.validatingOtp => Column(
-                    key: const Key('otp'),
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        strings.enterOtp,
-                        style: Theme.of(context).textTheme.headlineSmall,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        strings.findOtp,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      if (hasExpired) ...[
-                        const SizedBox(height: 4),
-                        Text(
-                          strings.requestExpired,
-                          style: const TextStyle(color: Colors.red),
-                        ),
-                      ],
-                      const SizedBox(height: 16),
-                      SizedBox(
-                        width: 350,
-                        child: PinCodeTextField(
-                          autoDisposeControllers: false,
-                          appContext: context,
-                          length: _kPinLength,
-                          controller: pinController,
-                          autoFocus: true,
-                          textCapitalization: TextCapitalization.characters,
-                          // Styling
-                          animationType: AnimationType.fade,
-                          pinTheme: PinTheme(
-                            shape: PinCodeFieldShape.box,
-                            borderRadius: BorderRadius.circular(5),
-                            activeFillColor: Colors.white,
-                            inactiveFillColor: Colors.white,
-                            selectedFillColor: Colors.white,
-                            selectedColor: Colors.black,
-                            fieldOuterPadding: const EdgeInsets.all(4),
-                          ),
-                          cursorColor: Colors.black,
-                          animationDuration: const Duration(milliseconds: 300),
-                          enableActiveFill: true,
-                          keyboardType: TextInputType.text,
-                          beforeTextPaste: (text) => true,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      AnimatedBuilder(
-                        animation: pinController,
-                        builder: (context, _) {
-                          return ElevatedButton(
-                            onPressed: pinController.text.length == _kPinLength &&
-                                    onboardingStatus != OnboardingStatus.validatingOtp
-                                ? () async {
-                                    await otpSubmit(pinController.text);
-                                  }
-                                : null,
-                            child: onboardingStatus == OnboardingStatus.validatingOtp
-                                ? const CircularProgressIndicator()
-                                : Text(strings.submitOtp),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                OnboardingStatus.pendingApproval => Column(
-                    key: const Key('activating'),
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const CircularProgressIndicator(),
-                      const SizedBox(height: 8),
-                      Text(strings.approveInstructions),
-                    ],
-                  ),
-                OnboardingStatus.success => Column(
-                    key: const Key('success'),
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        Icons.check,
-                        color: Colors.green,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(strings.enrollApproved)
-                    ],
-                  ),
-                OnboardingStatus.denied => Column(
-                    key: const Key('denied'),
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        Icons.close,
-                        color: Colors.red,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(strings.enrollDenied)
-                    ],
-                  ),
-              },
+    return EnrollmentDialog(
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        switchInCurve: Curves.easeInOut,
+        switchOutCurve: Curves.easeInOut,
+        child: switch (onboardingStatus) {
+          OnboardingStatus.preparing => const CircularProgressIndicator(
+              key: Key('preparing'),
             ),
-          ),
-        ),
+          OnboardingStatus.otpRequired || OnboardingStatus.validatingOtp => Column(
+              key: const Key('otp'),
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  strings.enterOtp,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.black),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  strings.findOtp,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                if (hasExpired) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    strings.requestExpired,
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                ],
+                const SizedBox(height: 24),
+                IntrinsicHeight(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 280,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            PinCodeTextField(
+                              autoDisposeControllers: false,
+                              appContext: context,
+                              length: _kPinLength,
+                              controller: pinController,
+                              autoFocus: true,
+                              textCapitalization: TextCapitalization.characters,
+                              // Styling
+                              animationType: AnimationType.fade,
+                              pinTheme: PinTheme(
+                                shape: PinCodeFieldShape.box,
+                                borderRadius: BorderRadius.circular(5),
+                                activeFillColor: Colors.white,
+                                inactiveFillColor: const Color(0xFFF3F3F3),
+                                disabledColor: Colors.blue,
+                                inactiveColor: const Color(0xFF747474),
+                                selectedFillColor: Colors.white,
+                                selectedColor: Theme.of(context).colorScheme.primary,
+                                fieldOuterPadding: const EdgeInsets.all(2),
+                              ),
+                              cursorColor: Colors.black,
+                              animationDuration: const Duration(milliseconds: 300),
+                              enableActiveFill: true,
+                              keyboardType: TextInputType.text,
+                              beforeTextPaste: (text) => true,
+                            ),
+                            const SizedBox(height: 8),
+                            AnimatedBuilder(
+                              animation: pinController,
+                              builder: (context, _) {
+                                return FilledButton(
+                                  style: FilledButton.styleFrom(
+                                    textStyle: const TextStyle(
+                                      fontSize: 18,
+                                    ),
+                                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  onPressed: pinController.text.length == _kPinLength &&
+                                          onboardingStatus != OnboardingStatus.validatingOtp
+                                      ? () async {
+                                          await otpSubmit(pinController.text);
+                                        }
+                                      : null,
+                                  child: onboardingStatus == OnboardingStatus.validatingOtp
+                                      ? const CircularProgressIndicator()
+                                      : Text(strings.submitOtp),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Transform.translate(
+                          offset: const Offset(32, 0),
+                          child: Image.asset(
+                            Constants.authenticatorMockup,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          OnboardingStatus.pendingApproval => Column(
+              key: const Key('activating'),
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // This is a little hacky to get the white background.
+                    // If this is a problem, we can rethink the EnrollmentDialog widget.
+                    Positioned.fill(
+                      child: Transform.scale(
+                        scaleX: 1.15,
+                        scaleY: 2.8,
+                        child: Container(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            strings.waitingForApproval,
+                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        const CircularProgressIndicator(),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 56),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Just to slightly offset from the top
+                          const SizedBox(height: 12),
+                          Text(
+                            strings.whereToAccept,
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                          Text(
+                            strings.whereToAcceptDescription,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 6,
+                      child: Transform.translate(
+                        offset: const Offset(16, 0),
+                        child: Image.asset(
+                          Constants.authenticatorApprovalMockup,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          OnboardingStatus.success => Row(
+              key: const Key('success'),
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.check,
+                  color: Colors.green,
+                  size: 32,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  strings.enrollApproved,
+                  style: Theme.of(context).textTheme.titleLarge,
+                )
+              ],
+            ),
+          OnboardingStatus.denied => Row(
+              key: const Key('denied'),
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.close,
+                  color: Colors.red,
+                  size: 32,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  strings.enrollDenied,
+                  style: Theme.of(context).textTheme.titleLarge,
+                )
+              ],
+            ),
+        },
       ),
     );
   }

@@ -17,6 +17,7 @@ import 'package:npt_flutter/features/onboarding/util/atsign_manager.dart';
 import 'package:npt_flutter/features/onboarding/util/onboarding_util.dart';
 import 'package:npt_flutter/features/onboarding/util/profile_progress_listener.dart';
 import 'package:npt_flutter/features/onboarding/widgets/activate_atsign_dialog.dart';
+import 'package:npt_flutter/features/onboarding/widgets/apkam_choice_dialog.dart';
 import 'package:npt_flutter/features/onboarding/widgets/onboarding_apkam_dialog.dart';
 import 'package:npt_flutter/features/onboarding/widgets/onboarding_dialog.dart';
 import 'package:npt_flutter/routes.dart';
@@ -67,7 +68,7 @@ class _OnboardingButtonState extends State<OnboardingButton> {
               bool shouldOnboard = await selectAtsign();
               if (shouldOnboard && context.mounted) {
                 var atsignInformation = context.read<OnboardingCubit>().state;
-                await onboard(atsign: atsignInformation.atSign, rootDomain: atsignInformation.rootDomain);
+                onboard(atsign: atsignInformation.atSign, rootDomain: atsignInformation.rootDomain);
               }
             } finally {
               if (mounted) {
@@ -256,7 +257,11 @@ class _OnboardingButtonState extends State<OnboardingButton> {
         }
       case AtSignStatus.activated:
         debugPrint('Atsign is activated but not in keychain');
-        final flowChoice = await _apkamFlowChoice();
+        final flowChoice = await showDialog<APKAMFlow?>(
+          context: context,
+          routeSettings: const RouteSettings(name: 'APKAM choice'),
+          builder: (context) => const ApkamChoiceDialog(),
+        );
         if (flowChoice == null) {
           result = AtOnboardingResult.cancelled();
           break;
@@ -291,36 +296,6 @@ class _OnboardingButtonState extends State<OnboardingButton> {
         );
     }
     return result;
-  }
-
-  Future<APKAMFlow?> _apkamFlowChoice() async {
-    final choice = await showDialog<APKAMFlow?>(
-      context: context,
-      builder: (BuildContext context) {
-        final strings = AppLocalizations.of(context)!;
-        return AlertDialog(
-          title: Text(strings.apkamOrKeysTitle),
-          content: Text(strings.apkamOrKeysDescription),
-          actions: <Widget>[
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.of(context).pop(APKAMFlow.apkam);
-              },
-              icon: Icon(PhosphorIcons.password()),
-              label: Text(strings.enroll),
-            ),
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.of(context).pop(APKAMFlow.atKeys);
-              },
-              icon: Icon(PhosphorIcons.file()),
-              label: Text(strings.keys),
-            ),
-          ],
-        );
-      },
-    );
-    return choice;
   }
 
   Future<AtOnboardingResult?> handleFileUploadStatusStream(Stream<FileUploadStatus> statusStream, String atsign) async {
@@ -391,9 +366,4 @@ class _OnboardingButtonState extends State<OnboardingButton> {
     }
     return result;
   }
-}
-
-enum APKAMFlow {
-  atKeys,
-  apkam,
 }
