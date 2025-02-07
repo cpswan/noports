@@ -56,7 +56,7 @@ memcheck +ARGS='': build-dev
   --leak-check=full \
   --show-leak-kinds=all \
   {{dev_dir}}/sshnpd/sshnpd -a $TO_ATSIGN -m $FROM_ATSIGN -d $DEVICE_NAME \
-  --permit-open "*:*" -v
+  --permit-open "*:*" -v {{ARGS}}
   echo "memcheck log saved to: $file"
 
 # CONTAINER COMMANDS

@@ -125,6 +125,7 @@ void handle_ssh_request(atclient *atclient, pthread_mutex_t *atclient_lock, sshn
     if (authenticate_to_rvd) {
       cJSON_free(rvd_auth_string);
     }
+    cJSON_Delete(envelope);
     return;
     // end of child process
   } else if (pid > 0) {
