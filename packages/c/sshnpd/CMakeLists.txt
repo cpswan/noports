@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
 set(CMAKE_C_STANDARD 99)
 cmake_policy(SET CMP0135 NEW)
-project(sshnpd VERSION 0.4.1 LANGUAGES C)
+project(sshnpd VERSION 0.4.3 LANGUAGES C)
 
 # 1. Variables - you are free to edit anything in this step
 
@@ -21,6 +21,10 @@ set(
   ${CMAKE_CURRENT_LIST_DIR}/src/permitopen.c
   ${CMAKE_CURRENT_LIST_DIR}/src/run_srv_process.c
 )
+
+if(SSHNPD_ENABLE_TESTING_SHUTDOWN_NOTIFICATION)
+  add_compile_definitions(SSHNPD_ENABLE_TESTING_SHUTDOWN_NOTIFICATION)
+endif()
 
 # 1b. Manually add your include directories here
 set(SSHNPD_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)

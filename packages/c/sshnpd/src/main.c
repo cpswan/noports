@@ -25,6 +25,7 @@
 #include <atlogger/atlogger.h>
 #include <errno.h>
 #include <libgen.h>
+#include <mbedtls/psa_util.h>
 #include <pthread.h>
 #include <signal.h>
 #include <sshnpd/file_utils.h>
@@ -51,6 +52,7 @@ static struct {
     {"ping", NK_PING},
     {"ssh_request", NK_SSH_REQUEST},
     {"npt_request", NK_NPT_REQUEST},
+    {"graceful_shutdown", NK_GRACEFUL_SHUTDOWN},
 };
 
 // static unsigned long min(unsigned long a, unsigned long b) { return a < b ? a : b; }
@@ -397,6 +399,7 @@ exit:
   free(params.permitopen_hosts);
   free(params.permitopen_ports);
   free(params.permitopen_str);
+  mbedtls_psa_crypto_free();
   exit(exit_res);
 }
 
@@ -407,7 +410,7 @@ void main_loop() {
   monitor_hooks.pre_decrypt_notification = lock_atclient;
   monitor_hooks.post_decrypt_notification = unlock_atclient;
 
-  atclient_monitor_response message;
+  atclient_monitor_message message;
 
   permitopen_params permitopen;
   permitopen.permitopen_len = params.permitopen_len;
@@ -416,9 +419,9 @@ void main_loop() {
 
   size_t timeout_counter = 0;
 
-  while (should_run) {
+  while (should_run == 1) {
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Waiting for next monitor thread message\n");
-    atclient_monitor_response_init(&message);
+    atclient_monitor_message_init(&message);
 
     int ret;
     if (timeout_counter * MONITOR_READ_TIMEOUT_MS > MONITOR_NOOP_TIMEOUT_MS) {
@@ -426,7 +429,7 @@ void main_loop() {
       ret = reconnect_monitor();
       if (ret != 0) {
         timeout_counter = MONITOR_NOOP_TIMEOUT_MS / MONITOR_READ_TIMEOUT_MS + 1;
-        atclient_monitor_response_free(&message);
+        atclient_monitor_message_free(&message);
         continue;
       } else {
         timeout_counter = 0;
@@ -471,20 +474,20 @@ void main_loop() {
       break;
     case ATCLIENT_MONITOR_MESSAGE_TYPE_NOTIFICATION: {
       timeout_counter = 0;
-      bool is_init = atclient_atnotification_is_decrypted_value_initialized(&message.notification);
-      bool has_key = atclient_atnotification_is_key_initialized(&message.notification);
+      bool is_init = atclient_atnotification_is_decrypted_value_initialized(message.notification);
+      bool has_key = atclient_atnotification_is_key_initialized(message.notification);
       if (is_init) {
         atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Notification value received: %s\n",
-                     message.notification.decrypted_value);
-        if (!has_key || strcmp(message.notification.id, "-1") == 0) {
+                     message.notification->decrypted_value);
+        if (!has_key || strcmp(message.notification->id, "-1") == 0) {
           break;
         }
 
-        char *key = message.notification.key;
+        char *key = message.notification->key;
 
         // strip '.$device.${DefaultArgs.namespace}${notification.from}' from the back
-        char tail[strlen(params.device) + strlen(SSHNP_NS) + strlen(message.notification.from) + 3];
-        sprintf(tail, ".%s.%s%s", params.device, SSHNP_NS, message.notification.from);
+        char tail[strlen(params.device) + strlen(SSHNP_NS) + strlen(message.notification->from) + 3];
+        sprintf(tail, ".%s.%s%s", params.device, SSHNP_NS, message.notification->from);
         char *tailstart = strstr(key, tail);
         if (tailstart == NULL) {
           atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Skipping message: couldn't find the tail\n");
@@ -494,7 +497,7 @@ void main_loop() {
 
         // strip notification.to from the front
         // first let's validate that notification.to is on the front
-        char *head = message.notification.to;
+        char *head = message.notification->to;
         size_t head_len = strlen(head);
         if (strlen(key) < head_len) {
           atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR,
@@ -513,7 +516,13 @@ void main_loop() {
         // Do the string compare for this key in place, that way we can use a switch/case instead of endless if
         // statements
         enum notification_key notification_key = NK_NONE;
-        for (int i = 1; i < NOTIFICATION_KEYS_LEN; i++) {
+        int keys_length;
+#ifdef SSHNPD_ENABLE_TESTING_SHUTDOWN_NOTIFICATION
+        keys_length = NOTIFICATION_KEYS_LEN + 1;
+#else
+        keys_length = NOTIFICATION_KEYS_LEN;
+#endif
+        for (int i = 1; i < keys_length; i++) {
           if (strcmp(key, notification_key_map[i].str) == 0) {
             notification_key = notification_key_map[i].key;
             break;
@@ -552,7 +561,7 @@ void main_loop() {
           handle_ssh_request(&worker, &atclient_lock, &params, &is_child_process, &message, signingkey);
           if (is_child_process) {
             atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Exiting child process\n");
-            atclient_monitor_response_free(&message);
+            atclient_monitor_message_free(&message);
             return;
           }
           break;
@@ -562,17 +571,24 @@ void main_loop() {
           // handle_npt_request
           handle_npt_request(&worker, &atclient_lock, &params, &is_child_process, &message, signingkey);
           break;
+        case NK_GRACEFUL_SHUTDOWN:
+#ifdef SSHNPD_ENABLE_TESTING_SHUTDOWN_NOTIFICATION
+#warning BINARY COMPILED WITH SHUTDOWN NOTIFICATION ENABLED NOT FOR PRODUCTION USE
+          atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "TRIGGERING GRACEFUL SHUTDOWN\n");
+          should_run = 0;
+#endif
+          break;
         case NK_NONE:
           break;
         }
       } else {
         atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Skipping notification (no decryptedvalue): %s\n",
-                     message.notification.id);
+                     message.notification->id);
       }
       break;
     } // end of case ATCLIENT_MONITOR_MESSAGE_TYPE_NOTIFICATION
     } // end of switch
-    atclient_monitor_response_free(&message);
+    atclient_monitor_message_free(&message);
   } // end of while loop
 }
 
