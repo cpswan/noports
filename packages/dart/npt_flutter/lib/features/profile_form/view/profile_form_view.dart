@@ -95,7 +95,6 @@ class ProfileFormView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Text(strings.allRightsReserved),
                 ],
               ),
             ),

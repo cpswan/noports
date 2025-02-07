@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:npt_flutter/features/authorisation/cubit/pending_requests_count_cubit.dart';
+import 'package:npt_flutter/home_wrapper_widget.dart';
 import 'package:npt_flutter/routes.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -52,7 +53,7 @@ class AuthorisationAppBarButtonState extends State<AuthorisationAppBarButton> {
                   child: const Icon(Icons.key_outlined),
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(context, Routes.authorisation);
+                  wrapperNav.currentState!.pushNamed(HomeRoutes.authorisation);
                 },
               );
             },
