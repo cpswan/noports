@@ -124,29 +124,29 @@ int verify_envelope_signature(atchops_rsa_key_public_key *publickey, const unsig
   return ret;
 }
 
-cJSON *extract_envelope_from_notification(atclient_monitor_response *message) {
+cJSON *extract_envelope_from_notification(atclient_monitor_message *message) {
   // Sanity check the notification
-  if (!atclient_atnotification_is_from_initialized(&message->notification) && message->notification.from != NULL) {
+  if (!atclient_atnotification_is_from_initialized(message->notification) && message->notification->from != NULL) {
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to initialize the from field of the notification\n");
     return NULL;
   }
 
-  if (!atclient_atnotification_is_decrypted_value_initialized(&message->notification) &&
-      message->notification.decrypted_value != NULL) {
+  if (!atclient_atnotification_is_decrypted_value_initialized(message->notification) &&
+      message->notification->decrypted_value != NULL) {
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR,
                  "Failed to initialize the decrypted value of the notification\n");
     return NULL;
   }
 
   // Get the decrypted envelope
-  char *decrypted_json = malloc(sizeof(char) * (strlen(message->notification.decrypted_value) + 1));
+  char *decrypted_json = malloc(sizeof(char) * (strlen(message->notification->decrypted_value) + 1));
   if (decrypted_json == NULL) {
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to allocate memory to decrypt the envelope\n");
     return NULL;
   }
 
-  memcpy(decrypted_json, message->notification.decrypted_value, strlen(message->notification.decrypted_value));
-  *(decrypted_json + strlen(message->notification.decrypted_value)) = '\0';
+  memcpy(decrypted_json, message->notification->decrypted_value, strlen(message->notification->decrypted_value));
+  *(decrypted_json + strlen(message->notification->decrypted_value)) = '\0';
 
   // log the decrypted json
   atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Decrypted json: %s\n", decrypted_json);
