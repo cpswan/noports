@@ -53,7 +53,7 @@ class FavoriteBloc extends LoggingBloc<FavoriteEvent, FavoritesState> {
     }
 
     emit(FavoritesLoaded(
-      (state as FavoritesLoaded).favorites.toSet().difference(event.toRemove.toSet()),
+      (state as FavoritesLoaded).favorites.toSet().difference(event.toRemove.toSet()).toList(),
     ));
 
     try {
