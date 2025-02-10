@@ -256,7 +256,7 @@ class _OnboardingButtonState extends State<OnboardingButton> {
           }
         }
       case AtSignStatus.activated:
-        debugPrint('Atsign is activated but not in keychain');
+        log('Atsign is activated but not in keychain');
         final flowChoice = await showDialog<APKAMFlow?>(
           context: context,
           routeSettings: const RouteSettings(name: 'APKAM choice'),
