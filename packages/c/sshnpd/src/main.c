@@ -64,6 +64,7 @@ static int unlock_atclient(int);
 
 static int reconnect_atclient();
 static int reconnect_monitor();
+static void free_atclient_without_disconnect(atclient *atclient);
 
 static int set_worker_hooks();
 static void main_loop();
@@ -379,12 +380,16 @@ cancel_atclient:
   if (free_ping_response) {
     free(ping_response);
   }
-  if (!is_child_process) {
+  if (is_child_process) {
+    free_atclient_without_disconnect(&worker);
+  } else {
     atclient_connection_disconnect(&worker.atserver_connection);
     atclient_free(&worker);
   }
 cancel_monitor_ctx:
-  if (!is_child_process) {
+  if (is_child_process) {
+    free_atclient_without_disconnect(&monitor_ctx);
+  } else {
     atclient_connection_disconnect(&monitor_ctx.atserver_connection);
     atclient_free(&monitor_ctx);
   }
@@ -664,4 +669,20 @@ static int reconnect_monitor() {
 
   atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_INFO, "Reconnected the monitor connection.\n");
   return 0;
+}
+
+static void free_atclient_without_disconnect(atclient *atclient) {
+  if (atclient_is_atsign_initialized(atclient)) {
+    atclient_unset_atsign(atclient);
+  }
+  atclient_connection *conn = &atclient->atserver_connection;
+
+  if (atclient_connection_hooks_is_enabled(conn)) {
+    atclient_connection_hooks_disable(conn);
+  }
+  free(conn->host);
+
+  // commented until https://github.com/atsign-foundation/at_c/issues/555
+  // has been addressed
+  // atclient_tls_socket_free(&conn->_socket);
 }

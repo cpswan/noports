@@ -56,7 +56,7 @@ memcheck +ARGS='': build-dev
   --leak-check=full \
   --show-leak-kinds=all \
   {{dev_dir}}/sshnpd/sshnpd -a $TO_ATSIGN -m $FROM_ATSIGN -d $DEVICE_NAME \
-  --permit-open "*:*" -v
+  --permit-open "*:*" -v {{ARGS}}
   echo "memcheck log saved to: $file"
 
 # CONTAINER COMMANDS
@@ -69,17 +69,17 @@ memcheck-docker +ARGS='':
   docker run --rm --platform linux/amd64 -ti \
   --network=host \
   --mount type=bind,src=$PWD,dst=/mnt/workdir \
-  --mount type=bind,src=$HOME/.atsign/keys,dst=/root/.atsign/keys \
+  --mount type=bind,src=$HOME/.atsign/keys,dst=/home/atsign/.atsign/keys \
   atsigncompany/valgrind:latest  \
-  /bin/bash -c "mkdir /root/.ssh/; touch /root/.ssh/authorized_keys; export USER=root; export HOME=/root; just memcheck {{ARGS}}"
+  /bin/bash -c "mkdir -p /home/atsign/.ssh/; touch /home/atsign/.ssh/authorized_keys; just memcheck {{ARGS}}"
 
 valgrind-docker:
   docker run --rm --platform linux/amd64 -ti \
   --network=host \
   --mount type=bind,src=$PWD,dst=/mnt/workdir \
-  --mount type=bind,src=$HOME/.atsign/keys,dst=/root/.atsign/keys \
+  --mount type=bind,src=$HOME/.atsign/keys,dst=/home/atsign/.atsign/keys \
   atsigncompany/valgrind:latest  \
-  /bin/bash -c "export USER=root; export HOME=/root; /bin/bash --login"
+  /bin/bash -c "/bin/bash --login"
 
 # CONFIGURE COMMANDS
 
