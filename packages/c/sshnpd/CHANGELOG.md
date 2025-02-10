@@ -1,3 +1,7 @@
+## 1.0.0
+
+- fix: memory leaks on the main daemon process
+
 ## 0.4.1
 
 - feat: add Dart compliant at_activate binary in place of existing ones
