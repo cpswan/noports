@@ -524,18 +524,25 @@ int send_success_payload(cJSON *payload, atclient *atclient, pthread_mutex_t *at
   size_t keynamelen = strlen(identifier) + strlen(params->device) + 2; // + 1 for '.' +1 for '\0'
   char *keyname = malloc(sizeof(char) * keynamelen);
   if (keyname == NULL) {
-    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to allocate memory for keyname");
+    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to allocate memory for keyname\n");
     goto clean_final_res_value;
   }
 
   snprintf(keyname, keynamelen, "%s.%s", identifier, params->device);
-  atclient_atkey_create_shared_key(&final_res_atkey, keyname, params->atsign, requesting_atsign, SSHNP_NS);
+  int ret = atclient_atkey_create_shared_key(&final_res_atkey, keyname, params->atsign, requesting_atsign, SSHNP_NS);
+  if (ret != 0) {
+    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to create success shared key\n");
+    goto clean_final_res_value;
+  }
 
   // print final_res_atkey
   char *final_res_atkey_str = NULL;
-  atclient_atkey_to_string(&final_res_atkey, &final_res_atkey_str);
-  atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Final response atkey: %s\n", final_res_atkey_str);
-  free(final_res_atkey_str);
+  ret = atclient_atkey_to_string(&final_res_atkey, &final_res_atkey_str);
+  if (ret == 0) {
+    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Final response atkey: %s\n", final_res_atkey_str);
+  } else {
+    goto clean_res;
+  }
 
   atclient_atkey_metadata *metadata = &final_res_atkey.metadata;
   atclient_atkey_metadata_set_is_public(metadata, false);
@@ -546,27 +553,22 @@ int send_success_payload(cJSON *payload, atclient *atclient, pthread_mutex_t *at
   atclient_notify_params_init(&notify_params);
   if ((res = atclient_notify_params_set_atkey(&notify_params, &final_res_atkey)) != 0) {
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to set atkey in notify params\n");
-    goto clean_res;
+    goto clean_notify;
   }
   if ((res = atclient_notify_params_set_value(&notify_params, final_res_value)) != 0) {
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to set value in notify params\n");
-    goto clean_res;
+    goto clean_notify;
   }
   if ((res = atclient_notify_params_set_operation(&notify_params, ATCLIENT_NOTIFY_OPERATION_UPDATE)) != 0) {
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to set operation in notify params\n");
-    goto clean_res;
+    goto clean_notify;
   }
 
-  char *final_keystr = NULL;
-  atclient_atkey_to_string(&final_res_atkey, &final_keystr);
-  atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Final response atkey: %s\n", final_res_atkey_str);
-  free(final_keystr);
-
-  int ret = pthread_mutex_lock(atclient_lock);
+  ret = pthread_mutex_lock(atclient_lock);
   if (ret != 0) {
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR,
                  "Failed to get a lock on atclient for sending a notification\n");
-    goto clean_res;
+    goto clean_notify;
   }
 
   ret = atclient_notify(atclient, &notify_params, NULL);
@@ -581,7 +583,14 @@ int send_success_payload(cJSON *payload, atclient *atclient, pthread_mutex_t *at
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Released the atclient lock\n");
   }
 
-clean_res: { free(keyname); }
+clean_notify:
+  atclient_notify_params_free(&notify_params);
+clean_res: {
+  if (final_res_atkey_str != NULL) {
+    free(final_res_atkey_str);
+  }
+  free(keyname);
+}
 clean_final_res_value: {
   atclient_atkey_free(&final_res_atkey);
   cJSON_free(final_res_value);

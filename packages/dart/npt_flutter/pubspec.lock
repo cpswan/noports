@@ -107,9 +107,9 @@ packages:
     dependency: "direct main"
     description:
       path: "packages/at_client_mobile"
-      ref: "851266720773ba1cf771b21e619ebace4fb9b868"
-      resolved-ref: "851266720773ba1cf771b21e619ebace4fb9b868"
-      url: "https://github.com/atsign-foundation/at_client_sdk.git"
+      ref: "533f657eec18f13a11dafbf67c0006c6cc010dde"
+      resolved-ref: "533f657eec18f13a11dafbf67c0006c6cc010dde"
+      url: "https://github.com/atsign-foundation/at_client_sdk"
     source: git
     version: "3.2.19"
   at_common_flutter:
@@ -467,7 +467,7 @@ packages:
     source: git
     version: "2.9.1-atsignfork-1"
   device_info_plus:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: device_info_plus
       sha256: a7fd703482b391a87d60b6061d04dfdeab07826b96f9abd8f5ed98068acc0074
