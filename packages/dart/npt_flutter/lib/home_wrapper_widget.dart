@@ -19,38 +19,45 @@ class HomeWrapperWidgetState extends State<HomeWrapperWidget> {
   @override
   Widget build(BuildContext context) {
     final strings = AppLocalizations.of(context)!;
-    return Scaffold(
-      appBar: const NptAppBar(),
-      body: Column(
-        children: [
-          Expanded(
-            child: Navigator(
-              key: wrapperNav,
-              initialRoute: HomeRoutes.dashboard,
-              observers: [
-                SubNavObserver(context.read<SubNavCubit>()),
+    return BlocProvider<SubNavCubit>(
+      create: (_) => SubNavCubit(),
+      child: Builder(
+        builder: (context) {
+          return Scaffold(
+            appBar: const NptAppBar(),
+            body: Column(
+              children: [
+                Expanded(
+                  child: Navigator(
+                    key: wrapperNav,
+                    initialRoute: HomeRoutes.dashboard,
+                    observers: [
+                      SubNavObserver(context.read<SubNavCubit>()),
+                    ],
+                    onGenerateRoute: (settings) {
+                      final routeName = settings.name!;
+                      final builder = HomeRoutes.routes[routeName];
+                      if (builder != null) {
+                        return MaterialPageRoute(
+                          builder: builder,
+                          settings: settings,
+                        );
+                      }
+                      throw Exception('Route $routeName not found');
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    strings.allRightsReserved,
+                    style: Theme.of(context).textTheme.labelMedium,
+                  ),
+                ),
               ],
-              onGenerateRoute: (settings) {
-                final routeName = settings.name!;
-                final builder = HomeRoutes.routes[routeName];
-                if (builder != null) {
-                  return MaterialPageRoute(
-                    builder: builder,
-                    settings: settings,
-                  );
-                }
-                throw Exception('Route $routeName not found');
-              },
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              strings.allRightsReserved,
-              style: Theme.of(context).textTheme.labelMedium,
-            ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }

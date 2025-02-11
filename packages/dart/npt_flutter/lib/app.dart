@@ -7,7 +7,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:npt_flutter/features/authorisation/cubit/pending_requests_count_cubit.dart';
 import 'package:npt_flutter/features/features.dart';
 import 'package:npt_flutter/features/profile_list/cubit/sync_cubit.dart';
-import 'package:npt_flutter/pages/sub_nav_cubit.dart';
 import 'package:npt_flutter/routes.dart';
 import 'package:npt_flutter/styles/app_theme.dart';
 import 'package:npt_flutter/util/language.dart';
@@ -104,7 +103,6 @@ class App extends StatelessWidget {
             create: (ctx) => PendingRequestsCountCubit(ctx.read<AuthorisationService>()),
           ),
           BlocProvider<SyncCubit>(create: (_) => SyncCubit()),
-          BlocProvider<SubNavCubit>(create: (_) => SubNavCubit()),
         ],
         child: BlocSelector<SettingsBloc, SettingsState, Language?>(
           selector: (state) {
