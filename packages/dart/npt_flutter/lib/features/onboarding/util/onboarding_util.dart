@@ -28,6 +28,4 @@ class NoPortsOnboardingUtil {
     _uploadService ??= AtKeysFileUploadService(config: config);
     return _uploadService!.uploadKeyFile(atSign);
   }
-
-  // TODO: implement APKAM onboarding
 }

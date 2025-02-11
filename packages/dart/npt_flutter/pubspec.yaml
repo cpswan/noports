@@ -54,6 +54,7 @@ dependencies:
   at_server_status: ^1.0.5
   at_utils: ^3.0.16
   cupertino_icons: ^1.0.8
+  device_info_plus: ^10.1.2
   equatable: ^2.0.5
   file_picker: ^8.1.2
   flutter:
@@ -107,9 +108,9 @@ dependency_overrides:
       path: packages/at_onboarding_flutter
   at_client_mobile:
     git:
-      url: https://github.com/atsign-foundation/at_client_sdk.git
+      url: https://github.com/atsign-foundation/at_client_sdk
+      ref: 533f657eec18f13a11dafbf67c0006c6cc010dde
       path: packages/at_client_mobile
-      ref: 851266720773ba1cf771b21e619ebace4fb9b868
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
