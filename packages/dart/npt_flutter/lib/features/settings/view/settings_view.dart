@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:npt_flutter/features/settings/settings.dart';
 import 'package:npt_flutter/features/settings/widgets/advance_section.dart';
 import 'package:npt_flutter/features/settings/widgets/contact_list_tile.dart';
@@ -18,7 +17,6 @@ class SettingsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final strings = AppLocalizations.of(context)!;
     final deviceSize = MediaQuery.of(context).size;
     return BlocBuilder<SettingsBloc, SettingsState>(
       builder: (context, state) {
@@ -78,7 +76,6 @@ class SettingsView extends StatelessWidget {
                     ),
                   ],
                 ),
-                Text(strings.allRightsReserved)
               ],
             );
         }

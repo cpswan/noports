@@ -172,7 +172,7 @@ class _OnboardingButtonState extends State<OnboardingButton> {
         log('atsign result is:$result');
 
         if (!mounted) return;
-        Navigator.of(context).pushReplacementNamed(Routes.dashboard);
+        Navigator.of(context, rootNavigator: true).pushNamed(Routes.home);
 
         break;
       case AtOnboardingResultStatus.error:

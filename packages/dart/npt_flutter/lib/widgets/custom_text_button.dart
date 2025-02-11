@@ -9,12 +9,15 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:npt_flutter/constants.dart';
 import 'package:npt_flutter/features/onboarding/cubit/onboarding_cubit.dart';
 import 'package:npt_flutter/features/onboarding/util/atsign_manager.dart';
 import 'package:npt_flutter/features/onboarding/util/pre_offboard.dart';
 import 'package:npt_flutter/features/onboarding/widgets/onboarding_button.dart';
+import 'package:npt_flutter/home_wrapper_widget.dart';
 import 'package:npt_flutter/pages/loading_page.dart';
+
 import 'package:npt_flutter/routes.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -174,7 +177,10 @@ class CustomTextButton extends StatelessWidget {
 
             if (context.mounted && result == AtOnboardingResetResult.success) {
               onboardingService.setAtsign = null;
-              Navigator.of(context).pushNamed(Routes.onboarding);
+              Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
+                Routes.onboarding,
+                (route) => false,
+              );
             }
           }
           break;
@@ -192,10 +198,17 @@ class CustomTextButton extends StatelessWidget {
           break;
 
         case CustomListTileType.signOut:
-          Navigator.of(context)
-              .pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const LoadingPage()), (route) => false);
+          wrapperNav.currentState!.pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const LoadingPage()),
+            (route) => false,
+          );
           await preSignout();
-          if (context.mounted) Navigator.of(context).pushReplacementNamed(Routes.onboarding);
+          if (context.mounted) {
+            Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
+              Routes.onboarding,
+              (route) => false,
+            );
+          }
           break;
       }
     }

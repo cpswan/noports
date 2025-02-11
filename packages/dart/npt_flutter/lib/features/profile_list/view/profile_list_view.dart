@@ -20,7 +20,6 @@ class ProfileListView extends StatelessWidget {
   Widget build(BuildContext context) {
     final strings = AppLocalizations.of(context)!;
     final deviceSize = MediaQuery.of(context).size;
-    final labelSmall = Theme.of(context).textTheme.labelSmall;
     final bodyMedium = Theme.of(context).textTheme.bodyMedium;
     SizeConfig().init();
     return BlocBuilder<ProfileListBloc, ProfileListState>(builder: (context, state) {
@@ -137,10 +136,6 @@ class ProfileListView extends StatelessWidget {
                             gapH25,
                           ],
                         ),
-                      ),
-                      Text(
-                        strings.allRightsReserved,
-                        style: labelSmall?.copyWith(fontSize: labelSmall.fontSize?.toFont),
                       ),
                     ],
                   ),

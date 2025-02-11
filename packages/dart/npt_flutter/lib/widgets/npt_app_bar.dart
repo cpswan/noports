@@ -1,111 +1,147 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:npt_flutter/features/authorisation/widgets/authorisation_app_bar_button.dart';
+import 'package:npt_flutter/home_wrapper_widget.dart';
+import 'package:npt_flutter/pages/sub_nav_cubit.dart';
 import 'package:npt_flutter/routes.dart';
 import 'package:npt_flutter/styles/app_color.dart';
 import 'package:npt_flutter/styles/style_constants.dart';
 
 import '../styles/sizes.dart';
 
-class NptAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final String title;
-  final Color? settingsSelectedColor;
-  final bool isNavigateBack;
-  final bool showSettings;
-  // The width factor of the settings icon. This is used to calculate the right padding of the settings icon.
-  final double settingsIconWidthFactor;
-
+class NptAppBar extends StatefulWidget implements PreferredSizeWidget {
   const NptAppBar({
     super.key,
-    this.title = '',
-    this.settingsSelectedColor,
-    this.isNavigateBack = true,
-    this.showSettings = true,
-    this.settingsIconWidthFactor = Sizes.settingsIconPaddingFactor,
   });
 
   @override
-  Size get preferredSize => Size.fromHeight(isNavigateBack ? Sizes.p150 : Sizes.p100);
+  Size get preferredSize => const Size.fromHeight(Sizes.p150);
 
+  @override
+  State<NptAppBar> createState() => _NptAppBarState();
+}
+
+class _NptAppBarState extends State<NptAppBar> {
   @override
   Widget build(BuildContext context) {
     final strings = AppLocalizations.of(context)!;
-    final isDashboard = ModalRoute.of(context)?.settings.name == Routes.dashboard;
-    return SizedBox(
-      width: Sizes.p853,
-      child: AppBar(
-        titleSpacing: 0,
-        leading: gap0,
-        toolbarHeight: isNavigateBack ? Sizes.p150 : Sizes.p100,
-        title: Row(
-          // mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Column(
+    return BlocBuilder<SubNavCubit, String>(
+      builder: (context, state) {
+        final isDashboard = state == HomeRoutes.dashboard;
+        return SizedBox(
+          width: Sizes.p853,
+          child: AppBar(
+            titleSpacing: 0,
+            leading: gap0,
+            toolbarHeight: Sizes.p150,
+            title: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                gapH16,
-                SvgPicture.asset(
-                  'assets/noports_logo.svg',
-                  height: Sizes.p54,
-                  width: Sizes.p175,
+                const SizedBox(height: Sizes.p40),
+                Row(
+                  children: [
+                    gapW27,
+                    SvgPicture.asset(
+                      'assets/noports_logo.svg',
+                      height: Sizes.p54,
+                      width: Sizes.p175,
+                    ),
+                    gapW27,
+                    Container(
+                      color: AppColor.dividerColor,
+                      height: Sizes.p38,
+                      width: Sizes.p2,
+                    ),
+                    gapW27,
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 250),
+                      switchInCurve: Curves.easeInOut,
+                      switchOutCurve: Curves.easeInOut,
+                      transitionBuilder: (child, animation) {
+                        final offsetAnimation = child.key == ValueKey(state)
+                            ? Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero).animate(animation)
+                            : Tween<Offset>(begin: const Offset(0, -1), end: Offset.zero).animate(animation);
+                        return SlideTransition(
+                          position: offsetAnimation,
+                          child: FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          ),
+                        );
+                      },
+                      // The layoutBuilder ensures the children are left aligned.
+                      layoutBuilder: (currentChild, previousChildren) {
+                        return Stack(
+                          alignment: AlignmentDirectional.centerStart,
+                          children: <Widget>[
+                            ...previousChildren,
+                            if (currentChild != null) currentChild,
+                          ],
+                        );
+                      },
+                      child: Text(
+                        routeName(state),
+                        key: ValueKey(state),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                  ],
                 ),
                 gapH16,
-                isNavigateBack
-                    ? TextButton.icon(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        label: Text(
-                          strings.back,
-                        ),
-                        icon: const Icon(
-                          Icons.arrow_back_ios,
-                        ),
-                        style: StyleConstants.backButtonStyle,
-                      )
-                    : gap0,
+                if (isDashboard) const SizedBox(height: Sizes.p40),
+                if (!isDashboard && wrapperNav.currentState!.canPop())
+                  SizedBox(
+                    height: Sizes.p40,
+                    child: TextButton.icon(
+                      onPressed: () {
+                        wrapperNav.currentState!.pop(context);
+                      },
+                      label: Text(
+                        strings.back,
+                      ),
+                      icon: const Icon(
+                        Icons.arrow_back_ios,
+                      ),
+                      style: StyleConstants.backButtonStyle,
+                    ),
+                  ),
               ],
             ),
-            gapW27,
-            Column(
-              children: [
-                Container(
-                  color: AppColor.dividerColor,
-                  height: Sizes.p38,
-                  width: Sizes.p2,
+            actions: [
+              IgnorePointer(
+                ignoring: !isDashboard,
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  opacity: isDashboard ? 1 : 0,
+                  child: const AuthorisationAppBarButton(),
                 ),
-                gapH25
-              ],
-            ),
-            gapW20,
-            Column(
-              children: [
-                Text(
-                  title,
-                ),
-                gapH25,
-              ],
-            ),
-          ],
-        ),
-        actions: [
-          if (isDashboard) const AuthorisationAppBarButton(),
-          if (showSettings && isDashboard)
-            IconButton(
-              tooltip: strings.settings,
-              icon: Icon(
-                Icons.settings_outlined,
-                color: settingsSelectedColor,
               ),
-              onPressed: () {
-                Navigator.pushNamed(context, Routes.settings);
-              },
-            ),
-          SizedBox(width: MediaQuery.of(context).size.width * settingsIconWidthFactor),
-        ],
-        centerTitle: true,
-      ),
+              IgnorePointer(
+                ignoring: !isDashboard,
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  opacity: isDashboard ? 1 : 0,
+                  child: IconButton(
+                    tooltip: strings.settings,
+                    icon: const Icon(
+                      Icons.settings_outlined,
+                    ),
+                    onPressed: () {
+                      wrapperNav.currentState!.pushNamed(HomeRoutes.settings);
+                    },
+                  ),
+                ),
+              ),
+              gapW103,
+            ],
+          ),
+        );
+      },
     );
   }
 }
