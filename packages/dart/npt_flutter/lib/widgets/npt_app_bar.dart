@@ -40,7 +40,7 @@ class _NptAppBarState extends State<NptAppBar> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: Sizes.p40),
+                gapH40,
                 Row(
                   children: [
                     gapW27,
@@ -91,7 +91,7 @@ class _NptAppBarState extends State<NptAppBar> {
                   ],
                 ),
                 gapH16,
-                if (isDashboard) const SizedBox(height: Sizes.p40),
+                if (isDashboard) gapH40,
                 if (!isDashboard && wrapperNav.currentState!.canPop())
                   SizedBox(
                     height: Sizes.p40,
