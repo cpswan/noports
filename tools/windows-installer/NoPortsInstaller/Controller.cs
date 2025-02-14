@@ -432,7 +432,7 @@ namespace NoPortsInstaller
                 var args = $"-a {DeviceAtsign} -m {ClientAtsign} -d {DeviceName}";
                 if (AdditionalArgs != "")
 				{
-					args += AdditionalArgs;
+					args += $" {AdditionalArgs}";
 				}
 
 				args += " -v";
