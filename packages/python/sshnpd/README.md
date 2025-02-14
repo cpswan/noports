@@ -4,7 +4,18 @@
 [![PyPI version](https://badge.fury.io/py/sshnpd.svg)](https://badge.fury.io/py/sshnpd)
 [![SLSA 3](https://slsa.dev/images/gh-badge-level3.svg)](https://slsa.dev)
 
-# SSHNPD Python (beta)
+# ARCHIVED - SSHNPD Python (beta)
+
+0.4.16 will be the final release of this package, which is being archived.
+
+Pyhton was chosen to implement a NoPorts daemon that was more portable than
+the Dart version, but unfortunately the installation footprint was too large
+for many of the intended devices.
+
+With the production release of the
+[C NoPorts daemon](https://github.com/atsign-foundation/noports/tree/trunk/packages/c/sshnpd)
+we now recommend that be used for any devices where a small portable
+implementation is required.
 
 SSH No Ports provides a way to ssh to a remote linux host/device without that
 device or the client having any open ports (not even 22) on external
