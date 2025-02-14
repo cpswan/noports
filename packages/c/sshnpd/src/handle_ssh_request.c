@@ -22,7 +22,7 @@
 
 // TODO: refactor this to call the new common handlers
 void handle_ssh_request(atclient *atclient, pthread_mutex_t *atclient_lock, sshnpd_params *params,
-                        bool *is_child_process, atclient_monitor_response *message,
+                        bool *is_child_process, atclient_monitor_message *message,
                         atchops_rsa_key_private_key signing_key) {
   int res = 0;
 
@@ -33,9 +33,13 @@ void handle_ssh_request(atclient *atclient, pthread_mutex_t *atclient_lock, sshn
   // allocated: envelope
 
   // log envelope
-  atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Received envelope: %s\n", cJSON_Print(envelope));
+  if (atlogger_get_logging_level() >= ATLOGGER_LOGGING_LEVEL_DEBUG) {
+    char *envelope_str = cJSON_Print(envelope);
+    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Received envelope: %s\n", envelope_str);
+    free(envelope_str);
+  }
 
-  char *requesting_atsign = message->notification.from;
+  char *requesting_atsign = message->notification->from;
   res = verify_envelope_signature_from(envelope, requesting_atsign, atclient, atclient_lock);
 
   if (res != 0) {
@@ -109,7 +113,9 @@ void handle_ssh_request(atclient *atclient, pthread_mutex_t *atclient_lock, sshn
 
     int res = run_srv_process(rvd_host_str, rvd_port_int, requested_host_str, requested_port_int, authenticate_to_rvd,
                               rvd_auth_string, encrypt_rvd_traffic, multi, session_aes_key, session_iv);
-
+    if (res != 0) {
+      atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "srv process exited with code: %d\n", res);
+    }
     *is_child_process = true;
 
     if (encrypt_rvd_traffic) {
@@ -120,7 +126,7 @@ void handle_ssh_request(atclient *atclient, pthread_mutex_t *atclient_lock, sshn
       cJSON_free(rvd_auth_string);
     }
     cJSON_Delete(envelope);
-    exit(res);
+    return;
     // end of child process
   } else if (pid > 0) {
     // parent process
@@ -157,15 +163,17 @@ void handle_ssh_request(atclient *atclient, pthread_mutex_t *atclient_lock, sshn
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to fork the srv process: %s\n", strerror(errno));
   }
 cancel:
-  if (authenticate_to_rvd) {
-    cJSON_free(rvd_auth_string);
+  if (!*is_child_process) {
+    if (authenticate_to_rvd) {
+      cJSON_free(rvd_auth_string);
+    }
+    if (encrypt_rvd_traffic) {
+      free(session_iv);
+      free(session_aes_key);
+      free(session_iv_base64);
+      free(session_aes_key_base64);
+    }
+    cJSON_Delete(envelope);
   }
-  if (encrypt_rvd_traffic) {
-    free(session_iv);
-    free(session_aes_key);
-    free(session_iv_base64);
-    free(session_aes_key_base64);
-  }
-  cJSON_Delete(envelope);
   return;
 }

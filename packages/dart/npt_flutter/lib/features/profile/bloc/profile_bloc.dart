@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:at_client_mobile/at_client_mobile.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:noports_core/npt.dart';
 import 'package:npt_flutter/app.dart';
 import 'package:npt_flutter/features/profile/profile.dart';
 import 'package:npt_flutter/features/profile_list/profile_list.dart';
 import 'package:npt_flutter/features/settings/settings.dart';
+import 'package:npt_flutter/home_wrapper_widget.dart';
 import 'package:socket_connector/socket_connector.dart';
 
 part 'profile_event.dart';
@@ -103,9 +103,9 @@ class ProfileBloc extends LoggingBloc<ProfileEvent, ProfileState> {
           listBloc.add(ProfileListUpdateEvent([...profiles, uuid]));
         }
       }
-      var context = App.navState.currentContext;
+      var context = wrapperNav.currentContext;
       if (context != null && context.mounted) {
-        Navigator.of(context).pop();
+        wrapperNav.currentState!.pop();
       }
       emit(ProfileLoaded(uuid, profile: event.profile));
     } else {

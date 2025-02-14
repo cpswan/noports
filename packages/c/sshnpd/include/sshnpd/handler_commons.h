@@ -14,7 +14,7 @@ int verify_envelope_signature(atchops_rsa_key_public_key *publickey, const unsig
 
 enum payload_type { payload_type_ssh, payload_type_npt };
 
-cJSON *extract_envelope_from_notification(atclient_monitor_response *message);
+cJSON *extract_envelope_from_notification(atclient_monitor_message *message);
 
 int verify_envelope_contents(cJSON *envelope, enum payload_type type);
 

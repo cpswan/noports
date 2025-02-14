@@ -22,7 +22,7 @@
 #define LOGGER_TAG "NPT_REQUEST"
 
 void handle_npt_request(atclient *atclient, pthread_mutex_t *atclient_lock, sshnpd_params *params,
-                        bool *is_child_process, atclient_monitor_response *message,
+                        bool *is_child_process, atclient_monitor_message *message,
                         atchops_rsa_key_private_key signing_key) {
   int res = 0;
 
@@ -33,9 +33,13 @@ void handle_npt_request(atclient *atclient, pthread_mutex_t *atclient_lock, sshn
   // allocated: envelope
 
   // log envelope
-  atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Received envelope: %s\n", cJSON_Print(envelope));
+  if (atlogger_get_logging_level() >= ATLOGGER_LOGGING_LEVEL_DEBUG) {
+    char *envelope_str = cJSON_Print(envelope);
+    atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_DEBUG, "Received envelope: %s\n", envelope_str);
+    free(envelope_str);
+  }
 
-  char *requesting_atsign = message->notification.from;
+  char *requesting_atsign = message->notification->from;
   res = verify_envelope_signature_from(envelope, requesting_atsign, atclient, atclient_lock);
   if (res != 0) {
     cJSON_Delete(envelope);

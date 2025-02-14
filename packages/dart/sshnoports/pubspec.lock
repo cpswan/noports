@@ -203,18 +203,18 @@ packages:
     dependency: transitive
     description:
       name: build_resolvers
-      sha256: "99d3980049739a985cf9b21f30881f46db3ebc62c5b8d5e60e27440876b1ba1e"
+      sha256: b9e4fda21d846e192628e7a4f6deda6888c36b5b69ba02ff291a01fd529140f0
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.3"
+    version: "2.4.4"
   build_runner:
     dependency: "direct dev"
     description:
       name: build_runner
-      sha256: "74691599a5bc750dc96a6b4bfd48f7d9d66453eab04c7f4063134800d6a5c573"
+      sha256: "058fe9dce1de7d69c4b84fada934df3e0153dd000758c4d65964d0166779aa99"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.14"
+    version: "2.4.15"
   build_runner_core:
     dependency: transitive
     description:
@@ -251,10 +251,10 @@ packages:
     dependency: "direct main"
     description:
       name: chalkdart
-      sha256: "0b7ec5c6a6bafd1445500632c00c573722bd7736e491675d4ac3fe560bbd9cfe"
+      sha256: "08c910ee341fcdd1e46f20ddce59b13c1d85f5d97f2fd2f12014c46ede670e40"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.1"
+    version: "2.3.2"
   charcode:
     dependency: transitive
     description:
@@ -811,10 +811,10 @@ packages:
     dependency: "direct dev"
     description:
       name: test
-      sha256: "8391fbe68d520daf2314121764d38e37f934c02fd7301ad18307bd93bd6b725d"
+      sha256: "301b213cd241ca982e9ba50266bd3f5bd1ea33f1455554c5abb85d1be0e2d87e"
       url: "https://pub.dev"
     source: hosted
-    version: "1.25.14"
+    version: "1.25.15"
   test_api:
     dependency: transitive
     description:

@@ -44,7 +44,7 @@ class ProfilePopupMenuButton extends StatelessWidget {
 
                 if (context.mounted) {
                   Navigator.of(context)
-                      .pushNamed(Routes.profileForm, arguments: ProfileFormPageArguments(state.profile.uuid));
+                      .pushNamed(HomeRoutes.profileForm, arguments: ProfileFormPageArguments(state.profile.uuid));
                 }
               },
             ),
@@ -61,7 +61,7 @@ class ProfilePopupMenuButton extends StatelessWidget {
                   if (state is! ProfileLoadedState) return;
                   var copyFrom = state.profile;
                   if (context.mounted) {
-                    Navigator.of(context).pushNamed(Routes.profileForm,
+                    Navigator.of(context).pushNamed(HomeRoutes.profileForm,
                         arguments: ProfileFormPageArguments(Uuid.generate(), copyFrom: copyFrom));
                   }
                 }),

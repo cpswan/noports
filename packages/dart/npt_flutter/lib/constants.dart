@@ -25,6 +25,8 @@ class Constants {
   static const icoIconDark = 'assets/noports-icon64-dark.ico';
   static const pngIconLight = 'assets/noports-icon64-light.png';
   static const icoIconLight = 'assets/noports-icon64-light.ico';
+  static const authenticatorMockup = 'assets/authenticator-mockup.png';
+  static const authenticatorApprovalMockup = 'assets/authenticator-approval-mockup.png';
 
   static Map<String, String> getRootDomains(BuildContext context) {
     AppLocalizations strings = AppLocalizations.of(context)!;
