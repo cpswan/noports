@@ -185,8 +185,8 @@ namespace NoPortsInstaller
 			else
 			{
 				InstallLogger.Log("Keys found. Continuing to service install...");
-				Pages.Add(new InstallService());
 				Pages.Add(new FinishInstall());
+				Pages.Add(new InstallService());
 			}
 		}
 
