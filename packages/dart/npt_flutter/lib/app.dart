@@ -7,6 +7,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:npt_flutter/features/authorisation/cubit/pending_requests_count_cubit.dart';
 import 'package:npt_flutter/features/features.dart';
 import 'package:npt_flutter/features/profile_list/cubit/sync_cubit.dart';
+import 'package:npt_flutter/features/tutorial/cubit/backup_key_cubit.dart';
+import 'package:npt_flutter/features/tutorial/repository/backup_key_repository.dart';
 import 'package:npt_flutter/routes.dart';
 import 'package:npt_flutter/styles/app_theme.dart';
 import 'package:npt_flutter/util/language.dart';
@@ -38,6 +40,7 @@ class App extends StatelessWidget {
         RepositoryProvider<AuthorisationService>(
           create: (_) => AuthorisationService(),
         ),
+        RepositoryProvider<TutorialRepository>(create: (_) => TutorialRepository())
       ],
       child: MultiBlocProvider(
         providers: [
@@ -102,7 +105,13 @@ class App extends StatelessWidget {
           BlocProvider<PendingRequestsCountCubit>(
             create: (ctx) => PendingRequestsCountCubit(ctx.read<AuthorisationService>()),
           ),
+
+          /// A cubit which tracks the sync status of the profiles
           BlocProvider<SyncCubit>(create: (_) => SyncCubit()),
+          // A cubit which tracks if the atkey is backed up
+          BlocProvider<BackupKeyCubit>(
+            create: (ctx) => BackupKeyCubit(),
+          ),
         ],
         child: BlocSelector<SettingsBloc, SettingsState, Language?>(
           selector: (state) {
