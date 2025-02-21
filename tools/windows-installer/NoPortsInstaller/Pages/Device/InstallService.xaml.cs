@@ -12,7 +12,7 @@ namespace NoPortsInstaller.Pages.Install
         {
             InitializeComponent();
             _controller = App.ControllerInstance;
-			_ = _controller.InstallService(InstallProgress, Status);
+            _ = _controller.InstallService(InstallProgress, Status);
         }
     }
 }
