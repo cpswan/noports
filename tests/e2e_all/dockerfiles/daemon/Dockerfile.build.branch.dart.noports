@@ -1,0 +1,31 @@
+FROM dart:3.6.0
+
+ENV URL=https://github.com/atsign-foundation/noports.git
+ENV REPO_DIR=/app/repo
+ENV PACKAGE_DIR=${REPO_DIR}/packages/dart/sshnoports
+ENV OUTPUT_DIR=/app/output
+
+ARG branch=trunk
+
+RUN set -eux
+RUN mkdir -p ${REPO_DIR} ${OUTPUT_DIR}
+RUN apt-get update
+RUN apt-get install -y git
+
+RUN if git show-ref --verify --quiet "refs/heads/$branch"; then \
+        echo "Checking out branch: $branch"; \
+        cd ${REPO_DIR} && git clone ${URL} . && git checkout $branch; \
+    else \
+        echo "Checking out commit hash: $branch"; \
+        cd ${REPO_DIR} && git clone ${URL} . && git checkout $branch; \
+    fi
+
+RUN dart pub get -C ${PACKAGE_DIR}
+RUN dart compile exe ${PACKAGE_DIR}/bin/activate_cli.dart -o ${OUTPUT_DIR}/at_activate
+RUN dart compile exe ${PACKAGE_DIR}/bin/npp_atserver.dart -o ${OUTPUT_DIR}/npp_atserver
+RUN dart compile exe ${PACKAGE_DIR}/bin/npp_file.dart -o ${OUTPUT_DIR}/npp_file
+RUN dart compile exe ${PACKAGE_DIR}/bin/npt.dart -o ${OUTPUT_DIR}/npt
+RUN dart compile exe ${PACKAGE_DIR}/bin/sshnp.dart -o ${OUTPUT_DIR}/sshnp
+RUN dart compile exe ${PACKAGE_DIR}/bin/sshnpd.dart -o ${OUTPUT_DIR}/sshnpd
+RUN dart compile exe ${PACKAGE_DIR}/bin/srv.dart -o ${OUTPUT_DIR}/srv
+RUN dart compile exe ${PACKAGE_DIR}/bin/srvd.dart -o ${OUTPUT_DIR}/srvd
