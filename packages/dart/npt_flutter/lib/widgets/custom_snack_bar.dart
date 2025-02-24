@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:npt_flutter/app.dart';
+import 'package:npt_flutter/styles/app_color.dart';
 
 class CustomSnackBar {
   static void error({
@@ -27,7 +28,7 @@ class CustomSnackBar {
         content,
         textAlign: TextAlign.center,
       ),
-      backgroundColor: const Color(0xffC4FF79),
+      backgroundColor: AppColor.primaryColor,
       duration: duration,
     ));
   }

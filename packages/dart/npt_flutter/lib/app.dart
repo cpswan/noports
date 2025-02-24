@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:npt_flutter/features/authorisation/cubit/pending_requests_count_cubit.dart';
+import 'package:npt_flutter/features/back_up_key/cubit/backup_key_cubit.dart';
+import 'package:npt_flutter/features/back_up_key/repository/backup_key_repository.dart';
 import 'package:npt_flutter/features/features.dart';
 import 'package:npt_flutter/features/profile_list/cubit/sync_cubit.dart';
-import 'package:npt_flutter/features/tutorial/cubit/backup_key_cubit.dart';
-import 'package:npt_flutter/features/tutorial/repository/backup_key_repository.dart';
 import 'package:npt_flutter/routes.dart';
 import 'package:npt_flutter/styles/app_theme.dart';
 import 'package:npt_flutter/util/language.dart';
@@ -40,7 +40,7 @@ class App extends StatelessWidget {
         RepositoryProvider<AuthorisationService>(
           create: (_) => AuthorisationService(),
         ),
-        RepositoryProvider<TutorialRepository>(create: (_) => TutorialRepository())
+        RepositoryProvider<BackUpKeyRepository>(create: (_) => BackUpKeyRepository())
       ],
       child: MultiBlocProvider(
         providers: [

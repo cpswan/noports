@@ -137,5 +137,14 @@
   "validationErrorRelayField": "O relay deve ser um atSign válido",
   "validationErrorRemoteHostField": "O campo deve ser um nome de host parcial ou totalmente qualificado ou um endereço IP",
   "validationErrorRemotePortField": "O número deve estar entre 1 e 65535",
+  "backUpAtKeys": "Fazer Backup das atKeys",
+  "recommended": "Recomendado",
+  "backUpAtKeysIntroMsg": "Suas atKeys (chaves criptográficas) serão usadas para emparelhar seu atSign com este e outros dispositivos no futuro.\n\nVocê pode salvar backups adicionais no menu de Configurações a qualquer momento.",
+  "backUpAtKeysMainMsg": "As atKeys são chaves criptográficas que são usadas para proteger seu atSign. Elas são exclusivas para você e são usadas para criptografar e descriptografar seus dados.\n\nÉ importante fazer backup de suas atKeys para que você possa acessar seus dados de qualquer dispositivo.\n\nSe você perder suas atKeys, você perderá o acesso aos seus dados.\n\nVocê pode fazer backup de suas atKeys a qualquer momento no menu de Configurações.",
+  "saveLater": "Salvar Mais Tarde",
+  "saveAtKeys": "Salvar atKeys",
+  "whatAreAtKeys": "O que são atKeys?",
+  "fileSaved": "Arquivo Salvo",
+  "cancelled": "Cancelado",
   "yaml": "YAML"
 }

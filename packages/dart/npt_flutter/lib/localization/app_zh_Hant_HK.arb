@@ -137,5 +137,14 @@
   "validationErrorRelayField": "Relay 必須是有效的 atsign",
   "validationErrorRemoteHostField": "欄位必須是部分或完整限定的主機名稱或 IP 位址",
   "validationErrorRemotePortField": "數字必須介於 1 和 65535 之間",
+  "backUpAtKeys": "備份 atKeys",
+  "recommended": "推薦",
+  "backUpAtKeysIntroMsg": "您的 atKeys (加密金鑰) 將在未來用於將您的 atSign 與此裝置和其他裝置配對。\n\n您可以隨時從「設定」選單儲存其他備份。",
+  "backUpAtKeysMainMsg": "atKeys 是用於保護您的 atSign 的加密金鑰。它們是您獨有的，用於加密和解密您的資料。\n\n備份您的 atKeys 非常重要，這樣您就可以從任何裝置存取您的資料。\n\n如果您遺失了 atKeys，您將失去對您的資料的存取權。\n\n您可以隨時從「設定」選單備份您的 atKeys。",
+  "saveLater": "稍後儲存",
+  "saveAtKeys": "儲存 atKeys",
+  "whatAreAtKeys": "什麼是 atKeys？",
+  "fileSaved": "檔案已儲存",
+  "cancelled": "已取消",
   "yaml": "YAML"
 }

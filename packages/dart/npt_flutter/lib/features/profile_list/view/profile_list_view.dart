@@ -5,12 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:npt_flutter/app.dart';
+import 'package:npt_flutter/features/back_up_key/cubit/backup_key_cubit.dart';
+import 'package:npt_flutter/features/back_up_key/widgets/backup_key_alert_dialog.dart';
 import 'package:npt_flutter/features/profile/profile.dart';
 import 'package:npt_flutter/features/profile/view/profile_header_view.dart';
 import 'package:npt_flutter/features/profile_list/profile_list.dart';
 import 'package:npt_flutter/features/profile_list/widgets/profile_list_failed_load_content.dart';
-import 'package:npt_flutter/features/tutorial/cubit/backup_key_cubit.dart';
-import 'package:npt_flutter/features/tutorial/widgets/backup_key_alert_dialog.dart';
 import 'package:npt_flutter/styles/sizes.dart';
 import 'package:npt_flutter/widgets/spinner.dart';
 
@@ -27,13 +27,13 @@ class ProfileListView extends StatefulWidget {
 class _ProfileListViewState extends State<ProfileListView> {
   @override
   void initState() {
-    final backupKeyState = App.navState.currentContext!.read<BackupKeyCubit>().state;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final backupKeyState = await App.navState.currentContext!.read<BackupKeyCubit>().getBackupKeyStatus();
 
-    if (backupKeyState == false) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        showDialog(context: context, builder: (context) => const BackupKeyAlertDialog());
-      });
-    }
+      if (backupKeyState == false) {
+        showDialog(context: context, barrierDismissible: false, builder: (context) => const BackupKeyAlertDialog());
+      }
+    });
     super.initState();
   }
 

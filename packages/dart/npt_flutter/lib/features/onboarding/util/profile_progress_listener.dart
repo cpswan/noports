@@ -4,8 +4,8 @@ import 'dart:developer';
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:npt_flutter/app.dart';
+import 'package:npt_flutter/features/back_up_key/cubit/backup_key_cubit.dart';
 import 'package:npt_flutter/features/profile_list/bloc/profile_list_bloc.dart';
-import 'package:npt_flutter/features/tutorial/cubit/backup_key_cubit.dart';
 
 import '../../profile_list/cubit/sync_cubit.dart';
 

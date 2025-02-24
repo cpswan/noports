@@ -160,5 +160,14 @@
    "enrollWithAuthenticatorDescription": "Authenticate through app with manager keys",
    "waitingForApproval": "Waiting for approval...",
    "whereToAccept": "Where to accept?",
-   "whereToAcceptDescription": "Please approve the request in an app with a manager key."
+   "whereToAcceptDescription": "Please approve the request in an app with a manager key.",
+   "backUpAtKeys": "Back Up atKeys",
+   "recommended": "Recommended",
+   "backUpAtKeysIntroMsg": "Your atKeys (cryptographic keys) will be used to pair your atSign with this and other devices in the future. \n\nYou can save additional backups from the Settings menu anytime.",
+   "backUpAtKeysMainMsg": "atKeys are cryptographic keys that are used to secure your atSign. They are unique to you and are used to encrypt and decrypt your data. \n\nIt is important to back up your atKeys so that you can access your data from any device. \n\nIf you lose your atKeys, you will lose access to your data. \n\nYou can back up your atKeys at any time from the Settings menu.",
+   "saveLater": "Save Later",
+   "saveAtKeys": "Save atKeys",
+   "whatAreAtKeys": "What are atKeys?",
+   "fileSaved": "File Saved",
+   "cancelled": "Cancelled"
 }
