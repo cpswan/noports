@@ -2,8 +2,8 @@ FROM dart:3.6.0
 
 ENV URL=https://github.com/atsign-foundation/noports.git
 ENV REPO_DIR=/app/repo
-ENV PACKAGE_DIR=${REPO_DIR}/packages/dart/sshnoports
 ENV OUTPUT_DIR=/app/output
+ENV PACKAGE_DIR=${REPO_DIR}/packages/dart/sshnoports
 
 ARG branch=trunk
 
@@ -12,14 +12,7 @@ RUN mkdir -p ${REPO_DIR} ${OUTPUT_DIR}
 RUN apt-get update
 RUN apt-get install -y git
 
-RUN if git show-ref --verify --quiet "refs/heads/$branch"; then \
-        echo "Checking out branch: $branch"; \
-        cd ${REPO_DIR} && git clone ${URL} . && git checkout $branch; \
-    else \
-        echo "Checking out commit hash: $branch"; \
-        cd ${REPO_DIR} && git clone ${URL} . && git checkout $branch; \
-    fi
-
+RUN cd ${REPO_DIR} && git clone ${URL} . && git checkout ${branch}
 RUN dart pub get -C ${PACKAGE_DIR}
 RUN dart compile exe ${PACKAGE_DIR}/bin/activate_cli.dart -o ${OUTPUT_DIR}/at_activate
 RUN dart compile exe ${PACKAGE_DIR}/bin/npp_atserver.dart -o ${OUTPUT_DIR}/npp_atserver
