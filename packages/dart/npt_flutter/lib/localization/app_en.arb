@@ -3,7 +3,7 @@
    "activationStatusOtpWait": "Please enter the OTP from your email",
    "activationStatusPreparing": "Preparing for activation",
    "addNew": "Add New",
-   "addNewProfile": "Add New Profile",
+   "profile": "Profile",
    "advanced": "Advanced",
    "alertDialogTitle": "Are you sure?",
    "allRightsReserved": "@ 2025 Atsign, All Rights Reserved",

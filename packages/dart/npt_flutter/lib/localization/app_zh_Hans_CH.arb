@@ -3,7 +3,7 @@
   "activationStatusOtpWait": "请从您的电子邮件中输入 OTP",
   "activationStatusPreparing": "准备激活",
   "addNew": "添加新项",
-  "addNewProfile": "添加新配置文件",
+  "profile": "配置文件",
   "advanced": "高级",
   "alertDialogTitle": "你确定吗？",
   "allRightsReserved": "@ 2025 Atsign, 版权所有",

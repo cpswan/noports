@@ -3,7 +3,7 @@
   "activationStatusOtpWait": "請輸入您電子郵件中的 OTP",
   "activationStatusPreparing": "準備啟動",
   "addNew": "新增項目",
-  "addNewProfile": "新增設定檔",
+  "profile": "設定檔",
   "advanced": "進階",
   "alertDialogTitle": "您確定嗎？",
   "allRightsReserved": "@ 2025 Atsign，保留所有權利",
