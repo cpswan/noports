@@ -1,6 +1,6 @@
 # tests/e2e_all/dockerfiles
 
-## Dockerfile.build.branch.dart.noports
+## Dockerfile.dart.branch
 
 ### Building from a Commit Hash
 
@@ -16,7 +16,7 @@ Build the Docker image
 ```bash
 sudo docker build \
     --build-arg branch=$commit_hash \
-    -f Dockerfile.build.branch.dart.noports \
+    -f Dockerfile.dart.branch \
     -t noports-daemon-dart:$commit_hash \
     .
 ```
@@ -41,7 +41,7 @@ Build the Docker image
 ```bash
 sudo docker build \
     --build-arg branch=$branch \
-    -f Dockerfile.build.branch.dart.noports \
+    -f Dockerfile.dart.branch \
     -t noports-daemon-dart:$branch \
     .
 ```
@@ -50,4 +50,20 @@ Run the Docker image to inspect
 
 ```bash
 docker run --rm -it noports-daemon-dart:$branch /bin/bash
+```
+
+## Dockerfile.c.branch
+
+### Building from a branch Name
+
+```bash
+branch=trunk
+
+sudo docker build \
+    --build-arg branch=$branch \
+    -f Dockerfile.c.branch \
+    -t noports-daemon-c:$branch \
+    .
+
+sudo docker run --rm -it noports-daemon-c:$branch /bin/bash
 ```
