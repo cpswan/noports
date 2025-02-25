@@ -1,4 +1,4 @@
-FROM debian:stable-slim@sha256:5484adc33b4c352c5a9f4c4ae295fc49aed1cb54a7a0712a1b29674fb6f4f10f
+FROM debian:stable-slim@sha256:5484adc33b4c352c5a9f4c4ae295fc49aed1cb54a7a0712a1b29674fb6f4f10f AS buildimage
 
 ENV URL="https://api.github.com/repos/atsign-foundation/noports/releases/latest"
 ENV URLP="https://github.com/atsign-foundation/noports/releases/download"
@@ -28,3 +28,35 @@ RUN apt-get update && \
     rm sshnp-linux-${ARCH}.tgz && \
     cd sshnp && \
     mv at_activate install.sh np_admin npp_atserver npp_file npt srv srvd sshnp sshnpd ${OUTPUT_DIR}
+
+FROM debian:stable-slim@sha256:5484adc33b4c352c5a9f4c4ae295fc49aed1cb54a7a0712a1b29674fb6f4f10f AS runtime
+
+ENV USER=atsign
+ENV HOMEDIR=/${USER}
+ENV USER_ID=1024
+ENV GROUP_ID=1024
+
+COPY --from=buildimage /usr/local/bin/at_activate /usr/local/bin/at_activate
+COPY --from=buildimage /usr/local/bin/install.sh /usr/local/bin/install.sh
+COPY --from=buildimage /usr/local/bin/npp_atserver /usr/local/bin/npp_atserver
+COPY --from=buildimage /usr/local/bin/npp_file /usr/local/bin/npp_file
+COPY --from=buildimage /usr/local/bin/npt /usr/local/bin/npt
+COPY --from=buildimage /usr/local/bin/sshnp /usr/local/bin/sshnp
+COPY --from=buildimage /usr/local/bin/sshnpd /usr/local/bin/sshnpd
+COPY --from=buildimage /usr/local/bin/srv /usr/local/bin/srv
+COPY --from=buildimage /usr/local/bin/srvd /usr/local/bin/srvd
+
+RUN set -eux ; \
+    apt-get update ; \
+    apt-get install -y openssh-server sudo vim nano iproute2 nmap tmux curl cron ; \
+    groupadd --gid ${GROUP_ID} ${USER} ; \
+    useradd --system --shell /bin/bash --home ${HOMEDIR} --uid ${USER_ID} --gid ${GROUP_ID} ${USER} ; \
+    usermod -aG sudo ${USER} ; \
+    mkdir -p ${HOMEDIR}/.ssh ${HOMEDIR}/.atsign/keys ; \
+    chown -R ${USER}:${USER} ${HOMEDIR} ; \
+    touch ${HOMEDIR}/.ssh/authorized_keys ; 
+
+USER ${USER}
+WORKDIR ${HOMEDIR}
+
+CMD sudo service ssh start

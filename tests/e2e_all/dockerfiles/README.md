@@ -2,59 +2,33 @@
 
 ## Dockerfile.dart.branch
 
-### Building from a Commit Hash
-
-Get a commit hash
 
 ```bash
 commit_hash=$(git rev-parse HEAD)
 echo "Latest commit hash: $commit_hash"
-```
 
-Build the Docker image
-
-```bash
 sudo docker build \
     --build-arg branch=$commit_hash \
     -f Dockerfile.dart.branch \
     -t noports-dart:$commit_hash \
     .
+
+sudo docker run --rm -it noports-dart:$commit_hash /bin/bash
 ```
-
-Run the Docker image to inspect
-
-```bash
-docker run --rm -it noports-dart:$commit_hash /bin/bash
-```
-
-### Building from a Branch Name
-
-Get a branch name
 
 ```bash
 branch="trunk"
-echo "Branch name: $branch"
-```
 
-Build the Docker image
-
-```bash
 sudo docker build \
     --build-arg branch=$branch \
     -f Dockerfile.dart.branch \
     -t noports-dart:$branch \
     .
-```
 
-Run the Docker image to inspect
-
-```bash
 docker run --rm -it noports-dart:$branch /bin/bash
 ```
 
-## Dockerfile.dart.branch
-
-### Building from a branch Name
+## Dockerfile.c.branch
 
 ```bash
 branch=trunk
@@ -91,7 +65,12 @@ sudo docker build \
     -t noports-c:$release \
     .
 
-sudo docker run --rm -it noports-dart:$release /bin/bash
+sudo docker run \
+    --rm \
+    -it \
+    -v ~/.atsign/keys/:/atsign/.atsign/keys/ \
+    noports-c:$release \
+    /usr/local/bin/sshnpd -a @12snowboating -m @12alpaca -d dart-latest -s -v
 ```
 
 ## Dockerfile.c.release
@@ -100,10 +79,16 @@ sudo docker run --rm -it noports-dart:$release /bin/bash
 release=c1.0.0
 
 sudo docker build \
-    --build-arg release=$release \
     -f ./Dockerfile.c.release \
     -t noports-c:$release \
+    --build-arg release=$release \
+    --target runtime \
     .
 
-sudo docker run --rm -it noports-c:$release /bin/bash
+sudo docker run \
+    --rm \
+    -it \
+    -v ~/.atsign/keys/:/atsign/.atsign/keys/ \
+    noports-c:$release \
+    /usr/local/bin/sshnpd -a @12snowboating -m @12alpaca -d c1.0.0 -s -v
 ```
