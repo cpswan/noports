@@ -47,6 +47,8 @@ class BackupKeyCubit extends Cubit<bool> {
       if (result) {
         await putBackupKeyStatus(result);
         CustomSnackBar.success(content: strings.fileSaved);
+        if (!context.mounted) return;
+        Navigator.of(context).pop();
       } else {
         CustomSnackBar.notification(content: strings.cancelled);
       }

@@ -104,9 +104,6 @@ class _BackupKeyAlertDialogState extends State<BackupKeyAlertDialog> {
                 ElevatedButton(
                   onPressed: () async {
                     await context.read<BackupKeyCubit>().backUpKeys();
-                    if (context.mounted) {
-                      Navigator.of(context).pop();
-                    }
                   },
                   child: Text(strings.saveAtKeys),
                 ),
