@@ -35,7 +35,7 @@ sudo docker run \
     -it \
     -v ~/.atsign/keys/:/atsign/.atsign/keys/ \
     noports-dart:$release \
-    /usr/local/bin/sshnpd -a @12snowboating -m @12alpaca -d dart-latest-hash -s -v
+    /bin/bash -c "sudo service ssh start && /usr/local/bin/sshnpd -a @12snowboating -m @12alpaca -d dart-latest-hash -s -v"
 ```
 
 ### 2. From Branch Name
@@ -54,8 +54,8 @@ sudo docker run \
     --rm \
     -it \
     -v ~/.atsign/keys/:/atsign/.atsign/keys/ \
-    noports-dart:$release \
-    /usr/local/bin/sshnpd -a @12snowboating -m @12alpaca -d dart-trunk -s -v
+    noports-dart:$branch \
+    /bin/bash -c "sudo service ssh start && /usr/local/bin/sshnpd -a @12snowboating -m @12alpaca -d dart-trunk -s -v"
 ```
 
 ## Dockerfile.c.branch
@@ -80,7 +80,7 @@ sudo docker run \
     -it \
     -v ~/.atsign/keys/:/atsign/.atsign/keys/ \
     noports-c:$commit_hash \
-    /usr/local/bin/sshnpd -a @12snowboating -m @12alpaca -d c-test -s -v
+    /bin/bash -c "sudo service ssh start && /usr/local/bin/sshnpd -a @12snowboating -m @12alpaca -d c-test -s -v"
 ```
 
 ### 2. From Branch Name
@@ -100,7 +100,7 @@ sudo docker run \
     -it \
     -v ~/.atsign/keys/:/atsign/.atsign/keys/ \
     noports-c:$branch \
-    /usr/local/bin/sshnpd -a @12snowboating -m @12alpaca -d c-trunk -s -v
+    /bin/bash -c "sudo service ssh start && /usr/local/bin/sshnpd -a @12snowboating -m @12alpaca -d c-trunk -s -v"
 ```
 
 ## Dockerfile.dart.release
@@ -123,8 +123,9 @@ sudo docker run \
     --rm \
     -it \
     -v ~/.atsign/keys/:/atsign/.atsign/keys/ \
-    noports-c:$release \
-    /usr/local/bin/sshnpd -a @12snowboating -m @12alpaca -d dart-v5.8.7 -s -v
+    noports-dart:$release \
+    /bin/bash -c "sudo service ssh start && /usr/local/bin/sshnp -f @12alpaca -t @12snowboating -r @rv_am -d c100 -o '-o StrictHostKeyChecking=no' -v"
+    /bin/bash -c "sudo service ssh start && /usr/local/bin/sshnpd -a @12snowboating -m @12alpaca -d dart-v587 -s -v"
 ```
 
 ### 2. From Latest Version
@@ -134,7 +135,7 @@ release=latest
 
 sudo docker build \
     -f ./Dockerfile.dart.release \
-    -t noports-c:$release \
+    -t noports-dart:$release \
     --build-arg release=$release \
     --target runtime \
     .
@@ -144,7 +145,7 @@ sudo docker run \
     -it \
     -v ~/.atsign/keys/:/atsign/.atsign/keys/ \
     noports-dart:$release \
-    /usr/local/bin/sshnpd -a @12snowboating -m @12alpaca -d dart-latest -s -v
+    /bin/bash -c "sudo service ssh start && /usr/local/bin/sshnpd -a @12snowboating -m @12alpaca -d dart-latest -s -v"
 ```
 
 ## Dockerfile.c.release
@@ -168,5 +169,5 @@ sudo docker run \
     -it \
     -v ~/.atsign/keys/:/atsign/.atsign/keys/ \
     noports-c:$release \
-    /usr/local/bin/sshnpd -a @12snowboating -m @12alpaca -d c1.0.0 -s -v
+    /bin/bash -c "sudo service ssh start && /usr/local/bin/sshnpd -a @12snowboating -m @12alpaca -d c100 -s -v"
 ```
