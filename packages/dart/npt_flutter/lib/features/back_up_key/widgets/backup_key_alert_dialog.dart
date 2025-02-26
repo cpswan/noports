@@ -20,6 +20,7 @@ class _BackupKeyAlertDialogState extends State<BackupKeyAlertDialog> {
   @override
   Widget build(BuildContext context) {
     final strings = AppLocalizations.of(context)!;
+
     return AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(Sizes.p10),
@@ -45,7 +46,7 @@ class _BackupKeyAlertDialogState extends State<BackupKeyAlertDialog> {
                   ),
                   const Spacer(),
                   Text(
-                    strings.recommended,
+                    strings.required,
                     style: const TextStyle(color: AppColor.primaryColor, fontSize: Sizes.p16),
                   )
                 ],
@@ -55,8 +56,16 @@ class _BackupKeyAlertDialogState extends State<BackupKeyAlertDialog> {
             SizedBox(
               width: double.infinity,
               child: CustomContainer.background(
-                child: Text(
-                  strings.backUpAtKeysIntroMsg,
+                child: Text.rich(
+                  TextSpan(
+                      text: strings.backUpAtKeysIntroMsgFirst,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      children: [
+                        TextSpan(
+                          text: strings.backUpAtKeysIntroMsgLast,
+                          style: const TextStyle(fontWeight: FontWeight.normal),
+                        ),
+                      ]),
                 ),
               ),
             ),
@@ -65,6 +74,7 @@ class _BackupKeyAlertDialogState extends State<BackupKeyAlertDialog> {
               width: double.infinity,
               child: CustomContainer.background(
                   child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
@@ -91,7 +101,9 @@ class _BackupKeyAlertDialogState extends State<BackupKeyAlertDialog> {
                     maintainAnimation: true,
                     maintainState: true,
                     visible: visibility,
-                    child: Text(strings.backUpAtKeysMainMsg),
+                    child: Text(
+                      strings.backUpAtKeysMainMsg,
+                    ),
                   ),
                 ],
               )),

@@ -30,8 +30,13 @@ class _ProfileListViewState extends State<ProfileListView> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final backupKeyState = await App.navState.currentContext!.read<BackupKeyCubit>().getBackupKeyStatus();
 
-      if (backupKeyState == false) {
-        showDialog(context: context, barrierDismissible: false, builder: (context) => const BackupKeyAlertDialog());
+      if (backupKeyState == false && mounted) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          barrierColor: Colors.black.withValues(alpha: 0.2),
+          builder: (context) => const BackupKeyAlertDialog(),
+        );
       }
     });
     super.initState();

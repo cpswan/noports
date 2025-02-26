@@ -49,17 +49,10 @@ class BackupKeyCubit extends Cubit<bool> {
         CustomSnackBar.success(content: strings.fileSaved);
         if (!context.mounted) return;
         Navigator.of(context).pop();
-      } else {
-        CustomSnackBar.notification(content: strings.cancelled);
-      }
+      } else {}
     } catch (e) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.red,
-          content: Text(strings.errorAtKeySaveFailed(e.toString())),
-        ),
-      );
+      CustomSnackBar.error(content: strings.errorAtKeySaveFailed(e.toString()), duration: const Duration(seconds: 10));
     }
   }
 }
