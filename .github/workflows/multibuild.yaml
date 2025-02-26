@@ -228,9 +228,6 @@ jobs:
         uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version: '20.17.0'
-      - name: setup required npm version
-        run: |
-          npm ci npm@10.8.2
       - name: Build admin webapp
         working-directory: ./apps/admin/webapp
         run: |
