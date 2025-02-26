@@ -230,7 +230,7 @@ jobs:
           node-version: '20.17.0'
       - name: setup required npm version
         run: |
-          npm ci -g npm@10.8.2
+          npm ci npm@10.8.2
       - name: Build admin webapp
         working-directory: ./apps/admin/webapp
         run: |

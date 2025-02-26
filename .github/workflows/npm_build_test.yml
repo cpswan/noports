@@ -20,6 +20,6 @@ jobs:
       - name: setup required npm version and test build
         working-directory: ./apps/admin/webapp
         run: |
-          npm ci -g npm@10.8.2
+          npm ci npm@10.8.2
           npm ci
           npm run build
