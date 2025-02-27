@@ -25,6 +25,7 @@
     * [Installs at scale](installation/advanced-installation-guides/installs-at-scale.md)
     * [Client installation](installation/advanced-installation-guides/client-installation-sshnp.md)
     * [Client Upgrade](installation/advanced-installation-guides/client-upgrade-sshnp.md)
+  * [OpenWrt Installation Guide](installation/openwrt-installation-guide.md)
   * [Custom OS/Device Installs](installation/custom-os-device-installs/README.md)
     * [IPFire](installation/custom-os-device-installs/ipfire.md)
   * [Cloud Installation Guides](installation/cloud-installation-guides/README.md)
