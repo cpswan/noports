@@ -21,6 +21,19 @@ class OnboardingView extends StatelessWidget {
           ),
         ),
         Align(
+          alignment: Alignment.topLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(
+              top: Sizes.p44,
+              left: Sizes.p44,
+            ),
+            child: SvgPicture.asset(
+              'assets/noports_logo.svg',
+              width: Sizes.p200,
+            ),
+          ),
+        ),
+        Align(
           child: Column(
             children: [
               gapH108,

@@ -29,6 +29,7 @@ enum notification_key {
   NK_PING,
   NK_SSH_REQUEST,
   NK_NPT_REQUEST,
+  NK_GRACEFUL_SHUTDOWN,
 };
 
 #define NOTIFICATION_KEYS_LEN 5

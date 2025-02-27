@@ -12,7 +12,7 @@
 
 #define LOGGER_TAG "PING RESPONSE"
 
-void handle_ping(sshnpd_params *params, atclient_monitor_response *message, char *ping_response, atclient *atclient,
+void handle_ping(sshnpd_params *params, atclient_monitor_message *message, char *ping_response, atclient *atclient,
                  pthread_mutex_t *atclient_lock) {
   int ret = 1;
   atclient_atkey pingkey;
@@ -21,7 +21,7 @@ void handle_ping(sshnpd_params *params, atclient_monitor_response *message, char
   size_t keynamelen = strlen("heartbeat") + strlen(params->device) + 2; // + 1 for '.' +1 for '\0'
   char keyname[keynamelen];
   snprintf(keyname, keynamelen, "heartbeat.%s", params->device);
-  atclient_atkey_create_shared_key(&pingkey, keyname, params->atsign, message->notification.from, SSHNP_NS);
+  atclient_atkey_create_shared_key(&pingkey, keyname, params->atsign, message->notification->from, SSHNP_NS);
 
   atclient_atkey_metadata *metadata = &pingkey.metadata;
   atclient_atkey_metadata_set_is_public(metadata, false);
@@ -55,7 +55,7 @@ void handle_ping(sshnpd_params *params, atclient_monitor_response *message, char
   ret = atclient_notify(atclient, &notify_params, NULL);
   if (ret != 0) {
     atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR, "Failed to send ping response to %s\n",
-                 message->notification.from);
+                 message->notification->from);
   }
   ret = pthread_mutex_unlock(atclient_lock);
   if (ret != 0) {

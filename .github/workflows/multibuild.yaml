@@ -79,7 +79,7 @@ jobs:
         with:
           ref: multibuild-${{github.run_number}}
       - name: Setup dart
-        uses: dart-lang/setup-dart@e630b99d28a3b71860378cafdc2a067c71107f94 # v1.7.0
+        uses: dart-lang/setup-dart@e51d8e571e22473a2ddebf0ef8a2123f0ab2c02c # v1.7.1
       - name: Create directories
         run: |
           mkdir sshnp
@@ -168,7 +168,7 @@ jobs:
             --password "$MACOS_APPLE_ID_PASSWORD" \
             --wait
       - name: Upload the build
-        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
         with:
           name:
             ${{ matrix.output-name
@@ -195,10 +195,10 @@ jobs:
           ref: multibuild-${{github.run_number}}
       - name: Setup QEMU
         if: ${{ ! inputs.main_build_only }}
-        uses: docker/setup-qemu-action@53851d14592bedcffcf25ea515637cff71ef929a # v3.3.0
+        uses: docker/setup-qemu-action@5964de0df58d5ad28b04d8fe2e6b80ad47105b91 # v3.5.0
       - name: Setup Docker BuildX
         if: ${{ ! inputs.main_build_only }}
-        uses: docker/setup-buildx-action@6524bf65af31da8d45b59e8c27de4bd072b392f5 # v3.8.0
+        uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 # v3.10.0
       - name: Run build inside of Docker
         if: ${{ ! inputs.main_build_only }}
         run: |
@@ -208,7 +208,7 @@ jobs:
           tar -xvf bins.tar -C tarballs
       - name: Upload the build
         if: ${{ ! inputs.main_build_only }}
-        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
         with:
           name:
             ${{ matrix.output-name
@@ -228,9 +228,6 @@ jobs:
         uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version: '20.17.0'
-      - name: setup required npm version
-        run: |
-          npm install -g npm@10.8.2
       - name: Build admin webapp
         working-directory: ./apps/admin/webapp
         run: |
@@ -241,7 +238,7 @@ jobs:
           cp -r dist/* sshnp/web/admin/
           tar -cvzf tarball/sshnp-web-admin-noarch.tgz sshnp
       - name: Upload the build
-        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
         with:
           name:
             sshnp-web-admin-noarch-${{github.ref_name}}-${{github.run_number
@@ -270,7 +267,7 @@ jobs:
           REF=${{ github.ref }}
           TAG=${REF:11}
           write_metadata universal.sh sshnp_version "$TAG"
-      - uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+      - uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
         with:
           name: universal.sh-${{github.ref_name}}-${{github.run_number}}-${{github.run_attempt}}
           path: ./packages/dart/sshnoports/bundles/universal.sh
@@ -284,7 +281,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+      - uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
         with:
           name: universal.ps1-${{github.ref_name}}-${{github.run_number}}-${{github.run_attempt}}
           path: ./packages/dart/sshnoports/bundles/universal.ps1
@@ -308,11 +305,11 @@ jobs:
           sparse-checkout: packages/dart/sshnoports/pubspec.lock
           sparse-checkout-cone-mode: false
       - name: Download all the tarballs
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           path: tarballs/
       - name: Generate SBOM
-        uses: sbomify/github-action@a04e82ca42a0d9e6bdb57a2cb1a8978e96b4f45c # v0.3.0
+        uses: sbomify/github-action@e6cdc68ce11d640b652364c25f806db4a8bfa16c # v0.3.2
         env:
           TOKEN: ${{ secrets.SBOMIFY_TOKEN }}
           COMPONENT_ID: '-93khk8pUi'
@@ -347,7 +344,7 @@ jobs:
         working-directory: tarballs
         run: |
           echo "hashes=$(cat checksums.txt | base64 -w0)" >> "$GITHUB_OUTPUT"
-      - uses: actions/attest-build-provenance@520d128f165991a6c774bcb264f323e3d70747f4 # v2.2.0
+      - uses: actions/attest-build-provenance@f9eaf234fc1c2e333c1eca18177db0f44fa6ba52 # v2.2.1
         with:
           subject-path: "tarballs/**"
 
@@ -357,7 +354,7 @@ jobs:
       actions: read # Needed for detection of GitHub Actions environment.
       id-token: write # Needed for provenance signing and ID
       contents: write # Needed for release uploads
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.0.0 # 5a775b367a56d5bd118a224a811bba288150a563
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.1.0 # 5a775b367a56d5bd118a224a811bba288150a563
     with:
       base64-subjects: "${{ needs.github-release.outputs.hashes }}"
       upload-assets: true

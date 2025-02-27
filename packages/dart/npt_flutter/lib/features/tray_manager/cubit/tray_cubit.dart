@@ -79,7 +79,7 @@ class TrayCubit extends LoggingCubit<TrayState> {
                   var cubit = context.read<OnboardingCubit>();
                   if (cubit.getStatus() != OnboardingStatus.onboarded) return;
                   Navigator.of(context).pushNamedAndRemoveUntil(
-                    Routes.settings,
+                    HomeRoutes.settings,
                     (route) => route.isFirst,
                   );
                 }

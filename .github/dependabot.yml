@@ -33,14 +33,6 @@ updates:
       pub:
         patterns:
           - "*"
-  - package-ecosystem: "pip"
-    directory: "/packages/python/sshnpd/"
-    schedule:
-      interval: "daily"
-    groups:
-      pip:
-        patterns:
-          - "*"
   - package-ecosystem: 'npm'
     directory: "/apps/admin/webapp/"
     schedule:
