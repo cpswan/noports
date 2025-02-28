@@ -1,9 +1,13 @@
 ---
-description: How to install NoPorts onto an OpenWrt router.
 icon: router
+description: How to install NoPorts onto an OpenWrt router.
 ---
 
 # OpenWrt Installation Guide
+
+{% embed url="https://vimeo.com/1060920058" %}
+OpenWrt installation walk through
+{% endembed %}
 
 ### Using the LuCI web interface
 
