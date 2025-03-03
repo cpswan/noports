@@ -26,6 +26,8 @@ temporarily reduce the timer from 60 minutes to 1 minute
 (global search for `60 * 60` to find this). Then do the same thing as the idle,
 but wait until you see the background job run again. Then shutdown.
 
+(no longer needs to be tested, as the second thread has been removed)
+
 ### sshnp session
 
 Start an sshnp session with the minimum required arguments: -f, -t, & -d.
