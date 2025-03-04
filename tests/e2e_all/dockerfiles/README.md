@@ -124,8 +124,7 @@ sudo docker run \
     -it \
     -v ~/.atsign/keys/:/atsign/.atsign/keys/ \
     noports-dart:$release \
-    /bin/bash -c "sudo service ssh start && /usr/local/bin/sshnp -f @12alpaca -t @12snowboating -r @rv_am -d c100 -o '-o StrictHostKeyChecking=no' -v"
-    /bin/bash -c "sudo service ssh start && /usr/local/bin/sshnpd -a @12snowboating -m @12alpaca -d dart-v587 -s -v"
+    /bin/bash -c "sudo service ssh start && /usr/local/bin/sshnp -f @12alpaca -t @12snowboating -r @rv_am -d c101 -o '-o StrictHostKeyChecking=no' -v"
 ```
 
 ### 2. From Latest Version
@@ -169,5 +168,6 @@ sudo docker run \
     -it \
     -v ~/.atsign/keys/:/atsign/.atsign/keys/ \
     noports-c:$release \
-    /bin/bash -c "sudo service ssh start && /usr/local/bin/sshnpd -a @12snowboating -m @12alpaca -d c100 -s -v"
+    /bin/bash
+    /bin/bash -c "sudo service ssh start && /usr/local/bin/sshnpd -a @12snowboating -m @12alpaca -d c101 -s -u -v"
 ```
