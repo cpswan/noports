@@ -126,6 +126,7 @@ class App extends StatelessWidget {
             return TrayManager(
               locale: locale,
               child: MaterialApp(
+                debugShowCheckedModeBanner: false,
                 key: const Key("MaterialApp"),
                 theme: AppTheme.light(),
                 localizationsDelegates: const [
