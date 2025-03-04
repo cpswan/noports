@@ -168,6 +168,5 @@ sudo docker run \
     -it \
     -v ~/.atsign/keys/:/atsign/.atsign/keys/ \
     noports-c:$release \
-    /bin/bash
     /bin/bash -c "sudo service ssh start && /usr/local/bin/sshnpd -a @12snowboating -m @12alpaca -d c101 -s -u -v"
 ```
