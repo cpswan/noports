@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:npt_flutter/features/onboarding/widgets/enrollment_dialog.dart';
+import 'package:npt_flutter/styles/sizes.dart';
 
 enum APKAMFlow {
   atKeys,
@@ -24,12 +25,12 @@ class ApkamChoiceDialog extends StatelessWidget {
             strings.authenticate,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.black),
           ),
-          const SizedBox(height: 4),
+          gapH4,
           Text(
             strings.selectEnrollMethod,
             style: Theme.of(context).textTheme.bodyMedium,
           ),
-          const SizedBox(height: 16),
+          gapH16,
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(4),
@@ -55,19 +56,19 @@ class ApkamChoiceDialog extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 16),
+                gapW16,
                 SizedBox(
                   width: _kButtonWidth,
                   child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
                       textStyle: const TextStyle(
-                        fontSize: 18,
+                        fontSize: Sizes.p18,
                       ),
                       foregroundColor: Theme.of(context).primaryColor,
                       side: BorderSide(color: Theme.of(context).primaryColor),
-                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: Sizes.p32, vertical: Sizes.p20),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(Sizes.p8),
                       ),
                     ),
                     onPressed: () {
@@ -79,7 +80,7 @@ class ApkamChoiceDialog extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          gapH16,
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(4),
@@ -105,17 +106,17 @@ class ApkamChoiceDialog extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 16),
+                gapH16,
                 SizedBox(
                   width: _kButtonWidth,
                   child: FilledButton(
                     style: FilledButton.styleFrom(
                       textStyle: const TextStyle(
-                        fontSize: 18,
+                        fontSize: Sizes.p18,
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: Sizes.p32, vertical: Sizes.p20),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(Sizes.p8),
                       ),
                     ),
                     onPressed: () {

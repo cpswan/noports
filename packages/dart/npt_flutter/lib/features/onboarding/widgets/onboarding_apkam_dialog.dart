@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:npt_flutter/constants.dart';
 import 'package:npt_flutter/features/onboarding/widgets/enrollment_dialog.dart';
+import 'package:npt_flutter/styles/sizes.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 enum OnboardingStatus {
@@ -246,26 +247,26 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
                   strings.enterOtp,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.black),
                 ),
-                const SizedBox(height: 4),
+                gapH4,
                 Text(
                   strings.findOtp,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 if (hasExpired) ...[
-                  const SizedBox(height: 4),
+                  gapH4,
                   Text(
                     strings.requestExpired,
                     style: const TextStyle(color: Colors.red),
                   ),
                 ],
-                const SizedBox(height: 24),
+                gapH24,
                 IntrinsicHeight(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SizedBox(
-                        width: 280,
+                        width: Sizes.p280,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -288,7 +289,7 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
                                 inactiveColor: const Color(0xFF747474),
                                 selectedFillColor: Colors.white,
                                 selectedColor: Theme.of(context).colorScheme.primary,
-                                fieldOuterPadding: const EdgeInsets.all(2),
+                                fieldOuterPadding: const EdgeInsets.all(Sizes.p2),
                               ),
                               cursorColor: Colors.black,
                               animationDuration: const Duration(milliseconds: 300),
@@ -296,18 +297,18 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
                               keyboardType: TextInputType.text,
                               beforeTextPaste: (text) => true,
                             ),
-                            const SizedBox(height: 8),
+                            gapH8,
                             AnimatedBuilder(
                               animation: pinController,
                               builder: (context, _) {
                                 return FilledButton(
                                   style: FilledButton.styleFrom(
                                     textStyle: const TextStyle(
-                                      fontSize: 18,
+                                      fontSize: Sizes.p18,
                                     ),
-                                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+                                    padding: const EdgeInsets.symmetric(horizontal: Sizes.p32, vertical: Sizes.p20),
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
+                                      borderRadius: BorderRadius.circular(Sizes.p8),
                                     ),
                                   ),
                                   onPressed: pinController.text.length == _kPinLength &&
@@ -327,7 +328,7 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
                       ),
                       Expanded(
                         child: Transform.translate(
-                          offset: const Offset(32, 0),
+                          offset: const Offset(Sizes.p32, 0),
                           child: Image.asset(
                             Constants.authenticatorMockup,
                             fit: BoxFit.cover,
@@ -367,13 +368,13 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
                                 ),
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        gapW8,
                         const CircularProgressIndicator(),
                       ],
                     ),
                   ],
                 ),
-                const SizedBox(height: 56),
+                gapH56,
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -383,7 +384,7 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // Just to slightly offset from the top
-                          const SizedBox(height: 12),
+                          gapH12,
                           Text(
                             strings.whereToAccept,
                             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -400,7 +401,7 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
                     Expanded(
                       flex: 6,
                       child: Transform.translate(
-                        offset: const Offset(16, 0),
+                        offset: const Offset(Sizes.p18, 0),
                         child: Image.asset(
                           Constants.authenticatorApprovalMockup,
                         ),
@@ -417,9 +418,9 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
                 const Icon(
                   Icons.check,
                   color: Colors.green,
-                  size: 32,
+                  size: Sizes.p32,
                 ),
-                const SizedBox(width: 4),
+                gapW4,
                 Text(
                   strings.enrollApproved,
                   style: Theme.of(context).textTheme.titleLarge,
@@ -433,9 +434,9 @@ class OnboardingApkamDialogState extends State<OnboardingApkamDialog> {
                 const Icon(
                   Icons.close,
                   color: Colors.red,
-                  size: 32,
+                  size: Sizes.p32,
                 ),
-                const SizedBox(width: 4),
+                gapW4,
                 Text(
                   strings.enrollDenied,
                   style: Theme.of(context).textTheme.titleLarge,

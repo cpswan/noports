@@ -29,7 +29,7 @@ jobs:
 
     steps:
       - name: execute tests on cicd vm
-        uses: appleboy/ssh-action@8faa84277b88b6cd1455986f459aa66cf72bc8a3 # v1.2.1
+        uses: appleboy/ssh-action@2ead5e36573f08b82fbfce1504f1a4b05a647c6f # v1.2.2
         env:
           SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         with:
