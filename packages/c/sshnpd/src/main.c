@@ -59,6 +59,7 @@ static void free_if_not_null(void *ptr) {
 
 int main(int argc, char **argv) {
   int res = 0;
+  atlogger_set_logging_stream(stderr);
 
   // setup initial values for global variables
   is_child_process = false;
