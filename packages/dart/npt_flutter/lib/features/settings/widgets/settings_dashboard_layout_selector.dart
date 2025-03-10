@@ -50,8 +50,8 @@ class SettingsDashboardLayoutSelector extends StatelessWidget {
           ),
           gapH18,
           SizedBox(
-            height: 295,
-            width: 537,
+            height: Sizes.p295,
+            width: Sizes.p537,
             child: CustomCard.settingsPreview(
                 child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,

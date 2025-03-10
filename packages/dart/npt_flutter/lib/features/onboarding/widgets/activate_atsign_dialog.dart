@@ -10,6 +10,8 @@ import 'package:npt_flutter/features/onboarding/util/onboarding_util.dart';
 import 'package:npt_flutter/widgets/spinner.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
+import '../../../styles/sizes.dart';
+
 class ActivateAtsignDialog extends StatefulWidget {
   final pinLength = 4;
   final String registrarUrl;
@@ -67,12 +69,12 @@ class _ActivateAtsignDialogState extends State<ActivateAtsignDialog> {
         },
       ),
       content: SizedBox(
-        height: 80,
-        width: 400,
+        height: Sizes.p80,
+        width: Sizes.p400,
         child: switch (status) {
           ActivationStatus.preparing || ActivationStatus.activating => const Spinner(),
           ActivationStatus.otpWait => SizedBox(
-              height: 80,
+              height: Sizes.p80,
               child: Column(
                 children: [
                   PinCodeTextField(
