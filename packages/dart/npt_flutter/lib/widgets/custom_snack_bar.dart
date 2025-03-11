@@ -8,7 +8,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 class CustomSnackBar {
   static void error({
     required String content,
-    Duration duration = const Duration(seconds: 2),
+    Duration duration = const Duration(seconds: 5),
   }) {
     final context = App.navState.currentContext!;
     final style = Theme.of(context).textTheme.bodyMedium;
@@ -45,7 +45,7 @@ class CustomSnackBar {
 
   static void success({
     required String content,
-    Duration duration = const Duration(seconds: 2),
+    Duration duration = const Duration(seconds: 5),
   }) {
     final context = App.navState.currentContext!;
     final style = Theme.of(context).textTheme.bodyMedium;
@@ -83,7 +83,7 @@ class CustomSnackBar {
   static void notification({
     required String content,
     SnackBarAction? action,
-    Duration duration = const Duration(seconds: 2),
+    Duration duration = const Duration(seconds: 5),
   }) {
     final context = App.navState.currentContext!;
     final style = Theme.of(context).textTheme.bodyMedium;
@@ -94,7 +94,7 @@ class CustomSnackBar {
           Icon(PhosphorIcons.lineVertical()),
           gapW10,
           Icon(
-            PhosphorIcons.xCircle(),
+            PhosphorIcons.exclamationMark(),
           ),
           gapW16,
           Flexible(
