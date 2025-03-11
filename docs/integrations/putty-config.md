@@ -12,7 +12,7 @@ This guide will help you setup some very minimal Python scripts to manage connec
 ### Requirements
 
 * Python (version 3)
-* OpenSSH (acts as a proxy between NoPorts & Putty)
+* OpenSSH (acts as a proxy between NoPorts & PuTTY)
 
 ### Usage
 
