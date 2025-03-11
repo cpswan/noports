@@ -1,8 +1,9 @@
 ---
+description: How to integrate NoPorts into your native Linux and macOS ssh configuration
 icon: square-sliders-vertical
 ---
 
-# Integrate with ssh config
+# OpenSSH config
 
 ## Overview
 
@@ -43,7 +44,7 @@ You need to replace the values surrounded with `<>` on lines 1 & 7 with your own
 
 `username` is the username on the remote machine you wish to login as.
 
-The rest of the values are the normal arguments you would invoke with sshnp, see [here](basic-usage-1/) for more info.
+The rest of the values are the normal arguments you would invoke with sshnp, see [here](../usage/basic-usage-1/) for more info.
 
 #### Example
 
@@ -138,7 +139,7 @@ The ssh key you would like to load and authenticate with (this is equivalent to 
 
 A proxy command, which first executes sshnp to determine the ssh proxy command which will be executed, fill in the arguments on this line as you would normally.
 
-See [basic-usage-1](basic-usage-1/ "mention") to learn more about filling in this line.
+See [basic-usage-1](../usage/basic-usage-1/ "mention") to learn more about filling in this line.
 
 #### Lines 8 & 9
 
