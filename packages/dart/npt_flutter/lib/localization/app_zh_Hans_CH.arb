@@ -149,5 +149,6 @@
   "success": "成功",
   "error": "错误",
   "info": "信息",
+  "fileImported": "文件已导入",
   "yaml": "YAML"
 }
