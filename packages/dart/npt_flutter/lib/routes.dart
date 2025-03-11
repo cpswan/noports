@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:npt_flutter/app.dart';
 import 'package:npt_flutter/home_wrapper_widget.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'pages/pages.dart';
 
 class Routes {
@@ -16,7 +17,7 @@ class Routes {
 class HomeRoutes {
   static const dashboard = '/dashboard';
   static const settings = '/settings';
-  static const authorisation = '/authorisation';
+  static const authorisation = '/authorization';
   static const profileForm = '/profile';
   static const loadingPage = '/loading';
 
@@ -35,5 +36,20 @@ class HomeRoutes {
 String routeName(String route) {
   final uncapitalized = route.split('/').last;
   final capitalized = uncapitalized[0].toUpperCase() + uncapitalized.substring(1);
+  final strings = AppLocalizations.of(App.navState.currentContext!)!;
+  switch (capitalized) {
+    case 'Dashboard':
+      return strings.dashboard;
+    case 'Settings':
+      return strings.settings;
+    case 'Authorisation':
+      return strings.authorisation;
+    case 'Profile':
+      return strings.profile;
+    case 'Loading':
+      return strings.loading;
+      
+    default:
+  }
   return capitalized;
 }

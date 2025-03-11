@@ -1,3 +1,7 @@
+## 1.0.1
+
+- fix: remove the background thread used to update device_info (now synchronous)
+
 ## 1.0.0
 
 - fix: memory leaks on the main daemon process

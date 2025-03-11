@@ -16,53 +16,63 @@ class OnboardingDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final strings = AppLocalizations.of(context)!;
+    final width = MediaQuery.of(context).size.width * 0.50;
     return AlertDialog(
       backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(Sizes.p10),
+      ),
       content: Padding(
-        padding: const EdgeInsets.symmetric(vertical: Sizes.p12, horizontal: Sizes.p16),
+        padding: const EdgeInsets.all(Sizes.p20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CustomContainer.background(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(strings.selectorTitleAtsign),
-                  gapH16,
-                  AtsignSelector(
-                    options: options,
-                  ),
-                  gapH16,
-                  Text(strings.selectorTitleRootDomain),
-                  AtDirectorySelector(
-                    options: options,
-                  ),
-                ],
+            SizedBox(
+              width: width,
+              child: CustomContainer.background(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(strings.selectorTitleAtsign),
+                    gapH16,
+                    AtsignSelector(
+                      options: options,
+                    ),
+                    gapH16,
+                    Text(strings.selectorTitleRootDomain),
+                    AtDirectorySelector(
+                      options: options,
+                    ),
+                  ],
+                ),
               ),
             ),
             gapH10,
             BlocBuilder<OnboardingCubit, OnboardingState>(builder: (context, state) {
-              return CustomContainer.background(
-                  child: Row(
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(false);
-                    },
-                    child: Text(strings.cancel),
-                  ),
-                  const Spacer(),
-                  ElevatedButton(
-                    onPressed: FormValidator.validateRequiredAtsignField(state.atSign) == null
-                        ? () {
-                            Navigator.of(context).pop(true);
-                          }
-                        : null,
-                    child: Text(strings.next),
-                  ),
-                ],
-              ));
+              return SizedBox(
+                width: width,
+                child: CustomContainer.background(
+                    child: Row(
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
+                      child: Text(strings.cancel),
+                    ),
+                    const Spacer(),
+                    ElevatedButton(
+                      onPressed: FormValidator.validateRequiredAtsignField(state.atSign) == null
+                          ? () {
+                              Navigator.of(context).pop(true);
+                            }
+                          : null,
+                      child: Text(strings.next),
+                    ),
+                  ],
+                )),
+              );
             })
           ],
         ),
