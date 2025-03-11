@@ -16,11 +16,11 @@ This guide will help you setup some very minimal Python scripts to manage connec
 
 ### Usage
 
-Once you've setup your configuration, you will be able to SSH over NoPorts by double clicking a simple shortcut. It will first launch NoPorts, then once NoPorts is started, it will setup your putty session.
+Once you've setup your configuration, you will be able to SSH over NoPorts by double clicking a simple shortcut. It will first launch NoPorts, then once NoPorts is started, it will setup your PuTTY session.
 
 ### The Base Configuration
 
-The base configuration contains all of the core logic for starting a putty session over NoPorts. Copy this to the folder where you want to store all of your device configurations, name the file `noports_base.py`.
+The base configuration contains all of the core logic for starting a PuTTY session over NoPorts. Copy this to the folder where you want to store all of your device configurations, name the file `noports_base.py`.
 
 <details>
 
@@ -93,8 +93,9 @@ class my_default_config(noports_config):
     # you may use PuTTYgen to convert another key to .ppk
     putty_keyfile = "C:\\Users\\chant\\.ssh\\id_ed25519.ppk"
     
-    #
-    upload_public_key = False # -s must be enabled by sshnpd for this to work
+    # Upload your SSH public key automatically
+    # -s must be enabled on sshnpd for this to work
+    upload_public_key = False 
     
     # The username to sign in as
     ssh_user = "alice"
@@ -119,7 +120,7 @@ device().run_putty()
 ```
 {% endcode %}
 
-### Overriding the default configuration
+### Overriding the Default Configuration
 
 If you have a bunch of devices that all use the same configuration values, then you'd want to put that in the noports\_base configuration. However, there may be a few devices where you want to use a different value. You can simply override the value from your device profile:
 
@@ -138,7 +139,7 @@ device().run_putty()
 ```
 {% endcode %}
 
-### Create Shortcuts to organize your profiles
+### Create Shortcuts to Organize your Profiles
 
 Because all of the profiles need to be in the same directory as the `noports_base.py` file, you can't easily move those files around to organize them. To work around this, simply create shortcuts of all the device profiles, then you can move and rename those shortcuts around freely.
 
