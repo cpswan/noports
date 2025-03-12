@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
 set(CMAKE_C_STANDARD 99)
 cmake_policy(SET CMP0135 NEW)
-project(sshnpd VERSION 1.0.0 LANGUAGES C)
+project(sshnpd VERSION 1.0.1 LANGUAGES C)
 
 # 1. Variables - you are free to edit anything in this step
 
@@ -9,7 +9,9 @@ project(sshnpd VERSION 1.0.0 LANGUAGES C)
 # globs are known as bad practice, so we do not use them here
 set(
   SSHNPD_SRCS
-  ${CMAKE_CURRENT_LIST_DIR}/src/background_jobs.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/daemon.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/daemon_utils.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/device_info.c
   ${CMAKE_CURRENT_LIST_DIR}/src/file_utils.c
   ${CMAKE_CURRENT_LIST_DIR}/src/handle_npt_request.c
   ${CMAKE_CURRENT_LIST_DIR}/src/handle_ping.c

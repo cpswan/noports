@@ -133,7 +133,7 @@ int run_srv_daemon_side_multi(srv_params_t *params) {
   size_t len;
   while ((res = mbedtls_net_recv(&control_side.socket, buffer, 4096)) > 0) {
     if (res < 0) {
-      atlogger_log("srv - control (side b)", ERROR, "Error reading data: %d", len);
+      atlogger_log("srv - control (side b)", ERROR, "Error reading data: %zu", len);
       goto exit;
     } else {
       len = res;

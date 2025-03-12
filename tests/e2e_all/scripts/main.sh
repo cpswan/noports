@@ -110,19 +110,19 @@ export commitId
 remoteUsername=$(whoami)
 identityFilename="$HOME/.ssh/e2e_all.${commitId}"
 
-daemonStartWait=15
+daemonStartWait=20
 
 while getopts r:t:s:c:u:w:pn opt; do
   case $opt in
-    r) atDirectoryHost=$OPTARG ;;
-    t) testsToRun=$OPTARG ;;
-    s) daemonVersions=$OPTARG ;;
-    c) clientVersions=$OPTARG ;;
-    u) remoteUsername=$OPTARG ;;
-    w) daemonStartWait=$OPTARG ;;
-    p) allowParallelization="true" ;;
-    n) recompile="false" ;;
-    *) usageAndExit ;;
+  r) atDirectoryHost=$OPTARG ;;
+  t) testsToRun=$OPTARG ;;
+  s) daemonVersions=$OPTARG ;;
+  c) clientVersions=$OPTARG ;;
+  u) remoteUsername=$OPTARG ;;
+  w) daemonStartWait=$OPTARG ;;
+  p) allowParallelization="true" ;;
+  n) recompile="false" ;;
+  *) usageAndExit ;;
   esac
 done
 

@@ -172,5 +172,6 @@
    "fileSaved": "File Saved",
    "success": "Success",
    "error": "Error",
-   "info": "Info"
+   "info": "Info",
+   "fileImported": "File Imported"
 }

@@ -149,5 +149,6 @@
   "success": "Sucesso",
   "error": "Erro",
   "info": "Informação",
+  "fileImported": "Arquivo Importado",
   "yaml": "YAML"
 }
