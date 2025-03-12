@@ -51,7 +51,9 @@
     * [Client Additional Configuration](usage/basic-usage-1/additional-configuration.md)
   * [sshnpd configuration](usage/sshnpd-configuration/README.md)
     * [Daemon Additional Configuration](usage/sshnpd-configuration/daemon-additional-configuration.md)
-  * [Integrate with ssh config](usage/integrate-with-ssh-config.md)
+* [Integrations](integrations/README.md)
+  * [OpenSSH config](integrations/integrate-with-ssh-config.md)
+  * [PuTTY config](integrations/putty-config.md)
 
 ## Use Cases
 
