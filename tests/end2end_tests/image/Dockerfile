@@ -26,7 +26,7 @@ RUN set -eux ; \
 
 # BRANCH
 # BUILD BRANCH
-FROM dart:3.7.1@sha256:5d40556368d94af9a1b41447cf1e5635dec18dc3f52c66096e1561be6580a321 AS build-branch
+FROM dart:3.7.2@sha256:d024672257408ae61773904bb6934ea89549a874a2bd0a4d18d42241cb6a5eed AS build-branch
 
 ENV URL=https://github.com/atsign-foundation/noports.git
 ENV REPO_DIR=/app/repo
@@ -65,7 +65,7 @@ ENTRYPOINT cp -r /mount/. ${HOMEDIR} && sudo service ssh start && sh ${HOMEDIR}/
 
 # LOCAL
 # BUILD LOCAL
-FROM dart:3.7.1@sha256:5d40556368d94af9a1b41447cf1e5635dec18dc3f52c66096e1561be6580a321 AS build-local
+FROM dart:3.7.2@sha256:d024672257408ae61773904bb6934ea89549a874a2bd0a4d18d42241cb6a5eed AS build-local
 
 ENV REPO_DIR=/app/repo
 ENV PACKAGE_DIR=${REPO_DIR}/packages/dart/sshnoports
