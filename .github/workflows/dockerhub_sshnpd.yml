@@ -18,6 +18,10 @@ jobs:
             dockerfile: ./packages/dart/sshnoports/tools/Dockerfile
           - name: activate_sshnpd
             dockerfile: ./packages/dart/sshnoports/tools/Dockerfile.activate
+          - name: sshnp_sshnpd
+            dockerfile: ./packages/dart/sshnoports/tools/Dockerfile.sshnp
+          - name: npt_sshnpd
+            dockerfile: ./packages/dart/sshnoports/tools/Dockerfile.npt
           - name: sshnpd-slim
             dockerfile: ./packages/dart/sshnoports/tools/Dockerfile.sshnpd-slim
     runs-on: ubuntu-24.04-arm
@@ -64,6 +68,10 @@ jobs:
             dockerfile: ./packages/dart/sshnoports/tools/Dockerfile
           - name: activate_sshnpd
             dockerfile: ./packages/dart/sshnoports/tools/Dockerfile.activate
+          - name: sshnp_sshnpd
+            dockerfile: ./packages/dart/sshnoports/tools/Dockerfile.sshnp
+          - name: npt_sshnpd
+            dockerfile: ./packages/dart/sshnoports/tools/Dockerfile.npt
           - name: sshnpd-slim
             dockerfile: ./packages/dart/sshnoports/tools/Dockerfile.sshnpd-slim
     runs-on: ubuntu-latest
@@ -110,6 +118,8 @@ jobs:
         include:
           - name: sshnpd
           - name: activate_sshnpd
+          - name: sshnp_sshnpd
+          - name: npt_sshnpd
           - name: sshnpd-slim
     steps:
       - name: Set up Docker Buildx
