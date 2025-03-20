@@ -152,7 +152,6 @@
    "selectKey": "Select atKey",
    "selectorTitleAtsign": "Select or type the client atSign",
    "selectorTitleRootDomain": "Select or type the root domain",
-   "selectRootDomain": "Select Root Domain",
    "serviceMapping": "Service Mapping",
    "settings": "Settings",
    "showWindow": "Show Window",
@@ -200,6 +199,9 @@
    "selectorTitleRootDomain": "atDirectory Domain",
    "selectorSubTitleRootDomain": "Enter the atDirectory domain (previously called root domain).",
    "whatIsClientAtsign": "What is a client atSign?",
-   "clientAtsignDescription": "An atSign is a resolvable address assigned to a device.",
-   "myNoPortsMsg": "Retrieve yours in My NoPorts"
+   "clientAtsignDescription": "An atSign is a resolvable address\nassigned to a device.",
+   "myNoPortsMsg": "Retrieve yours in ",
+   "or": "Or",
+   "atsignUncreated": "Don't have an atSign?",
+   "register": "register"
 }

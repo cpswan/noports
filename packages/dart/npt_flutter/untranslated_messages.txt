@@ -22,12 +22,7 @@
     "enrollWithAuthenticatorDescription",
     "waitingForApproval",
     "whereToAccept",
-    "whereToAcceptDescription",
-    "selectorSubTitleAtsign",
-    "selectorSubTitleRootDomain",
-    "whatIsClientAtsign",
-    "clientAtsignDescription",
-    "myNoPortsMsg"
+    "whereToAcceptDescription"
   ],
 
   "pt": [
@@ -53,12 +48,7 @@
     "enrollWithAuthenticatorDescription",
     "waitingForApproval",
     "whereToAccept",
-    "whereToAcceptDescription",
-    "selectorSubTitleAtsign",
-    "selectorSubTitleRootDomain",
-    "whatIsClientAtsign",
-    "clientAtsignDescription",
-    "myNoPortsMsg"
+    "whereToAcceptDescription"
   ],
 
   "pt_BR": [
@@ -84,12 +74,7 @@
     "enrollWithAuthenticatorDescription",
     "waitingForApproval",
     "whereToAccept",
-    "whereToAcceptDescription",
-    "selectorSubTitleAtsign",
-    "selectorSubTitleRootDomain",
-    "whatIsClientAtsign",
-    "clientAtsignDescription",
-    "myNoPortsMsg"
+    "whereToAcceptDescription"
   ],
 
   "zh": [
@@ -115,12 +100,7 @@
     "enrollWithAuthenticatorDescription",
     "waitingForApproval",
     "whereToAccept",
-    "whereToAcceptDescription",
-    "selectorSubTitleAtsign",
-    "selectorSubTitleRootDomain",
-    "whatIsClientAtsign",
-    "clientAtsignDescription",
-    "myNoPortsMsg"
+    "whereToAcceptDescription"
   ],
 
   "zh_Hans_CH": [
@@ -146,12 +126,7 @@
     "enrollWithAuthenticatorDescription",
     "waitingForApproval",
     "whereToAccept",
-    "whereToAcceptDescription",
-    "selectorSubTitleAtsign",
-    "selectorSubTitleRootDomain",
-    "whatIsClientAtsign",
-    "clientAtsignDescription",
-    "myNoPortsMsg"
+    "whereToAcceptDescription"
   ],
 
   "zh_Hant_HK": [
@@ -177,11 +152,6 @@
     "enrollWithAuthenticatorDescription",
     "waitingForApproval",
     "whereToAccept",
-    "whereToAcceptDescription",
-    "selectorSubTitleAtsign",
-    "selectorSubTitleRootDomain",
-    "whatIsClientAtsign",
-    "clientAtsignDescription",
-    "myNoPortsMsg"
+    "whereToAcceptDescription"
   ]
 }
