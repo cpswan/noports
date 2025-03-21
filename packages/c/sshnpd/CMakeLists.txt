@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
 set(CMAKE_C_STANDARD 99)
 cmake_policy(SET CMP0135 NEW)
-project(sshnpd VERSION 1.0.3 LANGUAGES C)
+project(sshnpd VERSION 1.0.4 LANGUAGES C)
 
 # 1. Variables - you are free to edit anything in this step
 
@@ -98,6 +98,7 @@ endif()
 
 # 5. Create sshnpd_lib library target
 
+add_compile_options("-lrt")
 add_library(${PROJECT_NAME}-lib STATIC ${SSHNPD_SRCS})
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
