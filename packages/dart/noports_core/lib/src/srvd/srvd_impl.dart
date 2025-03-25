@@ -152,9 +152,11 @@ class SrvdImpl implements Srvd {
 
     logger.shout('Acquiring port pair');
     PortPair ports;
+    // ignore: unused_local_variable
     Isolate spawned;
+    SendPort sendToSpawned;
     try {
-      (ports, spawned) = await _spawnSocketConnector(
+      (ports, spawned, sendToSpawned) = await _spawnSocketConnector(
         0,
         0,
         sessionParams,
@@ -188,7 +190,7 @@ class SrvdImpl implements Srvd {
       if (err.toString().toLowerCase().contains('immutable')) {
         logger.shout('🤷‍♂️ Will not handle request from ${notification.from}'
             '; did not acquire mutex $mutexKey');
-        spawned.kill();
+        sendToSpawned.send('kill');
       } else {
         logger.shout('Will not handle; did not acquire mutex $mutexKey : $err');
       }
@@ -234,7 +236,7 @@ class SrvdImpl implements Srvd {
   /// once the socketConnector has spawned and is ready to accept connections
   /// it sends back the port numbers to the main isolate
   /// then the port numbers are returned from this function
-  Future<(PortPair, Isolate)> _spawnSocketConnector(
+  Future<(PortPair, Isolate, SendPort)> _spawnSocketConnector(
     int portA,
     int portB,
     SrvdSessionParams srvdSessionParams,
@@ -259,11 +261,13 @@ class SrvdImpl implements Srvd {
     Isolate spawned =
         await Isolate.spawn<ConnectorParams>(socketConnector, parameters);
 
+    SendPort sendPort;
     logger.info('Waiting for isolate to send its port pair info');
     PortPair ports;
     try {
-      ports =
-          await receivePort.first.timeout(Duration(milliseconds: timeoutMs));
+      (ports, sendPort) = await receivePort.first.timeout(
+        Duration(milliseconds: timeoutMs),
+      );
     } on TimeoutException catch (_) {
       throw TimeoutException('Timed out after ${timeoutMs}ms');
     }
@@ -271,7 +275,7 @@ class SrvdImpl implements Srvd {
     logger.info('Received ports $ports in main isolate'
         ' for session ${srvdSessionParams.sessionId}');
 
-    return (ports, spawned);
+    return (ports, spawned, sendPort);
   }
 }
 
