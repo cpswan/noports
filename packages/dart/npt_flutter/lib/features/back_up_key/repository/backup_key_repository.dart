@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -19,10 +20,11 @@ class BackUpKeyRepository {
 
     try {
       final value = await atClient.get(key.build());
+      log('getBackupKeyStatus: ${value.value}');
       return _fromJson(jsonDecode(value.value));
     } catch (e) {
-      App.log('[ERROR] getbackupKeyStatus() failed: $e'.loggable);
-      return false;
+      App.log('[ERROR] getShouldBackupKeyStatus() failed: $e'.loggable);
+      return true;
     }
   }
 
