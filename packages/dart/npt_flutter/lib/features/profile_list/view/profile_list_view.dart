@@ -28,9 +28,9 @@ class _ProfileListViewState extends State<ProfileListView> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final backupKeyState = await App.navState.currentContext!.read<BackupKeyCubit>().getBackupKeyStatus();
+      final shouldBackupKey = await App.navState.currentContext!.read<BackupKeyCubit>().getBackupKeyStatus();
 
-      if (backupKeyState == false && mounted) {
+      if (shouldBackupKey == false && mounted) {
         showDialog(
           context: context,
           barrierDismissible: false,

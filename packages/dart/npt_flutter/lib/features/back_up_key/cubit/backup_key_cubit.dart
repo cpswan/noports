@@ -12,7 +12,7 @@ import 'package:npt_flutter/features/onboarding/cubit/onboarding_cubit.dart';
 import 'package:npt_flutter/widgets/custom_snack_bar.dart';
 
 class BackupKeyCubit extends Cubit<bool> {
-  BackupKeyCubit() : super(false);
+  BackupKeyCubit() : super(true);
 
   Future<bool> getBackupKeyStatus() async {
     final result = await BackUpKeyRepository().getBackupKeyStatus();
@@ -25,7 +25,11 @@ class BackupKeyCubit extends Cubit<bool> {
     log('putBackupKeyStatus: $status');
     final result = await BackUpKeyRepository().putBackupKeyStatus(status);
     emit(result);
-    App.log('BackupKeyCubit: getBackupKeyStatus: $result'.loggable);
+    App.log('BackupKeyCubit: getShouldBackupKeyStatus: $result'.loggable);
+  }
+
+  void setBackupKeyStatus(bool status) {
+    emit(status);
   }
 
   Future<void> backUpKeys() async {
