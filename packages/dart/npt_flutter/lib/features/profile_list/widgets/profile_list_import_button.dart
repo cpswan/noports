@@ -31,7 +31,7 @@ class ProfileListImportButton extends StatelessWidget {
                   message: strings.profileImportSelectedMessage,
                   actions: {
                     strings.importFile: Export.importProfiles,
-                    strings.pasteJsonYaml: () {
+                    strings.pasteProfile: () {
                       result = ExportableProfileFiletype.json;
                     },
                   },

@@ -15,12 +15,12 @@ class _ImportTypePasteDialogState extends State<ImportTypePasteDialog> {
   Widget build(BuildContext context) {
     final strings = AppLocalizations.of(context)!;
     return AlertDialog(
-      title: Text(strings.pasteJsonYaml),
+      title: Text(strings.pasteProfile),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         spacing: Sizes.p20,
         children: [
-          Text(strings.pasteJsonYamlDescription),
+          Text(strings.pasteProfileDescription),
           SizedBox(
             width: Sizes.p600,
             height: Sizes.p400,
