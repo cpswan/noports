@@ -15,6 +15,7 @@ define_env() {
   script_dir="$(dirname -- "$(readlink -f -- "$0")")"
   bin_dir="/usr/local/bin"
   systemd_dir="/etc/systemd/system"
+  default_shell="$(finger $USER | grep 'Shell:' | sed -E 's/.*Shell:[[:blank:]]*//')"
   if is_root; then
     if is_darwin; then
       echo "Installing as root is not available on MacOS"
@@ -513,6 +514,19 @@ tmux() {
   setup_authorized_keys
 }
 
+add_home_local_bin_to_path() {
+  if ! grep 'PATH=' <"$user_home/.profile" | grep -qE "$user_home/.local/bin|\\$HOME/.local/bin"; then
+    return 0
+  fi
+
+  if ! [ -d "$user_home/.profile" ]; then
+    touch "$user_home/.profile"
+    chown $user:$user "$user_home/.profile" || chown $user "$user_home/.profile"
+  fi
+
+  echo 'PATH="$PATH:$HOME/.local/bin"' >>"$user_home/.profile"
+}
+
 # MAIN #
 
 main() {
@@ -535,11 +549,26 @@ main() {
       user_home=$(sudo -u "$user" sh -c 'echo $HOME')
       shift
       ;;
-    at_activate | npt | sshnp | sshnpd | srv | srvd) install_single_binary "$1" ;;
-    binaries) install_base_binaries ;;
-    debug_srvd) install_debug_binary "${1#"debug_"}" ;; # strips debug_ prefix from the command input
-    debug) install_debug_binaries ;;
-    all) install_all_binaries ;;
+    at_activate | npt | sshnp | sshnpd | srv | srvd)
+      install_single_binary "$1"
+      add_home_local_bin_to_path
+      ;;
+    binaries)
+      install_base_binaries
+      add_home_local_bin_to_path
+      ;;
+    debug_srvd)
+      install_debug_binary "${1#"debug_"}"
+      add_home_local_bin_to_path
+      ;; # strips debug_ prefix from the command input
+    debug)
+      install_debug_binaries
+      add_home_local_bin_to_path
+      ;;
+    all)
+      install_all_binaries
+      add_home_local_bin_to_path
+      ;;
     systemd | launchd | headless | tmux)
       command=$1
       shift 1
