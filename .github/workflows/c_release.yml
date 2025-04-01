@@ -70,6 +70,12 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           ref: c_release-${{github.run_number}}
+
+        # Pin cmake to <4.0.0
+      - name: Setup cmake
+        uses: jwlawson/actions-setup-cmake@802fa1a2c4e212495c05bf94dba2704a92a472be
+        with:
+          cmake-version: "3.31.6"
       - name: Compile binaries
         run: |
           cmake -B build -S . -DBUILD_SHARED_LIBS=off -DCMAKE_C_COMPILER=${{ matrix.compiler }} -DCMAKE_C_FLAGS="${{matrix.flags}}"
@@ -155,6 +161,11 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           ref: c_release-${{github.run_number}}
+        # Pin cmake to <4.0.0
+      - name: Setup cmake
+        uses: jwlawson/actions-setup-cmake@802fa1a2c4e212495c05bf94dba2704a92a472be
+        with:
+          cmake-version: "3.31.6"
       - name: Create tarball
         working-directory: ./packages/c
         run: |
