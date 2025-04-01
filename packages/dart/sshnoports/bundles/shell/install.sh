@@ -154,12 +154,13 @@ install_single_binary() {
   then
     if ! [ -d "$user_bin_dir" ]; then
       mkdir -p "$user_bin_dir"
-      chown -R $user:$user "$user_bin_dir" || chown -R $user "$user_bin_dir"
     fi
 
     if [ -f "$dest/$1" ]; then
       ln -sf "$dest/$1" "$user_bin_dir/$1"
-      chown $user:$user "$user_bin_dir/$1" || chown $user "$user_bin_dir/$1"
+      chown root:wheel "$dest/$1" || chown root:root "$dest/$1" || chown root "$dest/$1"
+      chmod o+x "$dest/$1"
+
       echo "=> Linked $user_bin_dir/$1 to $dest/$1"
     else
       echo "Failed to link $user_bin_dir/$1 to $dest/$1:"
@@ -227,32 +228,32 @@ install_systemd_unit() {
     # migrate old config from systemd unit file to override.conf
     touch "$systemd_config"
     if [ ! -s "$systemd_config" ]; then
-      echo "[Service]" >> "$systemd_config"
+      echo "[Service]" >>"$systemd_config"
     fi
     temp_file="$systemd_unit.tmp"
     while IFS= read -r line; do
       case "$line" in
-        Environment=*)
-            # Comment out the line in the original file
-            echo "# config migrated to $systemd_config" >> "$temp_file"
-            echo "# $line" >> "$temp_file"
-            # Extract the environment variable and write it to the override file
-            echo "# config migrated from $systemd_unit" >> "$systemd_config"
-            echo "$line" >> "$systemd_config"
-            ;;
-        User=*)
-            # Comment out the line in the original file
-            echo "# config migrated to $systemd_config" >> "$temp_file"
-            echo "# $line" >> "$temp_file"
-            # Extract the user variable and write it to the override file
-            echo "# config migrated from $systemd_unit" >> "$systemd_config"
-            echo "$line" >> "$systemd_config"
-            ;;
-        *)
-            echo "$line" >> "$temp_file"
-            ;;
-        esac
-    done < "$systemd_unit"
+      Environment=*)
+        # Comment out the line in the original file
+        echo "# config migrated to $systemd_config" >>"$temp_file"
+        echo "# $line" >>"$temp_file"
+        # Extract the environment variable and write it to the override file
+        echo "# config migrated from $systemd_unit" >>"$systemd_config"
+        echo "$line" >>"$systemd_config"
+        ;;
+      User=*)
+        # Comment out the line in the original file
+        echo "# config migrated to $systemd_config" >>"$temp_file"
+        echo "# $line" >>"$temp_file"
+        # Extract the user variable and write it to the override file
+        echo "# config migrated from $systemd_unit" >>"$systemd_config"
+        echo "$line" >>"$systemd_config"
+        ;;
+      *)
+        echo "$line" >>"$temp_file"
+        ;;
+      esac
+    done <"$systemd_unit"
     # Overwrite the original file with the modified content
     mv "$temp_file" "$systemd_unit"
     echo "sshnpd configuration migrated to override.conf"
