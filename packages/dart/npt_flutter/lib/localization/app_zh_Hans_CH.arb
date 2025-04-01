@@ -1,4 +1,10 @@
 {
+  "importFile": "导入文件",
+  "pasteJson": "粘贴 JSON",
+  "pasteYaml": "粘贴 YAML",
+  "profileDeleteSecondaryMessage": "某些配置文件正在运行，不会被删除，请先停止这些配置文件再进行删除。",
+  "profileImportDialogTitle": "选择导入方式",
+  "profileImportFailed": "导入文件失败",
   "activationStatusActivating": "正在激活",
   "activationStatusOtpWait": "请从您的电子邮件中输入 OTP",
   "activationStatusPreparing": "准备激活",
@@ -111,6 +117,7 @@
   "profileFailedLoaded": "配置文件加载失败",
   "profileFailedSaveMessage": "配置文件保存失败",
   "profileFailedUnknownMessage": "未提供原因",
+  "profileImportSelectedMessage": "您想如何导入配置文件？",
   "profileName": "配置文件名称",
   "profileNameDescription": "这将是您的配置的名称。",
   "profileRunningActionDeniedMessage": "配置文件运行时无法执行此操作。",

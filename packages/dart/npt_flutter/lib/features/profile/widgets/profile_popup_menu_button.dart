@@ -81,10 +81,13 @@ class ProfilePopupMenuButton extends StatelessWidget {
 
                   showDialog(
                       context: context,
-                      builder: (BuildContext context) => MultiSelectDialog(strings.profileExportMessage, {
-                            strings.json: Export.getExportCallback(ExportableProfileFiletype.json, [json]),
-                            strings.yaml: Export.getExportCallback(ExportableProfileFiletype.yaml, [json]),
-                          }));
+                      builder: (BuildContext context) => MultiSelectDialog(
+                              title: strings.profileExportDialogTitle,
+                              message: strings.profileExportMessage,
+                              actions: {
+                                strings.json: Export.getExportCallback(ExportableProfileFiletype.json, [json]),
+                                strings.yaml: Export.getExportCallback(ExportableProfileFiletype.yaml, [json]),
+                              }));
                 }),
             PopupMenuItem(
                 child: Row(
