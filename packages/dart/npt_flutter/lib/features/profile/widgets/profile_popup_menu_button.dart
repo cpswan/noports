@@ -86,7 +86,8 @@ class ProfilePopupMenuButton extends StatelessWidget {
                               message: strings.profileExportMessage,
                               actions: {
                                 strings.json: Export.getExportCallback(ExportableProfileFiletype.json, [json]),
-                                strings.yaml: Export.getExportCallback(ExportableProfileFiletype.yaml, [json]),
+                                strings.yamlRecommended:
+                                    Export.getExportCallback(ExportableProfileFiletype.yaml, [json]),
                               }));
                 }),
             PopupMenuItem(

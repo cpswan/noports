@@ -180,5 +180,6 @@
   "whatAreAtKeys": "什麼是 atKeys？",
   "whereToAccept": "在哪裡接受？",
   "whereToAcceptDescription": "請在具有管理金鑰的應用程式中核准該請求。",
-  "yaml": "YAML"
+  "yaml": "YAML",
+  "yamlRecommended": "YAML (推薦)"
 }

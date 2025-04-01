@@ -180,5 +180,6 @@
   "whatAreAtKeys": "O que são atKeys?",
   "whereToAccept": "Onde aceitar?",
   "whereToAcceptDescription": "Por favor, aprov a solicitação em um aplicativo com uma chave de gerenciador.",
-  "yaml": "YAML"
+  "yaml": "YAML",
+  "yamlRecommended": "YAML (Recomendado)"
 }

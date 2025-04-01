@@ -36,7 +36,7 @@ class ProfileSelectedExportButton extends StatelessWidget {
                     ExportableProfileFiletype.json,
                     futureExportableProfileList,
                   ),
-                  strings.yaml: Export.getExportCallback(
+                  strings.yamlRecommended: Export.getExportCallback(
                     ExportableProfileFiletype.yaml,
                     futureExportableProfileList,
                   ),
