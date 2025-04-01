@@ -31,18 +31,15 @@ class ProfileListImportButton extends StatelessWidget {
                   message: strings.profileImportSelectedMessage,
                   actions: {
                     strings.importFile: Export.importProfiles,
-                    strings.pasteJson: () {
+                    strings.pasteJsonYaml: () {
                       result = ExportableProfileFiletype.json;
-                    },
-                    strings.pasteYaml: () {
-                      result = ExportableProfileFiletype.yaml;
                     },
                   },
                 ),
               );
 
               if (result == null) return;
-              Export.pasteProfile(result!);
+              Export.pasteProfile();
             },
             label: Text(strings.import),
             icon: PhosphorIcon(

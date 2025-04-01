@@ -146,20 +146,25 @@ class Export {
     }
   }
 
-  static void pasteProfile(
-    ExportableProfileFiletype profileFileType,
-  ) async {
+  static void pasteProfile() async {
     final context = App.navState.currentContext!;
 
     final result = await showDialog<String?>(
-        useRootNavigator: true,
-        context: context,
-        builder: (BuildContext context) => ImportTypePasteDialog(
-              profileFileType: profileFileType,
-            ));
+        useRootNavigator: true, context: context, builder: (BuildContext context) => const ImportTypePasteDialog());
     if (result == null) {
       return;
     }
+
+    // check if the first no whitespace character is a {
+    // if so, assume it's a json file
+    // else assume it's a yaml file
+    final ExportableProfileFiletype profileFileType;
+    if (result.trimLeft().startsWith('{')) {
+      profileFileType = ExportableProfileFiletype.json;
+    } else {
+      profileFileType = ExportableProfileFiletype.yaml;
+    }
+
     convertExternalDataSourceToProfile(fileType: profileFileType, contents: result);
   }
 }

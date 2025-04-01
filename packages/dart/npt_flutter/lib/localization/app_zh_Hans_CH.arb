@@ -1,7 +1,7 @@
 {
   "importFile": "导入文件",
-  "pasteJson": "粘贴 JSON",
-  "pasteYaml": "粘贴 YAML",
+  "pasteJsonYaml": "粘贴 JSON/YAML",
+  "pasteJsonYamlDescription": "在此处粘贴 JSON/YAML 内容",
   "profileDeleteSecondaryMessage": "某些配置文件正在运行，不会被删除，请先停止这些配置文件再进行删除。",
   "profileImportDialogTitle": "选择导入方式",
   "profileImportFailed": "导入文件失败",

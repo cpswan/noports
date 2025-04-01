@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:npt_flutter/styles/sizes.dart';
-import 'package:npt_flutter/util/export.dart';
 
 class ImportTypePasteDialog extends StatefulWidget {
-  const ImportTypePasteDialog({required this.profileFileType, super.key});
-
-  final ExportableProfileFiletype profileFileType;
+  const ImportTypePasteDialog({super.key});
 
   @override
   State<ImportTypePasteDialog> createState() => _ImportTypePasteDialogState();
@@ -15,17 +13,14 @@ class _ImportTypePasteDialogState extends State<ImportTypePasteDialog> {
   final TextEditingController _controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final strings = AppLocalizations.of(context)!;
     return AlertDialog(
-      title: widget.profileFileType == ExportableProfileFiletype.json
-          ? const Text("JSON Profile")
-          : const Text("YAML Yaml"),
+      title: Text(strings.pasteJsonYaml),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         spacing: Sizes.p20,
         children: [
-          widget.profileFileType == ExportableProfileFiletype.json
-              ? const Text("Paste your json content here")
-              : const Text("Paste your yaml content here"),
+          Text(strings.pasteJsonYamlDescription),
           SizedBox(
             width: Sizes.p600,
             height: Sizes.p400,
