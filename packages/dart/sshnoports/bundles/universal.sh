@@ -585,6 +585,15 @@ get_atsign_manually() {
   done
 }
 
+get_atsign_manually_once() {
+  selectedatsign=""
+  if [ $# -gt 0 ]; then
+    clientOrDevice="$1"
+  fi
+  printf "Enter %s atSign (leave blank to skip): " "$clientOrDevice"
+  read -r selectedatsign
+}
+
 get_atsign() {
   clientOrDevice="$1"
   atkeycount=0
@@ -740,18 +749,21 @@ client() {
   # check that there are some ssh keys
   check_ssh_keys
 
+  echo "Please enter atSigns you would like activated"
   # get the inputs for client & device atsign to do activation
   if [ -z "$client_atsign" ]; then
-    get_atsign "client"
+    get_atsign_manually_once "client"
     client_atsign="$selectedatsign"
   fi
 
   if [ -z "$device_atsign" ]; then
-    get_atsign_manually "device"
+    get_atsign_manually_once "device"
     device_atsign="$selectedatsign"
   fi
-
-  validate_activation
+  if [ -n "$device_atsign" ] || [ -n "$client_atsign" ]; then
+    echo "Ensuring your atSigns are activated..."
+    validate_activation
+  fi
 }
 
 # DEVICE INSTALLATION #
@@ -803,7 +815,7 @@ device() {
     launchd_plist="$HOME/Library/LaunchAgents/com.atsign.sshnpd.plist"
     if [ -f "$launchd_plist" ]; then
       echo "launchd config already in place"
-      # TODO: restart service?
+      echo "To update your config, edit $launchd_plist"
       return
     fi
     ;;
@@ -817,7 +829,7 @@ device() {
     fi
     ;;
   tmux | headless)
-    # TODO: deal with restarting this type of service
+    # Not recommended, we don't offer any help
     ;;
   esac
 

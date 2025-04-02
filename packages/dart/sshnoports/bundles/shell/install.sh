@@ -115,7 +115,7 @@ usage() {
 setup_authorized_keys() {
   mkdir -p "$user_ssh_dir"
   touch "$user_ssh_dir/authorized_keys"
-  chown $user:$user "$user_ssh_dir/authorized_keys" || chown $user "$user_ssh_dir/authorized_keys"
+  chown $user:$user "$user_ssh_dir/authorized_keys" 2>/dev/null || chown $user "$user_ssh_dir/authorized_keys" 2>/dev/null
   chmod 644 "$user_ssh_dir/authorized_keys"
 }
 
@@ -159,7 +159,7 @@ install_single_binary() {
 
     if [ -f "$dest/$1" ]; then
       ln -sf "$dest/$1" "$user_bin_dir/$1"
-      chown root:wheel "$dest/$1" || chown root:root "$dest/$1" || chown root "$dest/$1"
+      chown root:wheel "$dest/$1" 2>/dev/null || chown root:root "$dest/$1" 2>/dev/null || chown root "$dest/$1" 2>/dev/null
       chmod o+x "$dest/$1"
 
       echo "=> Linked $user_bin_dir/$1 to $dest/$1"
@@ -521,7 +521,7 @@ add_home_local_bin_to_path() {
 
   if ! [ -d "$user_home/.profile" ]; then
     touch "$user_home/.profile"
-    chown $user:$user "$user_home/.profile" || chown $user "$user_home/.profile"
+    chown $user:$user "$user_home/.profile" 2>/dev/null || chown $user "$user_home/.profile" 2>/dev/null
   fi
 
   echo 'PATH="$PATH:$HOME/.local/bin"' >>"$user_home/.profile"
