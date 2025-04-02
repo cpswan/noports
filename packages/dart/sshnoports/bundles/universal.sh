@@ -838,8 +838,10 @@ device() {
   while [ -z "$device_name" ]; do
     printf "Enter device name: "
     read -r device_name
-    if ! echo "$device_name" | grep -Eq '^[a-z][a-z0-9_]{0,14}$'; then
-      echo "Device name must be in snake case and max 15 characters"
+    # capitals are allowed here, sshnpd will convert to lowercase
+    if ! echo "$device_name" | grep -Eq '^[A-Za-z0-9_][A-Za-z0-9_-]{0,35}$'; then
+      echo "Device name must only contain alphanumeric characters, '-', or '_' and may not start with '-'."
+      echo "Device name may have a maximum length of 36 characters"
       device_name=""
     fi
   done
