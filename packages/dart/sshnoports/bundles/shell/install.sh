@@ -15,7 +15,6 @@ define_env() {
   script_dir="$(dirname -- "$(readlink -f -- "$0")")"
   bin_dir="/usr/local/bin"
   systemd_dir="/etc/systemd/system"
-  default_shell="$(finger $USER | grep 'Shell:' | sed -E 's/.*Shell:[[:blank:]]*//')"
   if is_root; then
     if is_darwin; then
       echo "Installing as root is not available on MacOS"
