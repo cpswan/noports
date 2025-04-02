@@ -514,7 +514,7 @@ tmux() {
 }
 
 add_home_local_bin_to_path() {
-  if ! grep 'PATH=' <"$user_home/.profile" | grep -qE "$user_home/.local/bin|\\$HOME/.local/bin"; then
+  if grep 'PATH=' <"$user_home/.profile" | grep -q -e "$user_home/.local/bin" -e '$HOME/.local/bin'; then
     return 0
   fi
 
@@ -523,6 +523,7 @@ add_home_local_bin_to_path() {
     chown $user:$user "$user_home/.profile" 2>/dev/null || chown $user "$user_home/.profile" 2>/dev/null
   fi
 
+  echo 'Adding $HOME/.local/bin/ to the PATH in ~/.profile'
   echo 'PATH="$PATH:$HOME/.local/bin"' >>"$user_home/.profile"
 }
 
