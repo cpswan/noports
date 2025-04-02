@@ -16,6 +16,9 @@ repo_url="https://github.com/atsign-foundation/sshnoports"
 GREP_COLOR=never
 unset GREP_OPTIONS
 
+# used to rerun as sudo to install to systemd
+original_command="$0 $*"
+
 ### Constants
 systemd_config_path="/etc/systemd/system/sshnpd.service.d/override.conf"
 
@@ -656,13 +659,19 @@ suggest_sudo() {
   echo "Systemd is present but this script is not running with sudo"
   echo "We recommend that you install to systemd (requires root privileges to write the unit file)"
   echo
-  echo "sudo sh universal.sh"
+  echo "Rerunning the script with command: 'sudo $original_command'"
   echo
-  echo "If you'd rather proceed with a non systemd installation (not recommended):"
+  echo "If you'd rather proceed with a non systemd installation,"
+  echo "then press Ctrl+C and then run the following command:"
   echo
   echo "sh universal.sh --no-sudo"
   echo
-  exit 0
+  echo "NB: Issues with installation through --no-sudo is not covered by support."
+  echo "    It is not a reliable installation method and it is NOT RECOMMENDED."
+  echo
+  echo "Executing 'sudo $original_command':"
+  sudo $original_command
+  exit $?
 }
 
 check_ssh_keys() {
