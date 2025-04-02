@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:npt_flutter/app.dart';
 import 'package:npt_flutter/home_wrapper_widget.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'pages/pages.dart';
 
 class Routes {
@@ -48,7 +49,7 @@ String routeName(String route) {
       return strings.profile;
     case 'Loading':
       return strings.loading;
-      
+
     default:
   }
   return capitalized;
