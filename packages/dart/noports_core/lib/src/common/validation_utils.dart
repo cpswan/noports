@@ -9,10 +9,12 @@ import 'package:noports_core/src/common/io_types.dart';
 import 'package:path/path.dart' as path;
 
 const String sshnpDeviceNameRegex = r'[a-z0-9_][a-z0-9_\-]{1,35}';
-const String invalidDeviceNameMsg = 'Device name must be alphanumeric'
-    ' snake case, max length 36. First char must be _, a-z, or 0-9.';
-const String deviceNameFormatHelp = 'Alphanumeric snake case, max length 36.'
-    ' First char must be _, a-z, or 0-9.';
+const String invalidDeviceNameMsg =
+    'Device name must only contain alphanumeric characters, "-", or "_"'
+    'and may not start with "-". Maximum length of 36 characters.';
+const String deviceNameFormatHelp =
+    'Alphanumeric characters, "-" or "_" allowed, max length 36.'
+    ' First character cannot be "-".';
 const String invalidSshKeyPermissionsMsg =
     'Detected newline characters in the ssh public key permissions which malforms the authorized_keys file.';
 
