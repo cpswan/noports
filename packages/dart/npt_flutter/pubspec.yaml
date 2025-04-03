@@ -71,6 +71,7 @@ dependencies:
   meta: ^1.15.0
   noports_core:
     path: ../noports_core
+  package_info_plus: ^8.3.0
   path: ^1.9.0
   path_provider: ^2.1.4
   phosphor_flutter: ^2.1.0
@@ -85,11 +86,11 @@ dependencies:
   yaml: ^3.1.2
   yaml_writer: ^2.0.0
 dev_dependencies:
-  msix: ^3.16.8
   build_runner: ^2.4.12
   flutter_launcher_icons: "^0.14.1"
   flutter_test:
     sdk: flutter
+  msix: ^3.16.8
 
 dependency_overrides:
   device_info_plus: 11.3.3
@@ -157,7 +158,6 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
-
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true

@@ -34,10 +34,6 @@ class ContactListTile extends StatelessWidget {
                       borderRadius: BorderRadius.circular(Sizes.p8.toFont),
                     ),
                     title: Text(
-                      snapshot.data?['name'] ?? '',
-                      style: bodyMedium.copyWith(fontSize: 8.toFont),
-                    ),
-                    subtitle: Text(
                       contactRepo.atClientManager.atClient.getCurrentAtSign() ?? '',
                       style: bodySmall.copyWith(fontSize: 8.toFont),
                     )),
