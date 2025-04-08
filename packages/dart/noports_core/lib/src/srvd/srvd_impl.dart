@@ -12,6 +12,8 @@ import 'package:noports_core/src/srvd/socket_connector.dart';
 import 'package:noports_core/src/srvd/srvd.dart';
 import 'package:noports_core/src/srvd/srvd_params.dart';
 
+import '../common/handle_server_events.dart';
+
 @protected
 class SrvdImpl implements Srvd {
   @override
@@ -122,6 +124,8 @@ class SrvdImpl implements Srvd {
       throw StateError('Cannot run() - not initialized');
     }
     NotificationService notificationService = atClient.notificationService;
+
+    handlePublicKeyChangedEvent(atClient, atSign);
 
     notificationService
         .subscribe(regex: subscriptionRegex, shouldDecrypt: true)

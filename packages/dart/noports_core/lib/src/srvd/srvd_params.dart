@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:args/args.dart';
-import 'package:noports_core/src/common/file_system_utils.dart';
+import 'package:at_cli_commons/at_cli_commons.dart';
 import 'package:noports_core/src/srvd/build_env.dart';
 
 class SrvdParams {
@@ -57,7 +57,8 @@ class SrvdParams {
   static ArgParser _createArgParser() {
     var parser = ArgParser(
       usageLineLength: stdout.hasTerminal ? stdout.terminalColumns : null,
-      showAliasesInUsage: true,);
+      showAliasesInUsage: true,
+    );
 
     // Basic arguments
     parser.addOption(

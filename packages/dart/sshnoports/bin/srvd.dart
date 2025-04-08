@@ -1,10 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:args/args.dart';
-import 'package:at_client/at_client.dart';
+import 'package:at_cli_commons/at_cli_commons.dart';
 import 'package:at_utils/at_logger.dart';
 import 'package:noports_core/srvd.dart';
-import 'package:noports_core/utils.dart';
 import 'package:sshnoports/src/create_at_client_cli.dart';
 import 'package:sshnoports/src/print_version.dart';
 
@@ -51,14 +50,14 @@ void main(List<String> args) async {
   }
   if (Platform.isWindows) {
     storageDir = Directory(standardAtClientStoragePath(
-      homeDirectory: Platform.environment['TEMP']!,
+      baseDir: Platform.environment['TEMP']!,
       atSign: p.atSign,
       progName: 'srvd',
       uniqueID: uniqueID,
     ));
   } else {
     storageDir = Directory(standardAtClientStoragePath(
-      homeDirectory: p.homeDirectory,
+      baseDir: p.homeDirectory,
       atSign: p.atSign,
       progName: 'srvd',
       uniqueID: uniqueID,
@@ -106,7 +105,7 @@ void main(List<String> args) async {
         atKeysFilePath: p.atKeysFilePath,
         namespace: Srvd.namespace,
         rootDomain: p.rootDomain,
-        atServiceFactory: DefaultAtServiceFactory(),
+        atServiceFactory: ServiceFactoryWithNoOpSyncService(),
       ),
       usageCallback: (e, s) {
         printVersion();
