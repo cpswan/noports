@@ -227,8 +227,7 @@ class SshnpdImpl implements Sshnpd {
     String regex = '(^$device|\\.$device)\\.${DefaultArgs.namespace}@';
     logger.info('Subscribing to $regex');
     atClient.notificationService
-        .subscribe(
-            regex: regex, shouldDecrypt: true)
+        .subscribe(regex: regex, shouldDecrypt: true)
         .listen(
           _notificationHandler,
           onError: (e) => logger.severe('Notification Failed:$e'),

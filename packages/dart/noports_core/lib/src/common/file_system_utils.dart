@@ -9,11 +9,11 @@ String standardAtClientStoragePath({
   required String uniqueID,
 }) {
   return path.normalize('$homeDirectory'
-      '/.atsign'
-      '/storage'
-      '/$atSign'
-      '/$progName'
-      '/$uniqueID'
+          '/.atsign'
+          '/storage'
+          '/$atSign'
+          '/$progName'
+          '/$uniqueID'
       .replaceAll('/', Platform.pathSeparator));
 }
 

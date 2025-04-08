@@ -136,7 +136,8 @@ abstract class SrvdChannel<T> with AsyncInitialization, AtClientBindings {
     subscribe(regex: '$sessionId.${Srvd.namespace}@', shouldDecrypt: true)
         .listen((notification) async {
       if (fetched) {
-        logger.warning('Got additional relay response ${notification.value} - ignoring');
+        logger.warning(
+            'Got additional relay response ${notification.value} - ignoring');
         return;
       }
       String ipPorts = notification.value.toString();

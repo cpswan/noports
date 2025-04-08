@@ -111,11 +111,13 @@ abstract class SshnpdChannel with AsyncInitialization, AtClientBindings {
   /// is null.
   Future<void> sharePublicKeyIfRequired(AtSshKeyPair? identityKeyPair) async {
     if (!params.sendSshPublicKey) {
-      logger.info('Skipped sharing public key with sshnpd: sendSshPublicKey=false');
+      logger.info(
+          'Skipped sharing public key with sshnpd: sendSshPublicKey=false');
       return;
     }
     if (identityKeyPair == null) {
-      logger.info('Skipped sharing public key with sshnpd: no identity key pair set');
+      logger.info(
+          'Skipped sharing public key with sshnpd: no identity key pair set');
       return;
     }
 
@@ -123,8 +125,8 @@ abstract class SshnpdChannel with AsyncInitialization, AtClientBindings {
 
     logger.info('Sharing ssh public key with sshnpd: $publicKeyContents');
     // Check for Supported ssh keypairs from dartssh2 package
-    if (!publicKeyContents
-        .startsWith(RegExp(r'^(ecdsa-sha2-nistp)|(rsa-sha2-)|(ssh-rsa)|(ssh-ed25519)|(ecdsa-sha2-nistp)'))) {
+    if (!publicKeyContents.startsWith(RegExp(
+        r'^(ecdsa-sha2-nistp)|(rsa-sha2-)|(ssh-rsa)|(ssh-ed25519)|(ecdsa-sha2-nistp)'))) {
       throw SshnpError('SSH Public Key does not look like a public key file');
     }
     AtKey sendOurPublicKeyToSshnpd = AtKey()
@@ -151,7 +153,8 @@ abstract class SshnpdChannel with AsyncInitialization, AtClientBindings {
     if (params.remoteUsername != null) {
       return params.remoteUsername!;
     }
-    AtKey userNameRecordID = AtKey.fromString('${params.clientAtSign}:username.$namespace${params.sshnpdAtSign}');
+    AtKey userNameRecordID = AtKey.fromString(
+        '${params.clientAtSign}:username.$namespace${params.sshnpdAtSign}');
 
     return (await atClient.get(userNameRecordID).catchError(
       (_) {
@@ -165,16 +168,19 @@ abstract class SshnpdChannel with AsyncInitialization, AtClientBindings {
   /// Resolve the username to use in the initial ssh tunnel
   /// If [params.tunnelUsername] is set, it will be used.
   /// Otherwise, the username will be set to [remoteUsername]
-  Future<String?> resolveTunnelUsername({required String? remoteUsername}) async {
-    if (params.tunnelUsername != null && params.tunnelUsername!.trim().isNotEmpty) {
+  Future<String?> resolveTunnelUsername(
+      {required String? remoteUsername}) async {
+    if (params.tunnelUsername != null &&
+        params.tunnelUsername!.trim().isNotEmpty) {
       return params.tunnelUsername!;
     } else {
       return remoteUsername;
     }
   }
 
-  Future<List<(DaemonFeature feature, bool supported, String reason)>> featureCheck(List<DaemonFeature> featuresToCheck,
-      {Duration timeout = DefaultArgs.daemonPingTimeoutDuration}) async {
+  Future<List<(DaemonFeature feature, bool supported, String reason)>>
+      featureCheck(List<DaemonFeature> featuresToCheck,
+          {Duration timeout = DefaultArgs.daemonPingTimeoutDuration}) async {
     if (featuresToCheck.isEmpty) {
       return [];
     }
@@ -188,7 +194,8 @@ abstract class SshnpdChannel with AsyncInitialization, AtClientBindings {
     // If supportedFeatures was null (i.e. a response from a v4 daemon),
     // then we will assume that "acceptsPublicKeys" is true
     final Map<String, dynamic> daemonFeatures =
-        pingResponse['supportedFeatures'] ?? {DaemonFeature.acceptsPublicKeys.name: true};
+        pingResponse['supportedFeatures'] ??
+            {DaemonFeature.acceptsPublicKeys.name: true};
     return featuresToCheck
         .map((featureToCheck) => (
               featureToCheck,
@@ -209,7 +216,8 @@ abstract class SshnpdChannel with AsyncInitialization, AtClientBindings {
           '.${DefaultArgs.namespace}',
       shouldDecrypt: true,
     ).listen((notification) {
-      logger.info('Received ping response from ${notification.from} : ${notification.key} : ${notification.value}');
+      logger.info(
+          'Received ping response from ${notification.from} : ${notification.key} : ${notification.value}');
       if (notification.from == params.sshnpdAtSign) {
         if (!completer.isCompleted) {
           logger.info('Completing the future');
@@ -247,12 +255,15 @@ abstract class SshnpdChannel with AsyncInitialization, AtClientBindings {
     String sharedBy = params.sshnpdAtSign;
 
     if (sharedBy.isNotEmpty) {
-      return _listDevices(sharedBy, useFullDeviceName: false); // if -t was specified fullDeviceName is redundant
+      return _listDevices(sharedBy,
+          useFullDeviceName:
+              false); // if -t was specified fullDeviceName is redundant
     }
 
     // Shared by is empty so first we will lookup all potential device atsigns to list from
     // Then we will _listDevices for each one
-    var scanRegex = 'device_info\\.$sshnpDeviceNameRegex\\.${DefaultArgs.namespace}';
+    var scanRegex =
+        'device_info\\.$sshnpDeviceNameRegex\\.${DefaultArgs.namespace}';
     List<AtKey> atKeys = await getAtKeysRemote(regex: scanRegex);
     Set<String> atSigns = <String>{};
 
@@ -261,7 +272,8 @@ abstract class SshnpdChannel with AsyncInitialization, AtClientBindings {
     }
 
     // We have to do it this way, or for some reason we get cached keys which...
-    List<SshnpDeviceList> deviceLists = await Future.wait(atSigns.map((a) => _listDevices(a)).toList());
+    List<SshnpDeviceList> deviceLists =
+        await Future.wait(atSigns.map((a) => _listDevices(a)).toList());
 
     // consolidate the list
     SshnpDeviceList consolidatedList = SshnpDeviceList();
@@ -272,14 +284,18 @@ abstract class SshnpdChannel with AsyncInitialization, AtClientBindings {
     return consolidatedList;
   }
 
-  Future<SshnpDeviceList> _listDevices(String sharedBy, {bool useFullDeviceName = true}) async {
+  Future<SshnpDeviceList> _listDevices(String sharedBy,
+      {bool useFullDeviceName = true}) async {
     SshnpDeviceList deviceList = SshnpDeviceList();
     // get all the keys device_info.*.sshnpd
-    var scanRegex = 'device_info\\.$sshnpDeviceNameRegex\\.${DefaultArgs.namespace}';
-    List<AtKey> atKeys = await getAtKeysRemote(regex: scanRegex, sharedBy: sharedBy);
+    var scanRegex =
+        'device_info\\.$sshnpDeviceNameRegex\\.${DefaultArgs.namespace}';
+    List<AtKey> atKeys =
+        await getAtKeysRemote(regex: scanRegex, sharedBy: sharedBy);
 
     // Listen for heartbeat notifications
-    subscribe(regex: 'heartbeat\\.$sshnpDeviceNameRegex', shouldDecrypt: true).listen((notification) {
+    subscribe(regex: 'heartbeat\\.$sshnpDeviceNameRegex', shouldDecrypt: true)
+        .listen((notification) {
       var deviceInfo = jsonDecode(notification.value ?? '{}');
       var devicename = deviceInfo['devicename'];
       var fullDeviceName = devicename + sharedBy;
@@ -314,7 +330,8 @@ abstract class SshnpdChannel with AsyncInitialization, AtClientBindings {
 
       String devicename = deviceInfo['devicename'];
       String fullDeviceName = devicename + sharedBy;
-      deviceList.info[useFullDeviceName ? fullDeviceName : devicename] = deviceInfo;
+      deviceList.info[useFullDeviceName ? fullDeviceName : devicename] =
+          deviceInfo;
 
       var metaData = Metadata()
         ..isPublic = false
@@ -347,10 +364,14 @@ abstract class SshnpdChannel with AsyncInitialization, AtClientBindings {
   /// A custom implementation of AtClient.getAtKeys which bypasses the cache
   @visibleForTesting
   Future<List<AtKey>> getAtKeysRemote(
-      {String? regex, String? sharedBy, String? sharedWith, bool showHiddenKeys = false}) async {
+      {String? regex,
+      String? sharedBy,
+      String? sharedWith,
+      bool showHiddenKeys = false}) async {
     var builder = ScanVerbBuilder()
       ..sharedWith = sharedWith
-      ..sharedBy = sharedBy // for some reason, if this is null it only returns cached keys
+      ..sharedBy =
+          sharedBy // for some reason, if this is null it only returns cached keys
       ..regex = regex
       ..showHiddenKeys = showHiddenKeys
       ..auth = true;
@@ -364,7 +385,8 @@ abstract class SshnpdChannel with AsyncInitialization, AtClientBindings {
         } on InvalidSyntaxException {
           logger.severe('$key is not a well-formed key');
         } on Exception catch (e) {
-          logger.severe('Exception occurred: ${e.toString()}. Unable to form key $key');
+          logger.severe(
+              'Exception occurred: ${e.toString()}. Unable to form key $key');
         }
       }).toList();
     }
