@@ -1,0 +1,58 @@
+FROM atsigncompany/cbuildimage:CMake-3.31.4@sha256:0b443da3bccd746e23323eb374d19ba156b497ecbee6c5e84f97d77954515cbf AS buildimage
+
+ENV REPO_DIR=/app/repo
+ENV OUTPUT_DIR=/output
+
+# WARNING: ensure that build context is set to the root of the repo
+# e.g. `docker build -f tests/e2e_all/dockerfiles/Dockerfile.c.current -t noports-c:current .`
+COPY . ${REPO_DIR}
+
+RUN set -eux ; \
+    mkdir -p ${REPO_DIR} ${OUTPUT_DIR} ; \
+    apt-get update ; \
+    apt-get install -y gcc ; \
+    cd ${REPO_DIR}/packages/c/sshnpd ; \
+    rm -rf build ; \
+    cmake -S . -B build -DCMAKE_C_COMPILER=gcc -DBUILD_SHARED_LIBS=off -DCMAKE_C_FLAGS="-Wno-error -pthread" ; \
+    cmake --build build ; \
+    mv ./build/at_activate ${OUTPUT_DIR}/at_activate ; \
+    mv ./build/sshnpd ${OUTPUT_DIR}/sshnpd ; \
+    mv ./build/libsshnpd-lib.a ${OUTPUT_DIR}/libsshnpd-lib.a ; \
+    cd ${REPO_DIR}/packages/c/srv ; \
+    rm -rf build ; \
+    cmake -S . -B build -DCMAKE_C_COMPILER=gcc -DATAUTH_BUILD_EXECUTABLES=OFF -DBUILD_SHARED_LIBS=off -DCMAKE_C_FLAGS="-Wno-error -pthread" ; \
+    cmake --build build ; \
+    mv build/srv ${OUTPUT_DIR}/srv
+
+FROM debian:stable-slim@sha256:5484adc33b4c352c5a9f4c4ae295fc49aed1cb54a7a0712a1b29674fb6f4f10f AS runtime
+
+ENV USER=atsign
+ENV HOMEDIR=/${USER}
+ENV USER_ID=1024
+ENV GROUP_ID=1024
+
+COPY --from=buildimage /output/ /usr/local/bin/
+
+RUN set -eux ; \
+    apt-get update ; \
+    apt-get install -y openssh-server sudo; \
+    groupadd --gid ${GROUP_ID} ${USER} ; \
+    useradd --system --shell /bin/bash --home ${HOMEDIR} --uid ${USER_ID} --gid ${GROUP_ID} ${USER} ; \
+    usermod -aG sudo ${USER} ; \
+    mkdir -p ${HOMEDIR}/.ssh ${HOMEDIR}/.atsign/keys ; \
+    touch ${HOMEDIR}/.ssh/authorized_keys ; \
+    ssh-keygen -t ed25519 -a 100 -f ${HOMEDIR}/.ssh/id_ed25519 -q -N '' ; \
+    cat ${HOMEDIR}/.ssh/id_ed25519.pub >> ${HOMEDIR}/.ssh/authorized_keys ; \
+    chmod 700 ${HOMEDIR}/.ssh ; \
+    chmod 644 ${HOMEDIR}/.ssh/authorized_keys ; \
+    chmod 600 ${HOMEDIR}/.ssh/id_ed25519 ; \
+    chmod 644 ${HOMEDIR}/.ssh/id_ed25519.pub ; \
+    sed -i '$ a %sudo ALL=(ALL:ALL) NOPASSWD:ALL' /etc/sudoers ; \
+    sed -E -i 's|^#?(PasswordAuthentication)\s.*|\1 no|' /etc/ssh/sshd_config ; \
+    sed -i 's/#ListenAddress 0.0.0.0/ListenAddress localhost/g' /etc/ssh/sshd_config ; \
+    chown -R ${USER}:${USER} ${HOMEDIR} ;
+
+USER ${USER}
+WORKDIR ${HOMEDIR}
+
+CMD sudo service ssh start
