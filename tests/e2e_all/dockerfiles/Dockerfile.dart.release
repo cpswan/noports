@@ -3,7 +3,7 @@ FROM debian:stable-slim@sha256:5484adc33b4c352c5a9f4c4ae295fc49aed1cb54a7a0712a1
 ENV URL="https://api.github.com/repos/atsign-foundation/noports/releases/latest"
 ENV URLP="https://github.com/atsign-foundation/noports/releases/download"
 ENV BUILD_DIR=/app
-ENV OUTPUT_DIR=/usr/local/bin
+ENV OUTPUT_DIR=/output
 
 ARG release=latest
 
@@ -27,7 +27,7 @@ RUN apt-get update && \
     tar -xvf sshnp-linux-${ARCH}.tgz && \
     rm sshnp-linux-${ARCH}.tgz && \
     cd sshnp && \
-    mv at_activate install.sh np_admin npp_atserver npp_file npt srv srvd sshnp sshnpd ${OUTPUT_DIR}
+    mv -f at_activate install.sh np_admin npp_atserver npp_file npt srv srvd sshnp sshnpd ${OUTPUT_DIR} || true
 
 FROM debian:stable-slim@sha256:5484adc33b4c352c5a9f4c4ae295fc49aed1cb54a7a0712a1b29674fb6f4f10f AS runtime
 
@@ -36,15 +36,7 @@ ENV HOMEDIR=/${USER}
 ENV USER_ID=1024
 ENV GROUP_ID=1024
 
-COPY --from=buildimage /usr/local/bin/at_activate /usr/local/bin/at_activate
-COPY --from=buildimage /usr/local/bin/install.sh /usr/local/bin/install.sh
-COPY --from=buildimage /usr/local/bin/npp_atserver /usr/local/bin/npp_atserver
-COPY --from=buildimage /usr/local/bin/npp_file /usr/local/bin/npp_file
-COPY --from=buildimage /usr/local/bin/npt /usr/local/bin/npt
-COPY --from=buildimage /usr/local/bin/sshnp /usr/local/bin/sshnp
-COPY --from=buildimage /usr/local/bin/sshnpd /usr/local/bin/sshnpd
-COPY --from=buildimage /usr/local/bin/srv /usr/local/bin/srv
-COPY --from=buildimage /usr/local/bin/srvd /usr/local/bin/srvd
+COPY --from=buildimage /output/ /usr/local/bin/
 
 RUN set -eux ; \
     apt-get update ; \

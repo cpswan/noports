@@ -3,7 +3,7 @@ FROM atsigncompany/cbuildimage:CMake-3.31.4@sha256:0b443da3bccd746e23323eb374d19
 ENV URL="https://api.github.com/repos/atsign-foundation/noports/releases/latest"
 ENV URLP="https://github.com/atsign-foundation/noports/releases/download"
 ENV BUILD_DIR=/app
-ENV OUTPUT_DIR=/usr/local/bin
+ENV OUTPUT_DIR=/output
 
 ARG release
 
@@ -41,10 +41,7 @@ ENV HOMEDIR=/${USER}
 ENV USER_ID=1024
 ENV GROUP_ID=1024
 
-COPY --from=buildimage /usr/local/bin/at_activate /usr/local/bin/at_activate
-COPY --from=buildimage /usr/local/bin/sshnpd /usr/local/bin/sshnpd
-COPY --from=buildimage /usr/local/bin/libsshnpd-lib.a /usr/local/bin/libsshnpd-lib.a
-COPY --from=buildimage /usr/local/bin/srv /usr/local/bin/srv
+COPY --from=buildimage /output/ /usr/local/bin/
 
 RUN set -eux ; \
     apt-get update ; \
