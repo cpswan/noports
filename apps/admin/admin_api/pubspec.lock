@@ -46,10 +46,10 @@ packages:
     dependency: transitive
     description:
       name: asn1lib
-      sha256: "068190d6c99c436287936ba5855af2e1fa78d8083ae65b4db6a281780da727ae"
+      sha256: e02d018628c870ef2d7f03e33f9ad179d89ff6ec52ca6c56bcb80bcef979867f
       url: "https://pub.dev"
     source: hosted
-    version: "1.6.0"
+    version: "1.6.2"
   async:
     dependency: transitive
     description:
@@ -62,10 +62,10 @@ packages:
     dependency: transitive
     description:
       name: at_auth
-      sha256: "2d2305bc850c4ebe2547027ea376bcd6be1d36de47dfee6bf5088181bffcb049"
+      sha256: "28f6e04428f608f283166a7f716df7bcab28a20623f2659c3df1f4362add8cff"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.0"
+    version: "2.2.0"
   at_base2e15:
     dependency: transitive
     description:
@@ -94,10 +94,10 @@ packages:
     dependency: "direct main"
     description:
       name: at_client
-      sha256: f98fc1e52e708c96b23a6f67fb1ec0f0b850be46436e11e06acbab189aed44e2
+      sha256: d437de35f99d1f70192f785413d39ad1617d3374477a7b03c8b110eb92bad030
       url: "https://pub.dev"
     source: hosted
-    version: "3.4.1"
+    version: "3.4.2"
   at_commons:
     dependency: transitive
     description:
@@ -126,10 +126,10 @@ packages:
     dependency: transitive
     description:
       name: at_onboarding_cli
-      sha256: fe286f23be753e6b5a9773a3d3d90b490320fd3cb5a1e2248dd7162821e10bd1
+      sha256: f5653d55d3b58ee9ca96e6cf071dd09066bcc373c63d2eb6f72d259ea91571bd
       url: "https://pub.dev"
     source: hosted
-    version: "1.8.3"
+    version: "1.9.0"
   at_persistence_secondary_server:
     dependency: transitive
     description:
@@ -166,10 +166,10 @@ packages:
     dependency: transitive
     description:
       name: at_utils
-      sha256: b4461b0743f323429d57c387e91186537df8a6aeb4608bbeb6c2adf01d9f08f9
+      sha256: c67a360696804b524627688c83232239d63b709826f0bcf72e14d8b93920cd2e
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.19"
+    version: "3.1.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -246,10 +246,10 @@ packages:
     dependency: transitive
     description:
       name: chalkdart
-      sha256: e7cfcc9a9d9546843304c1ff87fe0696c7eb82ee70e6df63f555f321b15a40d8
+      sha256: "82dfa884e3cf97641eb0742a3b9ffd41490666b9ece548b2e32cbfefe540bf86"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.3"
+    version: "2.4.0"
   charcode:
     dependency: transitive
     description:
@@ -266,6 +266,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
+  cli_config:
+    dependency: transitive
+    description:
+      name: cli_config
+      sha256: ac20a183a07002b700f0c25e61b7ee46b23c309d76ab7b7640a028f18e4d99ec
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0"
   clock:
     dependency: transitive
     description:
@@ -302,10 +310,10 @@ packages:
     dependency: transitive
     description:
       name: coverage
-      sha256: e3493833ea012784c740e341952298f1cc77f1f01b1bbc3eb4eecf6984fb7f43
+      sha256: "9086475ef2da7102a0c0a4e37e1e30707e7fb7b6d28c209f559a9c5f8ce42016"
       url: "https://pub.dev"
     source: hosted
-    version: "1.11.1"
+    version: "1.12.0"
   cron:
     dependency: transitive
     description:
