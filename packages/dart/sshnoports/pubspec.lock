@@ -9,6 +9,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "80.0.0"
+  alfred:
+    dependency: transitive
+    description:
+      name: alfred
+      sha256: cecd070b75d10eacce2c2148f7ffd489bf85faea4b12cfa608a3428febdaf6ca
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.2+1"
   analyzer:
     dependency: transitive
     description:
@@ -38,10 +46,10 @@ packages:
     dependency: transitive
     description:
       name: asn1lib
-      sha256: "068190d6c99c436287936ba5855af2e1fa78d8083ae65b4db6a281780da727ae"
+      sha256: e02d018628c870ef2d7f03e33f9ad179d89ff6ec52ca6c56bcb80bcef979867f
       url: "https://pub.dev"
     source: hosted
-    version: "1.6.0"
+    version: "1.6.2"
   async:
     dependency: transitive
     description:
@@ -54,10 +62,10 @@ packages:
     dependency: transitive
     description:
       name: at_auth
-      sha256: "2d2305bc850c4ebe2547027ea376bcd6be1d36de47dfee6bf5088181bffcb049"
+      sha256: "28f6e04428f608f283166a7f716df7bcab28a20623f2659c3df1f4362add8cff"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.0"
+    version: "2.2.0"
   at_base2e15:
     dependency: transitive
     description:
@@ -107,21 +115,23 @@ packages:
     source: hosted
     version: "1.2.0"
   at_lookup:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: at_lookup
-      sha256: "7359e742853950d889f5a3c6c421ea1f9c1966fd286078c014fd851c38c6681c"
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/at_lookup"
+      ref: feat-better-activate-cli-feedback
+      resolved-ref: aed9b6d35f6ebdb0c9bec6e0d804578482389b74
+      url: "https://github.com/atsign-foundation/at_libraries"
+    source: git
     version: "3.0.51"
   at_onboarding_cli:
     dependency: "direct main"
     description:
-      name: at_onboarding_cli
-      sha256: fe286f23be753e6b5a9773a3d3d90b490320fd3cb5a1e2248dd7162821e10bd1
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.8.3"
+      path: "packages/at_onboarding_cli"
+      ref: feat-better-activate-cli-feedback
+      resolved-ref: aed9b6d35f6ebdb0c9bec6e0d804578482389b74
+      url: "https://github.com/atsign-foundation/at_libraries"
+    source: git
+    version: "1.10.0"
   at_persistence_secondary_server:
     dependency: transitive
     description:
@@ -157,11 +167,12 @@ packages:
   at_utils:
     dependency: "direct main"
     description:
-      name: at_utils
-      sha256: b4461b0743f323429d57c387e91186537df8a6aeb4608bbeb6c2adf01d9f08f9
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.19"
+      path: "packages/at_utils"
+      ref: feat-better-activate-cli-feedback
+      resolved-ref: aed9b6d35f6ebdb0c9bec6e0d804578482389b74
+      url: "https://github.com/atsign-foundation/at_libraries"
+    source: git
+    version: "3.2.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -246,10 +257,10 @@ packages:
     dependency: "direct main"
     description:
       name: chalkdart
-      sha256: e7cfcc9a9d9546843304c1ff87fe0696c7eb82ee70e6df63f555f321b15a40d8
+      sha256: "82dfa884e3cf97641eb0742a3b9ffd41490666b9ece548b2e32cbfefe540bf86"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.3"
+    version: "2.4.0"
   charcode:
     dependency: transitive
     description:
@@ -266,6 +277,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
+  cli_config:
+    dependency: transitive
+    description:
+      name: cli_config
+      sha256: ac20a183a07002b700f0c25e61b7ee46b23c309d76ab7b7640a028f18e4d99ec
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0"
   clock:
     dependency: transitive
     description:
@@ -302,10 +321,10 @@ packages:
     dependency: transitive
     description:
       name: coverage
-      sha256: e3493833ea012784c740e341952298f1cc77f1f01b1bbc3eb4eecf6984fb7f43
+      sha256: "9086475ef2da7102a0c0a4e37e1e30707e7fb7b6d28c209f559a9c5f8ce42016"
       url: "https://pub.dev"
     source: hosted
-    version: "1.11.1"
+    version: "1.12.0"
   cron:
     dependency: transitive
     description:
@@ -551,10 +570,18 @@ packages:
     dependency: transitive
     description:
       name: mime
-      sha256: "41a20518f0cb1256669420fdba0cd90d21561e560ac240f26ef8322e45bb7ed6"
+      sha256: "801fd0b26f14a4a58ccb09d5892c3fbdeff209594300a542492cf13fba9d247a"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.0"
+    version: "1.0.6"
+  mime_type:
+    dependency: transitive
+    description:
+      name: mime_type
+      sha256: d652b613e84dac1af28030a9fba82c0999be05b98163f9e18a0849c6e63838bb
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   mocktail:
     dependency: "direct dev"
     description:
@@ -690,6 +717,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.0"
+  queue:
+    dependency: transitive
+    description:
+      name: queue
+      sha256: "9bc29632072f4dac6cd0056acbb63361f654e2def9ceb4b08cfe0f9cf5618409"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.4.0"
   shelf:
     dependency: transitive
     description:
