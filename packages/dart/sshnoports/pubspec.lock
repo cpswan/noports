@@ -115,22 +115,20 @@ packages:
     source: hosted
     version: "1.2.0"
   at_lookup:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      path: "packages/at_lookup"
-      ref: feat-better-activate-cli-feedback
-      resolved-ref: aed9b6d35f6ebdb0c9bec6e0d804578482389b74
-      url: "https://github.com/atsign-foundation/at_libraries"
-    source: git
-    version: "3.0.51"
+      name: at_lookup
+      sha256: "4bfac8b2ceacf351765494aad2954e5067b140ae4c8333be35cb583402289dd4"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.52"
   at_onboarding_cli:
     dependency: "direct main"
     description:
-      path: "packages/at_onboarding_cli"
-      ref: feat-better-activate-cli-feedback
-      resolved-ref: aed9b6d35f6ebdb0c9bec6e0d804578482389b74
-      url: "https://github.com/atsign-foundation/at_libraries"
-    source: git
+      name: at_onboarding_cli
+      sha256: "4fd96f94ba01299a2dac1ab4261b1778840d74185fde041432a491cea09755df"
+      url: "https://pub.dev"
+    source: hosted
     version: "1.10.0"
   at_persistence_secondary_server:
     dependency: transitive
@@ -167,11 +165,10 @@ packages:
   at_utils:
     dependency: "direct main"
     description:
-      path: "packages/at_utils"
-      ref: feat-better-activate-cli-feedback
-      resolved-ref: aed9b6d35f6ebdb0c9bec6e0d804578482389b74
-      url: "https://github.com/atsign-foundation/at_libraries"
-    source: git
+      name: at_utils
+      sha256: "97507d219c528ee2f3f7aba0d6b2641221e79ff67264fe2e24531dfd8edf8edd"
+      url: "https://pub.dev"
+    source: hosted
     version: "3.2.0"
   boolean_selector:
     dependency: transitive
