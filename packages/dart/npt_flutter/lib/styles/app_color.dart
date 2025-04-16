@@ -8,6 +8,6 @@ class AppColor {
   static const cardColorDark = Color(0xFFEAEAEA);
   static const successColor = Color(0xFFA4CC4F);
   static const errorColor = Color(0xFFBF0813);
-
+  static const outlinePaddingColor = Color(0xFFEAEAEA);
   static const textFieldBorderColor = Color(0xFFD9D9D9);
 }
