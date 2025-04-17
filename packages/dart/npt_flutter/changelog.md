@@ -6,6 +6,7 @@
 - **FEAT**: Added Version Number on the onboarding and settings screen.
 - **FIX**: Added Localization support for the authentication feature.
 - **FIX**: Backup Key is implemented correctly.
+- **FIX**: Authorization screen
 
 ## 1.0.0
 
