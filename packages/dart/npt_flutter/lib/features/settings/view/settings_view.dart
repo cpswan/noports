@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:npt_flutter/features/settings/settings.dart';
 import 'package:npt_flutter/features/settings/widgets/advance_section.dart';
-import 'package:npt_flutter/features/settings/widgets/contact_list_tile.dart';
 import 'package:npt_flutter/features/settings/widgets/default_relay_section.dart';
 import 'package:npt_flutter/features/settings/widgets/language_section.dart';
 import 'package:npt_flutter/widgets/custom_card.dart';
@@ -50,7 +49,6 @@ class SettingsView extends StatelessWidget {
                           const CustomTextButton.feedback(),
                           const CustomTextButton.privacyPolicy(),
                           const CustomTextButton.signOut(),
-                          const ContactListTile(),
                           gapH13,
                           FutureBuilder(
                               future: PackageInfo.fromPlatform(),
