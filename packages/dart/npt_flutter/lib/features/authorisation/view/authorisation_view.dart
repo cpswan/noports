@@ -18,7 +18,6 @@ class AuthorisationView extends StatelessWidget {
           themeData: Theme.of(context).copyWith(
             colorScheme: Theme.of(context).colorScheme.copyWith(
                   primary: Theme.of(context).colorScheme.primary,
-                  surface: Colors.white,
                 ),
           ),
         ),
