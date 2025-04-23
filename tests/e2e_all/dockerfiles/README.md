@@ -4,11 +4,15 @@
   * [Dockerfile.c.branch](#dockerfilecbranch)
     + [1. From Commit Hash](#1-from-commit-hash-1)
     + [2. From Branch Name](#2-from-branch-name-1)
+  * [Dockerfile.c.current](#dockerfileccurrent)
+    + [1. From Root Directory](#1-from-root-directory)
   * [Dockerfile.c.release](#dockerfilecrelease)
     + [1. From Release Version](#1-from-release-version-1)
   * [Dockerfile.dart.branch](#dockerfiledartbranch)
     + [1. From Commit Hash](#1-from-commit-hash)
     + [2. From Branch Name](#2-from-branch-name)
+  * [Dockerfile.dart.current](#dockerfiledartcurrent)
+    + [1. From Root Directory](#1-from-root-directory-1)
   * [Dockerfile.dart.release](#dockerfiledartrelease)
     + [1. From Release Version](#1-from-release-version)
     + [2. From Latest Version](#2-from-latest-version)
@@ -85,7 +89,7 @@ sudo docker run \
     /bin/bash -c "sudo service ssh start && /usr/local/bin/sshnpd -a @12snowboating -m @12alpaca -d c-current -s -v"
 ```
 
-Another way of doing the same thing but with `-d`
+Another way of doing the same thing but with `-d`:
 
 ```bash
 sudo docker run \
@@ -96,7 +100,7 @@ sudo docker run \
     /bin/bash -c "sudo service ssh start && /usr/local/bin/sshnpd -a @12snowboating -m @12alpaca -d c-current -s -v"
 ```
 
-Interactive container method
+Interactive container method using `-it`:
 
 ```bash
 sudo docker run \
