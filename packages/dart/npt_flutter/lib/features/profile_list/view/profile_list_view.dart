@@ -107,14 +107,10 @@ class _ProfileListViewState extends State<ProfileListView> {
                                       addRepaintBoundaries: false,
                                       itemCount: state.profiles.length,
                                       itemBuilder: (context, index) {
-                                        return KeepAlive(
-                                          keepAlive: true,
-                                          child: BlocProvider<ProfileBloc>(
-                                            key: Key("ProfileListView-BlocProvider-${profiles[index]}"),
-                                            create: (context) =>
-                                                context.read<ProfileCacheCubit>().getProfileBloc(profiles[index]),
-                                            child: const CustomCard.profile(child: ProfileView()),
-                                          ),
+                                        return BlocProvider.value(
+                                          key: Key("ProfileListView-BlocProvider-${profiles[index]}"),
+                                          value: context.read<ProfileCacheCubit>().getProfileBloc(profiles[index]),
+                                          child: const CustomCard.profile(child: ProfileView()),
                                         );
                                       },
                                     ),
