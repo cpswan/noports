@@ -302,7 +302,8 @@ void main() {
           identityKeyPair: atSshKeyPair,
           logStream: testStreamController.stream);
 
-      SshnpDeviceList sshnpDeviceList = await sshnp.listDevices(waitDuration: Duration(seconds: 1));
+      SshnpDeviceList sshnpDeviceList =
+          await sshnp.listDevices(waitDuration: Duration(seconds: 1));
       expect(sshnpDeviceList.info.length, 2);
       expect(sshnpDeviceList.activeDevices, ['active']);
       expect(sshnpDeviceList.inactiveDevices, ['inactive']);
