@@ -41,8 +41,7 @@ handlePublicKeyChangedEvent(AtClient atClient, Atsign atSign) {
           switch (name) {
             case AtServerEvent.atSignPKChangedEventName:
               logger.shout('HANDLING public key change event: $ej');
-              AtSignPKChangedEvent e =
-                  AtSignPKChangedEvent.fromJson(ej);
+              AtSignPKChangedEvent e = AtSignPKChangedEvent.fromJson(ej);
               List<String> keysToRemove = [
                 'shared_key.${e.atSign.substring(1)}$atSign',
                 '${e.atSign}:shared_key$atSign',
@@ -51,7 +50,10 @@ handlePublicKeyChangedEvent(AtClient atClient, Atsign atSign) {
 
               for (final k in keysToRemove) {
                 logger.shout('Removing $k from local storage');
-                await atClient.getLocalSecondary()!.keyStore!.remove(k);
+                await atClient
+                    .getLocalSecondary()!
+                    .keyStore!
+                    .remove(k, skipCommit: true);
               }
               logger.shout('HANDLED OK');
               break;
