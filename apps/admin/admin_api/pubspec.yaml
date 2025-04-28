@@ -17,7 +17,6 @@ dependencies:
   meta: ^1.16.0
   noports_core:
     path: ../../../packages/dart/noports_core
-    version: 6.3.0
 
 dependency_overrides:
   args:
