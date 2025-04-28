@@ -251,13 +251,18 @@ abstract class SshnpdChannel with AsyncInitialization, AtClientBindings {
   /// Returns a [SSHPNPDeviceList] object which contains a map of device names
   /// and corresponding info, and a list of active devices (devices which also
   /// responded to our real-time ping).
-  Future<SshnpDeviceList> listDevices() async {
+  Future<SshnpDeviceList> listDevices({
+    Duration waitDuration = Sshnp.defaultListDevicesWaitTime,
+  }) async {
     String sharedBy = params.sshnpdAtSign;
 
     if (sharedBy.isNotEmpty) {
-      return _listDevices(sharedBy,
-          useFullDeviceName:
-              false); // if -t was specified fullDeviceName is redundant
+      // if -t was specified fullDeviceName is redundant
+      return _listDevices(
+        sharedBy,
+        useFullDeviceName: false,
+        waitDuration: waitDuration,
+      );
     }
 
     // Shared by is empty so first we will lookup all potential device atsigns to list from
@@ -272,8 +277,9 @@ abstract class SshnpdChannel with AsyncInitialization, AtClientBindings {
     }
 
     // We have to do it this way, or for some reason we get cached keys which...
-    List<SshnpDeviceList> deviceLists =
-        await Future.wait(atSigns.map((a) => _listDevices(a)).toList());
+    List<SshnpDeviceList> deviceLists = await Future.wait(atSigns
+        .map((a) => _listDevices(a, waitDuration: waitDuration))
+        .toList());
 
     // consolidate the list
     SshnpDeviceList consolidatedList = SshnpDeviceList();
@@ -284,8 +290,11 @@ abstract class SshnpdChannel with AsyncInitialization, AtClientBindings {
     return consolidatedList;
   }
 
-  Future<SshnpDeviceList> _listDevices(String sharedBy,
-      {bool useFullDeviceName = true}) async {
+  Future<SshnpDeviceList> _listDevices(
+    String sharedBy, {
+    bool useFullDeviceName = true,
+    Duration waitDuration = Sshnp.defaultListDevicesWaitTime,
+  }) async {
     SshnpDeviceList deviceList = SshnpDeviceList();
     // get all the keys device_info.*.sshnpd
     var scanRegex =
@@ -355,8 +364,8 @@ abstract class SshnpdChannel with AsyncInitialization, AtClientBindings {
       ));
     }
 
-    // wait for 10 seconds in case any are being slow
-    await Future.delayed(const Duration(seconds: 10));
+    // wait for some duration in case any are being slow
+    await Future.delayed(waitDuration);
 
     return deviceList;
   }

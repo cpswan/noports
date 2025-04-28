@@ -161,5 +161,8 @@ abstract class SshnpCore
   }
 
   @override
-  Future<SshnpDeviceList> listDevices() => sshnpdChannel.listDevices();
+  Future<SshnpDeviceList> listDevices({
+    Duration waitDuration = Sshnp.defaultListDevicesWaitTime,
+  }) =>
+      sshnpdChannel.listDevices(waitDuration: waitDuration);
 }

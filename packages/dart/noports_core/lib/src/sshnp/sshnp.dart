@@ -70,12 +70,15 @@ abstract interface class Sshnp {
   /// and starts a shell.
   Future<SshnpRemoteProcess> runShell();
 
+  static const Duration defaultListDevicesWaitTime = Duration(seconds: 10);
+
   /// Send a ping out to all sshnpd and listen for heartbeats
   /// Returns two Iterable<String> and a Map<String, dynamic>:
   /// - Iterable<String> of atSigns of sshnpd that responded
   /// - Iterable<String> of atSigns of sshnpd that did not respond
   /// - Map<String, dynamic> where the keys are all atSigns included in the maps, and the values being their device info
-  Future<SshnpDeviceList> listDevices();
+  Future<SshnpDeviceList> listDevices(
+      {Duration waitDuration = defaultListDevicesWaitTime});
 
   /// Yields a string every time something interesting happens with regards to
   /// progress towards establishing the ssh connection.
