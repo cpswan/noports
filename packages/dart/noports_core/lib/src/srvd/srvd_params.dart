@@ -110,13 +110,12 @@ class SrvdParams {
     parser.addFlag(
       'per-session-storage',
       aliases: ['pss'],
-      defaultsTo: false,
-      negatable: false,
+      defaultsTo: true,
+      negatable: true,
       help: 'Use ephemeral local storage for each session.'
           ' When true, allows you to run multiple srvds concurrently on the'
-          ' same host, as the same user.'
-          ' Defaults to false, enabling you to run only a single local srvd'
-          ' concurrently.',
+          ' same host, as the same user. When false, only a single local srvd'
+          ' may run concurrently on the same host as the same user.',
     );
     parser.addFlag(
       'help',
