@@ -244,11 +244,11 @@ void main() {
 
       // StreamController to add the mock notification responses from SSHNPD.
       StreamController<AtNotification> streamController = StreamController();
-      // Adding a 2-second delay to set the device as the active device.
+      // Adding a brief delay to set the device as the active device.
       // First, the list of devices are fetched using AtClient.get("device_info.local.sshnp@<device_atsign>").
       // Then, a heartbeat is sent to each device to check if it's active.
-      // The 2-second delay ensures notification response is sent after AtClient.get is invoked.
-      Future.delayed(Duration(seconds: 2), () {
+      // The delay ensures notification response is sent after AtClient.get is invoked.
+      Future.delayed(Duration(milliseconds: 500), () {
         streamController.add(AtNotification(
             '123',
             '@alice:heartbeat.active.sshnp@alice_device',
@@ -302,7 +302,8 @@ void main() {
           identityKeyPair: atSshKeyPair,
           logStream: testStreamController.stream);
 
-      SshnpDeviceList sshnpDeviceList = await sshnp.listDevices();
+      SshnpDeviceList sshnpDeviceList =
+          await sshnp.listDevices(waitDuration: Duration(seconds: 1));
       expect(sshnpDeviceList.info.length, 2);
       expect(sshnpDeviceList.activeDevices, ['active']);
       expect(sshnpDeviceList.inactiveDevices, ['inactive']);

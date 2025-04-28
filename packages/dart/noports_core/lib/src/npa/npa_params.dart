@@ -1,5 +1,5 @@
 import 'package:args/args.dart';
-import 'package:noports_core/src/common/file_system_utils.dart';
+import 'package:at_cli_commons/at_cli_commons.dart';
 
 class NPAParams {
   final String authorizerAtsign;

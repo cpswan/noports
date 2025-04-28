@@ -5,7 +5,7 @@ import 'dart:io';
 // other packages
 import 'package:args/args.dart';
 // atPlatform packages
-import 'package:at_cli_commons/at_cli_commons.dart' as cli;
+import 'package:at_cli_commons/at_cli_commons.dart';
 import 'package:at_utils/at_utils.dart';
 import 'package:duration/duration.dart';
 import 'package:noports_core/npt.dart';
@@ -275,14 +275,14 @@ void main(List<String> args) async {
       }
       if (Platform.isWindows) {
         storageDir = Directory(standardAtClientStoragePath(
-          homeDirectory: Platform.environment['TEMP']!,
+          baseDir: Platform.environment['TEMP']!,
           atSign: clientAtSign,
           progName: '.npt',
           uniqueID: uniqueID,
         ));
       } else {
         storageDir = Directory(standardAtClientStoragePath(
-          homeDirectory: homeDirectory,
+          baseDir: homeDirectory,
           atSign: clientAtSign,
           progName: '.npt',
           uniqueID: uniqueID,
@@ -299,7 +299,7 @@ void main(List<String> args) async {
         });
       }
 
-      cli.CLIBase cliBase = cli.CLIBase(
+      CLIBase cliBase = CLIBase(
           atSign: clientAtSign,
           atKeysFilePath: parsedArgs['key-file'],
           nameSpace: DefaultArgs.namespace,

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:at_client/at_client.dart';
+import 'package:at_client/at_client_mixins.dart';
 import 'package:at_utils/at_logger.dart';
 import 'package:meta/meta.dart';
 import 'package:noports_core/src/sshnp/util/srvd_channel/srvd_exec_channel.dart';
@@ -14,7 +15,6 @@ import 'package:uuid/uuid.dart';
 import '../common/features.dart';
 import '../common/mixins/async_completion.dart';
 import '../common/mixins/async_initialization.dart';
-import '../common/mixins/at_client_bindings.dart';
 import '../common/streaming_logging_handler.dart';
 import '../sshnp/impl/notification_request_message.dart';
 import '../sshnp/util/srvd_channel/srvd_channel.dart';

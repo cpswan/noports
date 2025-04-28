@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:at_client/at_client.dart';
+import 'package:at_client/at_client_mixins.dart';
 import 'package:at_utils/at_utils.dart';
 import 'package:meta/meta.dart';
 import 'package:noports_core/src/common/mixins/async_initialization.dart';
-import 'package:noports_core/src/common/mixins/at_client_bindings.dart';
 import 'package:noports_core/src/sshnp/util/srvd_channel/notification_request_message.dart';
 import 'package:noports_core/srv.dart';
 import 'package:noports_core/srvd.dart';
@@ -136,7 +136,8 @@ abstract class SrvdChannel<T> with AsyncInitialization, AtClientBindings {
     subscribe(regex: '$sessionId.${Srvd.namespace}@', shouldDecrypt: true)
         .listen((notification) async {
       if (fetched) {
-        logger.warning('Got additional relay response ${notification.value} - ignoring');
+        logger.warning(
+            'Got additional relay response ${notification.value} - ignoring');
         return;
       }
       String ipPorts = notification.value.toString();
