@@ -15,6 +15,11 @@ class AuthorisationView extends StatelessWidget {
         ),
         child: AuthorisationHub(
           service: context.watch<AuthorisationService>(),
+          themeData: Theme.of(context).copyWith(
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+                  primary: Theme.of(context).colorScheme.primary,
+                ),
+          ),
         ),
       ),
     );

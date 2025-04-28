@@ -12,6 +12,10 @@ class AppTheme {
       fontSize: Sizes.p24,
       fontWeight: FontWeight.w500,
     ),
+    headlineSmall: TextStyle(
+      fontSize: 15,
+      fontWeight: FontWeight.w500,
+    ),
     titleMedium: TextStyle(
       fontSize: Sizes.p18,
       fontWeight: FontWeight.w600,
@@ -87,6 +91,7 @@ class AppTheme {
             primary: AppColor.primaryColor,
             surface: AppColor.surfaceColor,
             onSurface: AppColor.onSurfaceColor,
+            onSurfaceVariant: AppColor.onSurfaceColor,
             surfaceTint: Colors.transparent),
         appBarTheme: const AppBarTheme(
           color: AppColor.surfaceColor,
