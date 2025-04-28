@@ -1,5 +1,6 @@
 # 6.4.0
 - feat: have srvd use ephemeral local storage for its AtClient by default
+- feat: have srvd listen for PublicKeyChanged events
 # 6.3.0
 - feat: enable multiple instances of relays for load balancing and resilience
 # 6.2.1
