@@ -105,6 +105,7 @@ class StatusMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Tooltip(
+      verticalOffset: Sizes.p10n,
       message: tooltip,
       child: ListTile(
         contentPadding: EdgeInsets.zero,
