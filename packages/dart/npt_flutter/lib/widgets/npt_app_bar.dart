@@ -1,50 +1,105 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:npt_flutter/features/authorisation/widgets/authorisation_app_bar_button.dart';
+import 'package:npt_flutter/features/settings/repository/contact_repository.dart';
+import 'package:npt_flutter/home_wrapper_widget.dart';
+import 'package:npt_flutter/pages/sub_nav_cubit.dart';
+import 'package:npt_flutter/routes.dart';
 import 'package:npt_flutter/styles/app_color.dart';
 import 'package:npt_flutter/styles/style_constants.dart';
 
 import '../styles/sizes.dart';
 
-class NptAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final String title;
-  final Color? settingsSelectedColor;
-  final bool isNavigateBack;
-  final bool showSettings;
-
+class NptAppBar extends StatefulWidget implements PreferredSizeWidget {
   const NptAppBar({
     super.key,
-    this.title = '',
-    this.settingsSelectedColor,
-    this.isNavigateBack = true,
-    this.showSettings = true,
   });
 
   @override
-  Size get preferredSize => Size.fromHeight(isNavigateBack ? Sizes.p150 : Sizes.p100);
+  Size get preferredSize => const Size.fromHeight(Sizes.p150);
 
+  @override
+  State<NptAppBar> createState() => _NptAppBarState();
+}
+
+class _NptAppBarState extends State<NptAppBar> {
   @override
   Widget build(BuildContext context) {
     final strings = AppLocalizations.of(context)!;
-    return AppBar(
-      titleSpacing: 0,
-      leading: gap0,
-      toolbarHeight: isNavigateBack ? Sizes.p150 : Sizes.p100,
-      title: Row(
-        children: [
-          Column(
-            children: [
-              gapH16,
-              SvgPicture.asset(
-                'assets/noports_logo.svg',
-                height: Sizes.p54,
-                width: Sizes.p175,
-              ),
-              gapH16,
-              isNavigateBack
-                  ? TextButton.icon(
+    final atsign = ContactsService.getInstance().atClientManager.atClient.getCurrentAtSign();
+    return BlocBuilder<SubNavCubit, String>(
+      builder: (context, state) {
+        final isDashboard = state == HomeRoutes.dashboard;
+        return SizedBox(
+          width: Sizes.p853,
+          child: AppBar(
+            titleSpacing: 0,
+            leading: gap0,
+            toolbarHeight: Sizes.p150,
+            title: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                gapH40,
+                Row(
+                  children: [
+                    gapW27,
+                    SvgPicture.asset(
+                      'assets/noports_logo.svg',
+                      height: Sizes.p54,
+                      width: Sizes.p175,
+                    ),
+                    gapW27,
+                    Container(
+                      color: AppColor.dividerColor,
+                      height: Sizes.p38,
+                      width: Sizes.p2,
+                    ),
+                    gapW27,
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 250),
+                      switchInCurve: Curves.easeInOut,
+                      switchOutCurve: Curves.easeInOut,
+                      transitionBuilder: (child, animation) {
+                        final offsetAnimation = child.key == ValueKey(state)
+                            ? Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero).animate(animation)
+                            : Tween<Offset>(begin: const Offset(0, -1), end: Offset.zero).animate(animation);
+                        return SlideTransition(
+                          position: offsetAnimation,
+                          child: FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          ),
+                        );
+                      },
+                      // The layoutBuilder ensures the children are left aligned.
+                      layoutBuilder: (currentChild, previousChildren) {
+                        return Stack(
+                          alignment: AlignmentDirectional.centerStart,
+                          children: <Widget>[
+                            ...previousChildren,
+                            if (currentChild != null) currentChild,
+                          ],
+                        );
+                      },
+                      child: Text(
+                        routeName(state),
+                        key: ValueKey(state),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                  ],
+                ),
+                gapH16,
+                if (isDashboard) gapH40,
+                if (!isDashboard && wrapperNav.currentState!.canPop())
+                  SizedBox(
+                    height: Sizes.p40,
+                    child: TextButton.icon(
                       onPressed: () {
-                        Navigator.pop(context);
+                        wrapperNav.currentState!.pop(context);
                       },
                       label: Text(
                         strings.back,
@@ -53,51 +108,84 @@ class NptAppBar extends StatelessWidget implements PreferredSizeWidget {
                         Icons.arrow_back_ios,
                       ),
                       style: StyleConstants.backButtonStyle,
-                    )
-                  : gap0,
-            ],
-          ),
-          gapW27,
-          Column(
-            children: [
+                    ),
+                  ),
+              ],
+            ),
+            actions: [
               Container(
-                color: AppColor.dividerColor,
-                height: Sizes.p38,
-                width: Sizes.p2,
+                padding: const EdgeInsets.only(top: Sizes.p8, bottom: Sizes.p8, left: Sizes.p8, right: Sizes.p0),
+                decoration: BoxDecoration(
+                  color: AppColor.outlinePaddingColor,
+                  borderRadius: BorderRadius.circular(Sizes.p4),
+                ),
+                child: Row(
+                  children: [
+                    IgnorePointer(
+                      ignoring: !isDashboard,
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        opacity: 1,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: Sizes.p8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(Sizes.p4),
+                          ),
+                          height: 40,
+                          child: Row(
+                            children: [
+                              Text(
+                                atsign != null ? '@' : '',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(color: AppColor.primaryColor, fontSize: Sizes.p20),
+                              ),
+                              Text(
+                                atsign?.replaceFirst('@', '') ?? '',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    IgnorePointer(
+                      ignoring: !isDashboard,
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        opacity: isDashboard ? 1 : 0,
+                        child: const AuthorisationAppBarButton(),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              gapH25
+              IgnorePointer(
+                ignoring: !isDashboard,
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  opacity: isDashboard ? 1 : 0,
+                  child: IconButton(
+                    tooltip: strings.settings,
+                    icon: const Icon(
+                      Icons.settings_outlined,
+                    ),
+                    onPressed: () {
+                      wrapperNav.currentState!.pushNamed(HomeRoutes.settings);
+                    },
+                  ),
+                ),
+              ),
+              gapW103,
             ],
           ),
-          gapW20,
-          Column(
-            children: [
-              Text(
-                title,
-              ),
-              gapH25,
-            ],
-          ),
-        ],
-      ),
-      actions: [
-        showSettings
-            ? Padding(
-                padding: EdgeInsets.only(
-                  bottom: Sizes.p30,
-                  right: MediaQuery.of(context).size.width * Sizes.settingsIconPaddingFactor,
-                ),
-                child: IconButton(
-                  color: settingsSelectedColor,
-                  icon: const Icon(Icons.settings_outlined),
-                  onPressed: () {
-                    // the primary color is used when the navbar is on the settings screen and therefore the settings icon is not clickable.
-                    if (settingsSelectedColor != AppColor.primaryColor) Navigator.pushNamed(context, '/settings');
-                  },
-                ),
-              )
-            : gap0,
-      ],
-      centerTitle: true,
+        );
+      },
     );
   }
 }

@@ -1,19 +1,15 @@
-import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
-
-import 'package:at_backupkey_flutter/services/backupkey_service.dart';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart';
 import 'package:at_onboarding_flutter/at_onboarding_services.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:npt_flutter/constants.dart';
+import 'package:npt_flutter/features/back_up_key/cubit/backup_key_cubit.dart';
 import 'package:npt_flutter/features/onboarding/cubit/onboarding_cubit.dart';
 import 'package:npt_flutter/features/onboarding/util/atsign_manager.dart';
 import 'package:npt_flutter/features/onboarding/util/pre_offboard.dart';
 import 'package:npt_flutter/features/onboarding/widgets/onboarding_button.dart';
+import 'package:npt_flutter/home_wrapper_widget.dart';
 import 'package:npt_flutter/pages/loading_page.dart';
 import 'package:npt_flutter/routes.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -128,33 +124,7 @@ class CustomTextButton extends StatelessWidget {
         //   break;
         case CustomListTileType.backupYourKey:
           if (context.mounted) {
-            var atsign = context.read<OnboardingCubit>().getAtSign();
-            // Build file data
-            var aesEncryptedKeys = await BackUpKeyService.getEncryptedKeys(atsign);
-            var keyString = jsonEncode(aesEncryptedKeys);
-            final List<int> codeUnits = keyString.codeUnits;
-            final Uint8List data = Uint8List.fromList(codeUnits);
-
-            // Get file path to write to
-            String? outputFile = await FilePicker.platform.saveFile(
-              dialogTitle: strings.backupKeyDialogTitle,
-              fileName: '${atsign}_key.atKeys',
-            );
-            if (outputFile == null) return;
-            // Create and write the file
-            try {
-              var f = File(outputFile);
-              await f.create(recursive: true);
-              await f.writeAsBytes(data);
-            } catch (e) {
-              if (!context.mounted) return;
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  backgroundColor: Colors.red,
-                  content: Text(strings.errorAtKeySaveFailed(e.toString())),
-                ),
-              );
-            }
+            context.read<BackupKeyCubit>().backUpKeys();
           }
           break;
         case CustomListTileType.resetAtsign:
@@ -174,7 +144,10 @@ class CustomTextButton extends StatelessWidget {
 
             if (context.mounted && result == AtOnboardingResetResult.success) {
               onboardingService.setAtsign = null;
-              Navigator.of(context).pushNamed(Routes.onboarding);
+              Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
+                Routes.onboarding,
+                (route) => false,
+              );
             }
           }
           break;
@@ -192,10 +165,17 @@ class CustomTextButton extends StatelessWidget {
           break;
 
         case CustomListTileType.signOut:
-          Navigator.of(context)
-              .pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const LoadingPage()), (route) => false);
+          wrapperNav.currentState!.pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const LoadingPage()),
+            (route) => false,
+          );
           await preSignout();
-          if (context.mounted) Navigator.of(context).pushReplacementNamed(Routes.onboarding);
+          if (context.mounted) {
+            Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
+              Routes.onboarding,
+              (route) => false,
+            );
+          }
           break;
       }
     }

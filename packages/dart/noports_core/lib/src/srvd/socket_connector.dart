@@ -109,8 +109,23 @@ void socketConnector(ConnectorParams connectorParams) async {
   logger.info('Assigned ports [$portA, $portB]'
       ' for session ${srvdSessionParams.sessionId}');
 
+  // Make a ReceivePort so the main isolate can send messages to us
+  ReceivePort receivePort = ReceivePort(srvdSessionParams.sessionId);
+
   /// Return the assigned ports to the main isolate
-  sendPort.send((portA, portB));
+  sendPort.send(((portA, portB), receivePort.sendPort));
+
+  receivePort.listen((msg) {
+    switch (msg) {
+      case 'kill':
+        logger.shout('Received $msg from main isolate - terminating');
+        connector.close();
+        break;
+      default:
+        logger.shout('Received $msg from main isolate - ignoring');
+        break;
+    }
+  });
 
   /// Shut myself down once the socket connector closes
   logger.info('Waiting for connector to close');

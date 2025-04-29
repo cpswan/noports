@@ -12,6 +12,8 @@ import 'package:noports_core/src/srvd/socket_connector.dart';
 import 'package:noports_core/src/srvd/srvd.dart';
 import 'package:noports_core/src/srvd/srvd_params.dart';
 
+import '../common/handle_server_events.dart';
+
 @protected
 class SrvdImpl implements Srvd {
   @override
@@ -36,6 +38,8 @@ class SrvdImpl implements Srvd {
   @override
   @visibleForTesting
   bool initialized = false;
+
+  static int timeoutMs = 1000;
 
   static final String subscriptionRegex = '${Srvd.namespace}@';
 
@@ -121,6 +125,8 @@ class SrvdImpl implements Srvd {
     }
     NotificationService notificationService = atClient.notificationService;
 
+    handlePublicKeyChangedEvent(atClient, atSign);
+
     notificationService
         .subscribe(regex: subscriptionRegex, shouldDecrypt: true)
         .listen(_notificationHandler);
@@ -130,8 +136,6 @@ class SrvdImpl implements Srvd {
     if (!srvdUtil.accept(notification)) {
       return;
     }
-
-    logger.shout('New session request from ${notification.from}');
 
     late SrvdSessionParams sessionParams;
     try {
@@ -150,13 +154,53 @@ class SrvdImpl implements Srvd {
 
     logger.info('New session request params: $sessionParams');
 
-    (int, int) ports = await _spawnSocketConnector(
-      0,
-      0,
-      sessionParams,
-      logTraffic,
-      verbose,
-    );
+    logger.shout('Acquiring port pair');
+    PortPair ports;
+    // ignore: unused_local_variable
+    Isolate spawned;
+    SendPort sendToSpawned;
+    try {
+      (ports, spawned, sendToSpawned) = await _spawnSocketConnector(
+        0,
+        0,
+        sessionParams,
+        logTraffic,
+        verbose,
+      );
+    } catch (e) {
+      logger.shout('_spawnSocketConnector exception: $e');
+      return;
+    }
+
+    var mutexKey = AtKey.fromString('${sessionParams.sessionId}'
+        '.session_mutexes.${Srvd.namespace}'
+        '${atClient.getCurrentAtSign()!}')
+      ..metadata = (Metadata()
+        ..immutable = true // only one srvd will succeed in doing this
+        ..ttl = 30000); // expire after 30 seconds to keep datastore clean
+    PutRequestOptions pro = PutRequestOptions()
+      ..shouldEncrypt = false
+      ..useRemoteAtServer = true;
+
+    try {
+      await atClient.put(
+        mutexKey,
+        'lock',
+        putRequestOptions: pro,
+      );
+      logger.shout('😎 Will handle request from ${notification.from}'
+          '; acquired mutex $mutexKey');
+    } catch (err) {
+      if (err.toString().toLowerCase().contains('immutable')) {
+        logger.shout('🤷‍♂️ Will not handle request from ${notification.from}'
+            '; did not acquire mutex $mutexKey');
+        sendToSpawned.send('kill');
+      } else {
+        logger.shout('Will not handle; did not acquire mutex $mutexKey : $err');
+      }
+      return;
+    }
+
     var (portA, portB) = ports;
     logger.shout('Starting session ${sessionParams.sessionId}'
         ' for ${sessionParams.atSignA} to ${sessionParams.atSignB}'
@@ -196,7 +240,7 @@ class SrvdImpl implements Srvd {
   /// once the socketConnector has spawned and is ready to accept connections
   /// it sends back the port numbers to the main isolate
   /// then the port numbers are returned from this function
-  Future<PortPair> _spawnSocketConnector(
+  Future<(PortPair, Isolate, SendPort)> _spawnSocketConnector(
     int portA,
     int portB,
     SrvdSessionParams srvdSessionParams,
@@ -215,17 +259,27 @@ class SrvdImpl implements Srvd {
       verbose,
     );
 
-    logger
-        .info("Spawning socket connector isolate with parameters $parameters");
+    logger.info("Spawning socket connector isolate"
+        " with parameters $parameters");
 
-    unawaited(Isolate.spawn<ConnectorParams>(socketConnector, parameters));
+    Isolate spawned =
+        await Isolate.spawn<ConnectorParams>(socketConnector, parameters);
 
-    PortPair ports = await receivePort.first;
+    SendPort sendPort;
+    logger.info('Waiting for isolate to send its port pair info');
+    PortPair ports;
+    try {
+      (ports, sendPort) = await receivePort.first.timeout(
+        Duration(milliseconds: timeoutMs),
+      );
+    } on TimeoutException catch (_) {
+      throw TimeoutException('Timed out after ${timeoutMs}ms');
+    }
 
     logger.info('Received ports $ports in main isolate'
         ' for session ${srvdSessionParams.sessionId}');
 
-    return ports;
+    return (ports, spawned, sendPort);
   }
 }
 

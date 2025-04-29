@@ -14,7 +14,9 @@ class FormValidator {
 
   static String? validateRequiredAtsignField(String? value) {
     final strings = AppLocalizations.of(App.navState.currentContext!)!;
-    if (!value!.startsWith('@') || value.length < 2) {
+    if (value?.isEmpty ?? true) {
+      return strings.validationErrorEmptyField;
+    } else if (!value!.startsWith('@') || value.length < 2) {
       return strings.validationErrorAtsignField;
     }
     validateRequiredField(value);
@@ -95,6 +97,17 @@ class FormValidator {
     } else if (!value!.contains(RegExp(valid))) {
       return strings.validationErrorRemoteHostField;
     }
+    return null;
+  }
+
+  static String? validateEmptyRelayField(String? value) {
+    final strings = AppLocalizations.of(App.navState.currentContext!)!;
+    if (value?.isEmpty ?? true) {
+      return null;
+    } else if (!value!.startsWith('@') || value.length < 2) {
+      return strings.validationErrorRelayField;
+    }
+    validateRequiredField(value);
     return null;
   }
 }

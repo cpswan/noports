@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:at_chops/at_chops.dart';
 import 'package:at_client/at_client.dart';
+import 'package:at_client/at_client_mixins.dart';
 import 'package:at_utils/at_utils.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:noports_core/srv.dart';

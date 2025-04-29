@@ -1,5 +1,5 @@
 name: npt_flutter
-description: "A new Flutter project."
+description: "NoPorts Desktop app"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
@@ -16,7 +16,16 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.1+2
+version: 1.1.9+15
+msix_config:
+  display_name: "NoPorts Desktop"
+  publisher_display_name: Atsign Inc
+  identity_name: TheCompany.NoPortsDesktop
+  publisher: CN=BBFE1D0B-F713-4C7F-B375-5EA851CBB1FF
+  msix_version: 1.1.9.0
+  logo_path: "assets/logo.png"
+  capabilities: internetClient
+  store: true
 
 environment:
   sdk: ^3.5.0
@@ -31,13 +40,21 @@ dependencies:
   adaptive_theme: ^3.6.0
   at_auth: ^2.0.7
   at_backupkey_flutter: ^4.0.16
-  at_client_mobile: ^3.2.18
+  at_client_mobile:
+    git:
+      url: https://github.com/atsign-foundation/at_client_sdk.git
+      path: packages/at_client_mobile
+      ref: 8e8b68d2f00db0aeca266685be1e9c0b103ad301
   at_contact: ^3.0.8
   at_contacts_flutter: ^4.0.15
-  at_onboarding_flutter: ^6.1.8
+  at_onboarding_flutter:
+    git:
+      url: https://github.com/atsign-foundation/at_widgets.git
+      path: packages/at_onboarding_flutter
   at_server_status: ^1.0.5
   at_utils: ^3.0.16
   cupertino_icons: ^1.0.8
+  device_info_plus: ^11.3.3
   equatable: ^2.0.5
   file_picker: ^8.1.2
   flutter:
@@ -54,6 +71,7 @@ dependencies:
   meta: ^1.15.0
   noports_core:
     path: ../noports_core
+  package_info_plus: ^8.3.0
   path: ^1.9.0
   path_provider: ^2.1.4
   phosphor_flutter: ^2.1.0
@@ -63,17 +81,21 @@ dependencies:
   tray_manager: ^0.2.3
   url_launcher: ^6.3.0
   uuid: ^3.0.7
+  visibility_detector: ^0.4.0+2
   window_manager: ^0.4.2
   yaml: ^3.1.2
   yaml_writer: ^2.0.0
 dev_dependencies:
-  msix: ^3.16.8
   build_runner: ^2.4.12
   flutter_launcher_icons: "^0.14.1"
   flutter_test:
     sdk: flutter
+  msix: ^3.16.8
 
 dependency_overrides:
+  device_info_plus: 11.3.3
+  file: 7.0.1
+  meta: 1.15.0
   dartssh2:
     git:
       url: https://github.com/atsign-foundation/dartssh2
@@ -87,6 +109,11 @@ dependency_overrides:
       url: https://github.com/atsign-foundation/at_widgets
       ref: at_onboarding_flutter_layers
       path: packages/at_onboarding_flutter
+  at_client_mobile:
+    git:
+      url: https://github.com/atsign-foundation/at_client_sdk
+      ref: 533f657eec18f13a11dafbf67c0006c6cc010dde
+      path: packages/at_client_mobile
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -131,17 +158,6 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
-
-msix_config:
-  display_name: "NoPorts Desktop"
-  publisher_display_name: Atsign
-  identity_name: TheCompany.NoPortsDesktop
-  publisher: CN=BBFE1D0B-F713-4C7F-B375-5EA851CBB1FF
-  msix_version: 1.0.0.0
-  logo_path: "assets/logo.png"
-  capabilities: internetClient
-  store: true
-
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true

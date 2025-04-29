@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:npt_flutter/routes.dart';
+import 'package:npt_flutter/home_wrapper_widget.dart';
 import 'package:npt_flutter/pages/profile_form_page.dart';
+import 'package:npt_flutter/routes.dart';
 import 'package:npt_flutter/styles/sizes.dart';
 import 'package:npt_flutter/util/uuid.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -26,7 +27,7 @@ class ProfileListAddButton extends StatelessWidget {
             onPressed: () {
               final uuid = Uuid.generate();
               if (context.mounted) {
-                Navigator.of(context).pushNamed(Routes.profileForm, arguments: ProfileFormPageArguments(uuid));
+                wrapperNav.currentState!.pushNamed(HomeRoutes.profileForm, arguments: ProfileFormPageArguments(uuid));
               }
             },
             label: Text(strings.addNew),

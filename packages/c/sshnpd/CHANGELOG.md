@@ -1,3 +1,64 @@
+## 1.0.4
+
+- chore: change source packaging format
+  - If you are using 1.0.3 from GitHub releases (non-source code),
+    then there is no need to upgrade
+
+## 1.0.3
+
+- fix: uptake segfault bug fix in atsdk
+
+## 1.0.2
+
+- chore: uptake atsdk changes
+
+## 1.0.1
+
+- fix: remove the background thread used to update device_info (now synchronous)
+
+## 1.0.0
+
+- fix: memory leaks on the main daemon process
+
+## 0.4.1
+
+- feat: add Dart compliant at_activate binary in place of existing ones
+
+## 0.4.0
+
+- breaking: reimplement at_activate to conform to dart interface
+  - only onboard supported with this new interface
+
+## 0.3.4
+
+- ci: Use TARGETARCH so armv7 builds on arm64 runner
+
+## 0.3.3
+
+- ci: Move armv7 build back to amd64 runner
+
+## 0.3.2
+
+- chore: Fix version numbers
+
+## 0.3.1
+
+- chore: explicitly link cjson
+- ci: Use arm64 runners for arm builds
+
+## 0.3.0
+
+- feat: Add at_activate
+
+## 0.2.6
+
+- fix: stabilize monitor connection
+  - automatic failover / reconnect after ~40 seconds of down time
+
+## 0.2.5
+
+- fix: uptake some fixes in monitor
+
 ## 0.2.4
 
 - fix: Disabled clang-tidy missing-includes, as it malformed header includes

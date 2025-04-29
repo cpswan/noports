@@ -44,7 +44,7 @@ class ProfilePopupMenuButton extends StatelessWidget {
 
                 if (context.mounted) {
                   Navigator.of(context)
-                      .pushNamed(Routes.profileForm, arguments: ProfileFormPageArguments(state.profile.uuid));
+                      .pushNamed(HomeRoutes.profileForm, arguments: ProfileFormPageArguments(state.profile.uuid));
                 }
               },
             ),
@@ -61,7 +61,7 @@ class ProfilePopupMenuButton extends StatelessWidget {
                   if (state is! ProfileLoadedState) return;
                   var copyFrom = state.profile;
                   if (context.mounted) {
-                    Navigator.of(context).pushNamed(Routes.profileForm,
+                    Navigator.of(context).pushNamed(HomeRoutes.profileForm,
                         arguments: ProfileFormPageArguments(Uuid.generate(), copyFrom: copyFrom));
                   }
                 }),
@@ -81,21 +81,14 @@ class ProfilePopupMenuButton extends StatelessWidget {
 
                   showDialog(
                       context: context,
-                      builder: (BuildContext context) => MultiSelectDialog(strings.profileExportMessage, {
-                            strings.json: Export.getExportCallback(ExportableProfileFiletype.json, [json]),
-                            strings.yaml: Export.getExportCallback(ExportableProfileFiletype.yaml, [json]),
-                          }));
-                }),
-            PopupMenuItem(
-                child: Row(
-                  children: [
-                    PhosphorIcon(PhosphorIcons.arrowClockwise()),
-                    gapW10,
-                    Text(strings.refresh),
-                  ],
-                ),
-                onTap: () {
-                  context.read<ProfileBloc>().add(const ProfileLoadEvent(useCache: false));
+                      builder: (BuildContext context) => MultiSelectDialog(
+                              title: strings.profileExportDialogTitle,
+                              message: strings.profileExportMessage,
+                              actions: {
+                                strings.json: Export.getExportCallback(ExportableProfileFiletype.json, [json]),
+                                strings.yamlRecommended:
+                                    Export.getExportCallback(ExportableProfileFiletype.yaml, [json]),
+                              }));
                 }),
             PopupMenuItem(
                 child: Row(
@@ -110,6 +103,8 @@ class ProfilePopupMenuButton extends StatelessWidget {
                     CustomSnackBar.notification(content: strings.profileRunningActionDeniedMessage);
                     return;
                   }
+                  var state = context.read<ProfileBloc>().state;
+                  if (state is! ProfileLoadedState) return;
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -117,8 +112,6 @@ class ProfilePopupMenuButton extends StatelessWidget {
                           message: strings.profileDeleteMessage,
                           actionText: strings.delete,
                           action: () {
-                            var state = context.read<ProfileBloc>().state;
-                            if (state is! ProfileLoadedState) return;
                             App.navState.currentContext
                                 ?.read<ProfileListBloc>()
                                 .add(ProfileListDeleteEvent(toDelete: [state.uuid]));

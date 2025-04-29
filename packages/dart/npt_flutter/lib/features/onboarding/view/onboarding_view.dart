@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:npt_flutter/features/onboarding/widgets/onboarding_button.dart';
 import 'package:npt_flutter/styles/sizes.dart';
 import 'package:npt_flutter/widgets/custom_text_button.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class OnboardingView extends StatelessWidget {
   const OnboardingView({super.key});
@@ -18,6 +19,19 @@ class OnboardingView extends StatelessWidget {
           child: SvgPicture.asset(
             'assets/onboarding_bg.svg',
             fit: BoxFit.cover,
+          ),
+        ),
+        Align(
+          alignment: Alignment.topLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(
+              top: Sizes.p44,
+              left: Sizes.p44,
+            ),
+            child: SvgPicture.asset(
+              'assets/noports_logo.svg',
+              width: Sizes.p200,
+            ),
           ),
         ),
         Align(
@@ -45,7 +59,27 @@ class OnboardingView extends StatelessWidget {
             ),
             child: CustomTextButton.resetAtsign(),
           ),
-        )
+        ),
+        FutureBuilder(
+            future: PackageInfo.fromPlatform(),
+            builder: (_, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: Sizes.p44,
+                      left: Sizes.p44,
+                    ),
+                    child: Text(
+                      'v${snapshot.data?.version}',
+                      style: textTheme.bodySmall,
+                    ),
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            }),
       ],
     );
   }

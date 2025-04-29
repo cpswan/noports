@@ -4,11 +4,13 @@ import 'dart:io';
 
 import 'package:at_chops/at_chops.dart';
 import 'package:at_client/at_client.dart' hide StringBuffer;
+import 'package:at_client/at_client_mixins.dart';
 import 'package:at_utils/at_logger.dart';
 import 'package:dartssh2/dartssh2.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:noports_core/src/common/features.dart';
+import 'package:noports_core/src/common/handle_server_events.dart';
 import 'package:noports_core/src/common/openssh_binary_path.dart';
 import 'package:noports_core/src/srv/srv.dart';
 import 'package:noports_core/src/sshnp/impl/notification_request_message.dart';
@@ -20,7 +22,7 @@ import 'package:socket_connector/socket_connector.dart';
 import 'package:uuid/uuid.dart';
 
 @protected
-class SshnpdImpl implements Sshnpd {
+class SshnpdImpl with AtClientBindings implements Sshnpd {
   @override
   final AtSignLogger logger = AtSignLogger(' sshnpd ');
 
@@ -224,11 +226,12 @@ class SshnpdImpl implements Sshnpd {
     logger.info('Starting heartbeat');
     startHeartbeat();
 
+    handlePublicKeyChangedEvent(atClient, deviceAtsign);
+
     String regex = '(^$device|\\.$device)\\.${DefaultArgs.namespace}@';
     logger.info('Subscribing to $regex');
     atClient.notificationService
-        .subscribe(
-            regex: regex, shouldDecrypt: true)
+        .subscribe(regex: regex, shouldDecrypt: true)
         .listen(
           _notificationHandler,
           onError: (e) => logger.severe('Notification Failed:$e'),

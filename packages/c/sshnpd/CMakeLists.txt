@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
 set(CMAKE_C_STANDARD 99)
 cmake_policy(SET CMP0135 NEW)
-project(sshnpd VERSION 0.0.1 LANGUAGES C)
+project(sshnpd VERSION 1.0.4 LANGUAGES C)
 
 # 1. Variables - you are free to edit anything in this step
 
@@ -9,7 +9,9 @@ project(sshnpd VERSION 0.0.1 LANGUAGES C)
 # globs are known as bad practice, so we do not use them here
 set(
   SSHNPD_SRCS
-  ${CMAKE_CURRENT_LIST_DIR}/src/background_jobs.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/daemon.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/daemon_utils.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/device_info.c
   ${CMAKE_CURRENT_LIST_DIR}/src/file_utils.c
   ${CMAKE_CURRENT_LIST_DIR}/src/handle_npt_request.c
   ${CMAKE_CURRENT_LIST_DIR}/src/handle_ping.c
@@ -22,6 +24,10 @@ set(
   ${CMAKE_CURRENT_LIST_DIR}/src/run_srv_process.c
 )
 
+if(SSHNPD_ENABLE_TESTING_SHUTDOWN_NOTIFICATION)
+  add_compile_definitions(SSHNPD_ENABLE_TESTING_SHUTDOWN_NOTIFICATION)
+endif()
+
 # 1b. Manually add your include directories here
 set(SSHNPD_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
 
@@ -32,6 +38,7 @@ set(ARGPARSE_DIR ${CMAKE_CURRENT_LIST_DIR}/../3rdparty/argparse)
 set(SRV_DIR ${CMAKE_CURRENT_LIST_DIR}/../srv)
 
 # 1e. Set compile definitions
+set(ATAUTH_BUILD_EXECUTABLES OFF)
 
 # ON=>builds tests by running the tests/CMakeLists.txt file and generates a
 # `tests/` folder in the build directory where `ctest` can be ran in that
@@ -91,17 +98,18 @@ endif()
 
 # 5. Create sshnpd_lib library target
 
+add_compile_options("-lrt")
 add_library(${PROJECT_NAME}-lib STATIC ${SSHNPD_SRCS})
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   target_link_libraries(
     ${PROJECT_NAME}-lib
-    PRIVATE atclient atchops atlogger srv-lib argparse::argparse-static
+    PRIVATE atclient atchops atlogger cjson srv-lib argparse::argparse-static
   )
 else()
   target_link_libraries(
     ${PROJECT_NAME}-lib
-    PRIVATE atclient atchops atlogger srv-lib argparse::argparse-static
+    PRIVATE atclient atchops atlogger cjson srv-lib argparse::argparse-static
   )
 endif()
 
@@ -143,6 +151,7 @@ target_link_libraries(
     atclient
     atchops
     atlogger
+    cjson
     argparse::argparse-static
 )
 
@@ -151,3 +160,7 @@ if(SSHNPD_BUILD_TESTS)
   enable_testing()
   add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/tests)
 endif()
+
+# setup atauth binaries
+add_executable(at_activate ${CMAKE_CURRENT_LIST_DIR}/src/at_activate.c)
+target_link_libraries(at_activate PRIVATE atauth)
