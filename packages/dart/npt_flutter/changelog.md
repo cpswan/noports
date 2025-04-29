@@ -1,4 +1,4 @@
-## 1.1.9+15
+## 1.2.0+15
 
 - **FIX**: Authorization screen
 - **FIX**: Backup Key is implemented correctly.
