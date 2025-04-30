@@ -86,20 +86,20 @@ packages:
     dependency: "direct main"
     description:
       name: at_cli_commons
-      sha256: "374d0d5e471d3f6802a5e7f3fb70208eeb163ca94f44c8ba065665b817c20b0c"
+      sha256: a8b91fff674ad4fd701ed4dcfbecc01f0a775fc33359a6f8ccfd1996b657ef52
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.0"
+    version: "2.1.0"
   at_client:
     dependency: "direct main"
     description:
       name: at_client
-      sha256: f98fc1e52e708c96b23a6f67fb1ec0f0b850be46436e11e06acbab189aed44e2
+      sha256: d437de35f99d1f70192f785413d39ad1617d3374477a7b03c8b110eb92bad030
       url: "https://pub.dev"
     source: hosted
-    version: "3.4.1"
+    version: "3.4.2"
   at_commons:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: at_commons
       sha256: "2b0db42dd47dec7fffccd0cf215eb40a6fd6bdb7e145f721da54d633a929997f"
