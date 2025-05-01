@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:at_client/at_client.dart' hide StringBuffer;
+import 'package:at_client/at_client_mixins.dart';
 import 'package:at_utils/at_logger.dart';
 import 'package:logging/logging.dart';
 import 'package:noports_core/npa.dart';
-import 'package:noports_core/src/common/mixins/at_client_bindings.dart';
 import 'package:noports_core/utils.dart';
 
 class NPAImpl with AtClientBindings implements NPA {

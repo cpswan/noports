@@ -9,5 +9,5 @@ curl -L https://github.com/atsign-foundation/noports/releases/latest/download/un
 To check if the installation downloaded correctly:
 
 ```bash
-ls | grep -w "universal.sh"
+stat universal.sh
 ```

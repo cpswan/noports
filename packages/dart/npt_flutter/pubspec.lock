@@ -95,6 +95,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
+  at_cli_commons:
+    dependency: transitive
+    description:
+      name: at_cli_commons
+      sha256: a8b91fff674ad4fd701ed4dcfbecc01f0a775fc33359a6f8ccfd1996b657ef52
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   at_client:
     dependency: transitive
     description:
@@ -124,10 +132,10 @@ packages:
     dependency: transitive
     description:
       name: at_commons
-      sha256: "6e0a53c26726e05727a2cfbb6d0062fb67205225fbe061315bfe0f187128e5bd"
+      sha256: "2b0db42dd47dec7fffccd0cf215eb40a6fd6bdb7e145f721da54d633a929997f"
       url: "https://pub.dev"
     source: hosted
-    version: "5.1.2"
+    version: "5.3.0"
   at_contact:
     dependency: "direct main"
     description:
@@ -168,6 +176,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.49"
+  at_onboarding_cli:
+    dependency: transitive
+    description:
+      name: at_onboarding_cli
+      sha256: fe286f23be753e6b5a9773a3d3d90b490320fd3cb5a1e2248dd7162821e10bd1
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.8.3"
   at_onboarding_flutter:
     dependency: "direct main"
     description:
@@ -956,7 +972,7 @@ packages:
       path: "../noports_core"
       relative: true
     source: path
-    version: "6.2.1"
+    version: "6.4.0"
   openssh_ed25519:
     dependency: transitive
     description:
@@ -974,21 +990,21 @@ packages:
     source: hosted
     version: "2.1.1"
   package_info_plus:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: package_info_plus
-      sha256: "70c421fe9d9cc1a9a7f3b05ae56befd469fe4f8daa3b484823141a55442d858d"
+      sha256: "7976bfe4c583170d6cdc7077e3237560b364149fcd268b5f53d95a991963b191"
       url: "https://pub.dev"
     source: hosted
-    version: "8.1.2"
+    version: "8.3.0"
   package_info_plus_platform_interface:
     dependency: transitive
     description:
       name: package_info_plus_platform_interface
-      sha256: a5ef9986efc7bf772f2696183a3992615baa76c1ffb1189318dd8803778fb05b
+      sha256: "6c935fb612dff8e3cc9632c2b301720c77450a126114126ffaafe28d2e87956c"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.2"
+    version: "3.2.0"
   path:
     dependency: "direct main"
     description:

@@ -3,10 +3,12 @@ import 'package:npt_flutter/app.dart';
 
 /// Constant sizes to be used in the app (paddings, gaps, rounded corners etc.)
 class Sizes {
+  static const p10n = -10.0;
+  static const p0 = 0.0;
   static const p2 = 2.0;
   // static const p3 = 3.0;
   static const p4 = 4.0;
-  // static const p5 = 5.0;
+  static const p6 = 6.0;
   static const p8 = 8.0;
   static const p10 = 10.0;
   static const p11 = 11.0;
@@ -63,6 +65,7 @@ class Sizes {
   static const p470 = 470.0;
   static const p500 = 500.0;
   static const p537 = 537.0;
+  static const p600 = 600.0;
   static const p654 = 654.0;
   static const p664 = 664.0;
   static const p743 = 743.0;

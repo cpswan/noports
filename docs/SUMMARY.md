@@ -6,10 +6,11 @@
   * [MacOS Installation Guides](installation/macos/README.md)
     * [MacOS Desktop Client Installation](installation/macos/desktop.md)
     * [MacOS CLI Client Installation](installation/macos/cli-client.md)
+    * [MacOS Device Installation (Hidden)](installation/macos/device-hidden.md)
     * [MacOS Device Installation](installation/macos/device.md)
   * [Linux Installation Guide](installation/linux/README.md)
-    * [Linux Full Installation](installation/linux/full.md)
     * [Linux Cli Client Installation](installation/linux/cli-client.md)
+    * [Linux Device Installation (hidden)](installation/linux/device-hidden.md)
     * [Linux Device Installation](installation/linux/device.md)
   * [Windows Installation Guide](installation/windows/README.md)
     * [Windows Desktop Client Installation](installation/windows/desktop.md)
@@ -51,7 +52,9 @@
     * [Client Additional Configuration](usage/basic-usage-1/additional-configuration.md)
   * [sshnpd configuration](usage/sshnpd-configuration/README.md)
     * [Daemon Additional Configuration](usage/sshnpd-configuration/daemon-additional-configuration.md)
-  * [Integrate with ssh config](usage/integrate-with-ssh-config.md)
+* [Integrations](integrations/README.md)
+  * [OpenSSH config](integrations/integrate-with-ssh-config.md)
+  * [PuTTY config](integrations/putty-config.md)
 
 ## Use Cases
 

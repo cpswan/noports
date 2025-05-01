@@ -28,9 +28,9 @@ class _ProfileListViewState extends State<ProfileListView> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final backupKeyState = await App.navState.currentContext!.read<BackupKeyCubit>().getBackupKeyStatus();
+      final shouldBackupKey = await App.navState.currentContext!.read<BackupKeyCubit>().getBackupKeyStatus();
 
-      if (backupKeyState == false && mounted) {
+      if (shouldBackupKey == false && mounted) {
         showDialog(
           context: context,
           barrierDismissible: false,
@@ -103,12 +103,13 @@ class _ProfileListViewState extends State<ProfileListView> {
                             isFullProfile
                                 ? Expanded(
                                     child: ListView.builder(
+                                      addAutomaticKeepAlives: false,
+                                      addRepaintBoundaries: false,
                                       itemCount: state.profiles.length,
                                       itemBuilder: (context, index) {
-                                        return BlocProvider<ProfileBloc>(
+                                        return BlocProvider.value(
                                           key: Key("ProfileListView-BlocProvider-${profiles[index]}"),
-                                          create: (context) =>
-                                              context.read<ProfileCacheCubit>().getProfileBloc(profiles[index]),
+                                          value: context.read<ProfileCacheCubit>().getProfileBloc(profiles[index]),
                                           child: const CustomCard.profile(child: ProfileView()),
                                         );
                                       },

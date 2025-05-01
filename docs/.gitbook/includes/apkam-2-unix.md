@@ -2,8 +2,8 @@
 title: apkam-2-unix
 ---
 
-<pre class="language-bash"><code class="lang-bash"><strong>~/.local/bin/at_activate enroll -a @&#x3C;REPLACE>_device \
-</strong><strong>  -s &#x3C;PASSCODE> \
+<pre class="language-bash"><code class="lang-bash">~/.local/bin/at_activate enroll -a @&#x3C;REPLACE>_device \
+<strong>  -s &#x3C;PASSCODE> \
 </strong><strong>  -p noports \
 </strong><strong>  -k ~/.atsign/keys/@&#x3C;REPLACE>_device_key.atKeys \
 </strong><strong>  -d &#x3C;DEVICE_NAME> \

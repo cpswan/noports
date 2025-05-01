@@ -19,7 +19,11 @@ class ProfileDeviceName extends StatelessWidget {
         }, builder: (BuildContext context, (String, String)? tuple) {
           if (tuple == null) return gap0;
           var (deviceName, sshnpdAtSign) = tuple;
-          return Tooltip(message: '$deviceName$sshnpdAtSign', child: Text('$deviceName$sshnpdAtSign'));
+          return Tooltip(
+            verticalOffset: Sizes.p10n,
+            message: '$deviceName$sshnpdAtSign',
+            child: Text('$deviceName$sshnpdAtSign'),
+          );
         }),
       ),
     );

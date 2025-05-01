@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:args/args.dart';
+import 'package:at_cli_commons/at_cli_commons.dart';
 import 'package:noports_core/src/common/default_args.dart';
-import 'package:noports_core/src/common/file_system_utils.dart';
 import 'package:noports_core/src/common/types.dart';
 import 'package:noports_core/src/common/validation_utils.dart';
 
@@ -131,9 +131,9 @@ class SshnpdParams {
       deviceGroup: r['device-group'],
       storagePath: r['storage-path'] ??
           standardAtClientStoragePath(
-              homeDirectory: homeDirectory,
+              baseDir: homeDirectory,
               atSign: deviceAtsign,
-              progName: '.sshnpd',
+              progName: 'sshnpd',
               uniqueID: device),
       permitOpen: permitOpen,
     );
