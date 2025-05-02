@@ -32,6 +32,98 @@ waitUntilStarted() {
   done
 }
 
+# e.g. `buildDockerDaemon d 4.0.5``
+buildDockerDaemon() {
+    dockerfilesDir="$(dirname "$0")/../../dockerfiles"
+    local type="$1"
+    local version="$2"
+    
+    logInfo "Building container for:      Type: $type, Version: $version"
+    
+      if [[ "$type" == "d" ]]; then
+          language="dart"
+      elif [[ "$type" == "c" ]]; then
+          language="c"
+      else
+          logErrorAndReport "Error: Unknown type: $type"
+          return 1
+      fi
+
+      if [[ "$version" == "current" ]]; then
+          dockerfile="$dockerfilesDir/Dockerfile.$language.current"
+          fTag="-t noports-$language:current"
+          fBuildArg=""
+      else
+          # assume "$version" is a release version like "4.0.5" or "5.2.0"
+          dockerfile="$dockerfilesDir/Dockerfile.$language.release"
+          fTag="-t noports-$language:v$version"
+          fBuildArg="--build-arg release=v$version"
+      fi
+
+      sudo docker build \
+          -f "$dockerfile" \
+          $fTag \
+          $fBuildArg \
+          --quiet \
+          --target runtime \
+          .
+      
+      local exitCode=$?
+      if [[ $exitCode -ne 0 ]]; then
+          logErrorAndReport "Error: Docker build failed with exit code $exitCode"
+          return $exitCode
+      else
+          logInfo "Container built successfully"
+          return 0
+      fi
+}
+
+# e.g. `runDockerDaemon "d" "4.0.5" "deviceName" "clientAtSign" "daemonAtSign" "-u -s"
+# e.g. `runDockerDaemon "c" "current" "deviceName" "clientAtSign" "daemonAtSign"`
+runDockerDaemon() {
+    local type="$1"
+    local version="$2"
+    local deviceName="$3"
+    local clientAt="$4"
+    local daemonAt="$5"
+    local daemonFlags="$6"
+
+    if [[ "$type" == "d" ]]; then
+        language="dart"
+    elif [[ "$type" == "c" ]]; then
+        language="c"
+    else
+        logErrorAndReport "Error: Unknown type: $type"
+        return 1
+    fi
+
+    if [[ "$version" == "current" ]]; then
+        fTag="noports-$language:current"
+    else
+        fTag="noports-$language:v$version"
+    fi
+
+    logInfo "Starting container for: Type: $type, Version: $version, Flags: $daemonFlags, Device name: $deviceName, Client atSign: $clientAt, Daemon atSign: $daemonAt"
+
+    sudo docker run \
+        -d \
+        --rm \
+        -v "$HOME/.atsign/keys/:/atsign/.atsign/keys/" \
+        "$fTag" \
+        /bin/bash -c "sudo service ssh start && /usr/local/bin/sshnpd -a $daemonAt -m $clientAt -d $deviceName $daemonFlags -v"
+    
+    local exitCode=$?
+    if [[ $exitCode -ne 0 ]]; then
+        logErrorAndReport "Error: Docker run failed with exit code $exitCode"
+        return $exitCode
+    else
+        logInfo "Container started successfully"
+        return 0
+    fi
+}
+
+
+
 # For each daemonVersion
 # Start two daemons for each typeAndVersion
 # 1) with the -u and -s flags set
