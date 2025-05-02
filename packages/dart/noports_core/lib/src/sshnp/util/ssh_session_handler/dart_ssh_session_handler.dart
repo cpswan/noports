@@ -8,6 +8,7 @@ import 'package:at_utils/at_logger.dart';
 import 'package:dartssh2/dartssh2.dart';
 import 'package:meta/meta.dart';
 import 'package:noports_core/sshnp_foundation.dart';
+import 'package:at_cli_commons/at_cli_commons.dart';
 
 mixin DartSshSessionHandler on SshnpCore
     implements SshSessionHandler<SSHClient> {

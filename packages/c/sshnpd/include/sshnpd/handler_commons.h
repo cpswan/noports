@@ -3,12 +3,10 @@
 #include "sshnpd/params.h"
 #include <atclient/json.h>
 #include <atclient/monitor.h>
-#include <pthread.h>
 
 #define BYTES(x) (sizeof(unsigned char) * x)
 
-int verify_envelope_signature_from(cJSON *envelope, char *requesting_atsign, atclient *atclient,
-                                   pthread_mutex_t *atclient_lock);
+int verify_envelope_signature_from(cJSON *envelope, char *requesting_atsign, atclient *atclient);
 int verify_envelope_signature(atchops_rsa_key_public_key *publickey, const unsigned char *payload,
                               unsigned char *signature, const char *hashing_algo, const char *signing_algo);
 
@@ -25,7 +23,6 @@ int create_rvd_auth_string(cJSON *payload, atchops_rsa_key_private_key *signing_
 int setup_rvd_session_encryption(cJSON *payload, unsigned char **session_aes_key, char **session_aes_key_base64,
                                  unsigned char **session_iv, char **session_iv_base64);
 
-int send_success_payload(cJSON *payload, atclient *atclient, pthread_mutex_t *atclient_lock, sshnpd_params *params,
-                         char *session_aes_key_base64, char *session_iv_base64,
-                         atchops_rsa_key_private_key *signing_key, char *requesting_atsign);
+int send_success_payload(cJSON *payload, atclient *atclient, sshnpd_params *params, char *session_aes_key_base64,
+                         char *session_iv_base64, atchops_rsa_key_private_key *signing_key, char *requesting_atsign);
 #endif

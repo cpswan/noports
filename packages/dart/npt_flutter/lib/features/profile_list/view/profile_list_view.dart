@@ -4,17 +4,43 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:npt_flutter/app.dart';
+import 'package:npt_flutter/features/back_up_key/cubit/backup_key_cubit.dart';
+import 'package:npt_flutter/features/back_up_key/widgets/backup_key_alert_dialog.dart';
 import 'package:npt_flutter/features/profile/profile.dart';
 import 'package:npt_flutter/features/profile/view/profile_header_view.dart';
 import 'package:npt_flutter/features/profile_list/profile_list.dart';
+import 'package:npt_flutter/features/profile_list/widgets/profile_list_failed_load_content.dart';
 import 'package:npt_flutter/styles/sizes.dart';
 import 'package:npt_flutter/widgets/spinner.dart';
 
 import '../../../widgets/custom_card.dart';
 import '../cubit/sync_cubit.dart';
 
-class ProfileListView extends StatelessWidget {
+class ProfileListView extends StatefulWidget {
   const ProfileListView({super.key});
+
+  @override
+  State<ProfileListView> createState() => _ProfileListViewState();
+}
+
+class _ProfileListViewState extends State<ProfileListView> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final shouldBackupKey = await App.navState.currentContext!.read<BackupKeyCubit>().getBackupKeyStatus();
+
+      if (shouldBackupKey == false && mounted) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          barrierColor: Colors.black.withValues(alpha: 0.2),
+          builder: (context) => const BackupKeyAlertDialog(),
+        );
+      }
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,21 +51,7 @@ class ProfileListView extends StatelessWidget {
     return BlocBuilder<ProfileListBloc, ProfileListState>(builder: (context, state) {
       return switch (state) {
         ProfileListInitial() || ProfileListLoading() => const Center(child: Spinner()),
-        ProfileListFailedLoad() => CustomCard.dashboardContent(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(strings.profilesFailedLoaded),
-                ElevatedButton(
-                  child: Text(strings.reload),
-                  onPressed: () {
-                    context.read<ProfileListBloc>().add(const ProfileListLoadEvent());
-                  },
-                ),
-              ],
-            ),
-          ),
+        ProfileListFailedLoad() => const ProfileListFailedLoadContent(),
         ProfileListLoaded() =>
           BlocBuilder<ProfileListBloc, ProfileListState>(builder: (BuildContext context, ProfileListState state) {
             if (state is! ProfileListLoaded) {
@@ -91,12 +103,13 @@ class ProfileListView extends StatelessWidget {
                             isFullProfile
                                 ? Expanded(
                                     child: ListView.builder(
+                                      addAutomaticKeepAlives: false,
+                                      addRepaintBoundaries: false,
                                       itemCount: state.profiles.length,
                                       itemBuilder: (context, index) {
-                                        return BlocProvider<ProfileBloc>(
+                                        return BlocProvider.value(
                                           key: Key("ProfileListView-BlocProvider-${profiles[index]}"),
-                                          create: (context) =>
-                                              context.read<ProfileCacheCubit>().getProfileBloc(profiles[index]),
+                                          value: context.read<ProfileCacheCubit>().getProfileBloc(profiles[index]),
                                           child: const CustomCard.profile(child: ProfileView()),
                                         );
                                       },
@@ -119,7 +132,10 @@ class ProfileListView extends StatelessWidget {
                                       )
                                     ],
                                   ),
-                            BlocBuilder<SyncCubit, bool>(builder: (context, state) {
+                            BlocBuilder<SyncCubit, bool>(buildWhen: (previous, current) {
+                              log('previous: $previous, current: $current');
+                              return previous != current;
+                            }, builder: (context, state) {
                               if (state == false) {
                                 return Column(
                                   children: [
@@ -131,6 +147,7 @@ class ProfileListView extends StatelessWidget {
                                   ],
                                 );
                               }
+                              log('gap 0 called');
                               return gap0;
                             }),
                             gapH25,

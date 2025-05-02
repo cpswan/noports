@@ -31,9 +31,7 @@ class ProfileSelectedDeleteButton extends StatelessWidget {
                 context: context,
                 builder: (BuildContext context) => ConfirmationDialog(
                     message: strings.profileDeleteSelectedMessage,
-                    secondaryMessage: filtered.length != selected.length
-                        ? "Some profiles are running and won't be deleted, stop those profiles first to delete them."
-                        : null,
+                    secondaryMessage: filtered.length != selected.length ? strings.profileDeleteSecondaryMessage : null,
                     actionText: strings.delete,
                     action: () {
                       App.navState.currentContext?.read<ProfilesSelectedCubit>().deselectAll();

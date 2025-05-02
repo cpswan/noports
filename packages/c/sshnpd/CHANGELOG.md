@@ -1,3 +1,21 @@
+## 1.0.4
+
+- chore: change source packaging format
+  - If you are using 1.0.3 from GitHub releases (non-source code),
+    then there is no need to upgrade
+
+## 1.0.3
+
+- fix: uptake segfault bug fix in atsdk
+
+## 1.0.2
+
+- chore: uptake atsdk changes
+
+## 1.0.1
+
+- fix: remove the background thread used to update device_info (now synchronous)
+
 ## 1.0.0
 
 - fix: memory leaks on the main daemon process

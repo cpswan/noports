@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:npt_flutter/features/authorisation/cubit/pending_requests_count_cubit.dart';
 import 'package:npt_flutter/home_wrapper_widget.dart';
 import 'package:npt_flutter/routes.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class AuthorisationAppBarButton extends StatefulWidget {
@@ -46,12 +46,11 @@ class AuthorisationAppBarButtonState extends State<AuthorisationAppBarButton> {
               return IconButton(
                 tooltip: strings.authorisation,
                 icon: Badge.count(
-                  count: authorisationNotificationCount.count,
-                  isLabelVisible: authorisationNotificationCount.count > 0,
-                  backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-                  textColor: Theme.of(context).colorScheme.primary,
-                  child: const Icon(Icons.key_outlined),
-                ),
+                    count: authorisationNotificationCount.count,
+                    isLabelVisible: authorisationNotificationCount.count > 0,
+                    backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                    textColor: Theme.of(context).colorScheme.primary,
+                    child: PhosphorIcon(PhosphorIcons.key())),
                 onPressed: () {
                   wrapperNav.currentState!.pushNamed(HomeRoutes.authorisation);
                 },

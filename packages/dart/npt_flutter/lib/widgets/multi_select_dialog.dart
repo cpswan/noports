@@ -4,14 +4,15 @@ import 'package:npt_flutter/styles/app_color.dart';
 
 class MultiSelectDialog extends StatelessWidget {
   final String message;
+  final String title;
   final Map<String, VoidCallback> actions;
-  const MultiSelectDialog(this.message, this.actions, {super.key});
+  const MultiSelectDialog({required this.title, required this.message, required this.actions, super.key});
 
   @override
   Widget build(BuildContext context) {
     final strings = AppLocalizations.of(context)!;
     return AlertDialog(
-      title: Text(strings.profileExportDialogTitle),
+      title: Text(title),
       content: Text(message),
       actions: <Widget>[
         TextButton(

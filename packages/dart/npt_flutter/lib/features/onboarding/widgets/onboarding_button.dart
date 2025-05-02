@@ -12,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:npt_flutter/app.dart';
 import 'package:npt_flutter/constants.dart';
+import 'package:npt_flutter/features/back_up_key/cubit/backup_key_cubit.dart';
 import 'package:npt_flutter/features/onboarding/onboarding.dart';
 import 'package:npt_flutter/features/onboarding/util/atsign_manager.dart';
 import 'package:npt_flutter/features/onboarding/util/onboarding_util.dart';
@@ -21,6 +22,7 @@ import 'package:npt_flutter/features/onboarding/widgets/apkam_choice_dialog.dart
 import 'package:npt_flutter/features/onboarding/widgets/onboarding_apkam_dialog.dart';
 import 'package:npt_flutter/features/onboarding/widgets/onboarding_dialog.dart';
 import 'package:npt_flutter/routes.dart';
+import 'package:npt_flutter/styles/sizes.dart';
 import 'package:npt_flutter/util/language.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -90,9 +92,9 @@ class _OnboardingButtonState extends State<OnboardingButton> {
             ),
           _OnboardingButtonStatus.loading => const SizedBox(
               key: Key('loading state'),
-              height: 18,
-              width: 18,
-              child: CircularProgressIndicator(strokeWidth: 2),
+              height: Sizes.p18,
+              width: Sizes.p18,
+              child: CircularProgressIndicator(strokeWidth: Sizes.p2),
             ),
         },
       ),
@@ -168,6 +170,10 @@ class _OnboardingButtonState extends State<OnboardingButton> {
             rootDomain: rootDomain,
           ),
         );
+        final backupKeyCubit = App.navState.currentContext!.read<BackupKeyCubit>();
+        if (backupKeyCubit.state == false) {
+          await backupKeyCubit.putBackupKeyStatus(backupKeyCubit.state);
+        }
 
         log('atsign result is:$result');
 
@@ -208,6 +214,8 @@ class _OnboardingButtonState extends State<OnboardingButton> {
       // Automatically start activation with the already entered atSign
       case AtSignStatus.unavailable:
       case AtSignStatus.teapot:
+        // If the atSign is in teapot, we have to back up the keys after onboarding
+        App.navState.currentContext!.read<BackupKeyCubit>().setBackupKeyStatus(false);
         final apiKey = await Constants.appAPIKey;
 
         if (apiKey == null) {

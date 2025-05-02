@@ -14,7 +14,6 @@ class ContactListTile extends StatelessWidget {
     final contactRepo = ContactsService.getInstance();
     final strings = AppLocalizations.of(context)!;
 
-    final bodyMedium = Theme.of(context).textTheme.bodyMedium!;
     final bodySmall = Theme.of(context).textTheme.bodySmall!;
     return FutureBuilder(
         future: contactRepo.getCurrentAtsignContactDetails(),
@@ -34,10 +33,6 @@ class ContactListTile extends StatelessWidget {
                       borderRadius: BorderRadius.circular(Sizes.p8.toFont),
                     ),
                     title: Text(
-                      snapshot.data?['name'] ?? '',
-                      style: bodyMedium.copyWith(fontSize: 8.toFont),
-                    ),
-                    subtitle: Text(
                       contactRepo.atClientManager.atClient.getCurrentAtSign() ?? '',
                       style: bodySmall.copyWith(fontSize: 8.toFont),
                     )),

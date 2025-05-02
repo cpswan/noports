@@ -262,5 +262,48 @@ int permit_open_parse_test() {
     ret = 1;
   }
 
+  char **permitopen_hosts6 = NULL;
+  uint16_t *permitopen_ports6 = NULL;
+  size_t permitopen_len6;
+  ret = parse_permitopen(strdup("\"localhost:22,foo.bar.com:3389\""), &permitopen_hosts6, &permitopen_ports6,
+                         &permitopen_len6, false);
+
+  if (ret != 0 || permitopen_len6 != 2 || strcmp(permitopen_hosts6[0], "localhost") != 0 ||
+      permitopen_ports6[0] != 22 || strcmp(permitopen_hosts6[1], "foo.bar.com") != 0 || permitopen_ports6[1] != 3389) {
+    ret = 1;
+  }
+
+  char **permitopen_hosts7 = NULL;
+  uint16_t *permitopen_ports7 = NULL;
+  size_t permitopen_len7;
+  ret = parse_permitopen(strdup("'localhost:22,foo.bar.com:3389'"), &permitopen_hosts7, &permitopen_ports7,
+                         &permitopen_len7, false);
+
+  if (ret != 0 || permitopen_len7 != 2 || strcmp(permitopen_hosts7[0], "localhost") != 0 ||
+      permitopen_ports7[0] != 22 || strcmp(permitopen_hosts7[1], "foo.bar.com") != 0 || permitopen_ports7[1] != 3389) {
+    ret = 1;
+  }
+
+  char **permitopen_hosts8 = NULL;
+  uint16_t *permitopen_ports8 = NULL;
+  size_t permitopen_len8;
+  ret = parse_permitopen(strdup("\"\"localhost:22,foo.bar.com:3389\"\""), &permitopen_hosts8, &permitopen_ports8,
+                         &permitopen_len8, false);
+
+  if (ret != 0 || permitopen_len8 != 2 || strcmp(permitopen_hosts8[0], "localhost") != 0 ||
+      permitopen_ports8[0] != 22 || strcmp(permitopen_hosts8[1], "foo.bar.com") != 0 || permitopen_ports8[1] != 3389) {
+    ret = 1;
+  }
+
+  char **permitopen_hosts9 = NULL;
+  uint16_t *permitopen_ports9 = NULL;
+  size_t permitopen_len9;
+  ret = parse_permitopen(strdup("\"'localhost:22,foo.bar.com:3399'\""), &permitopen_hosts9, &permitopen_ports9,
+                         &permitopen_len9, false);
+
+  if (ret != 0 || permitopen_len9 != 2 || strcmp(permitopen_hosts9[0], "localhost") != 0 ||
+      permitopen_ports9[0] != 22 || strcmp(permitopen_hosts9[1], "foo.bar.com") != 0 || permitopen_ports9[1] != 3399) {
+    ret = 1;
+  }
   return 0;
 }

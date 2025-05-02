@@ -49,8 +49,8 @@ atDirectoryPort=64
 testsToRun="all"
 
 # defaultDaemonVersions="c:current"
-defaultDaemonVersions="d:4.0.5 d:5.2.0 d:5.5.0 d:current c:current"
-defaultClientVersions="d:4.0.5 d:5.2.0 d:5.5.0 d:current"
+defaultDaemonVersions="d:5.5.0 d:5.8.7 d:current c:current"
+defaultClientVersions="d:5.5.0 d:5.8.7 d:current"
 
 daemonVersions=$defaultDaemonVersions
 clientVersions=$defaultClientVersions
@@ -110,19 +110,19 @@ export commitId
 remoteUsername=$(whoami)
 identityFilename="$HOME/.ssh/e2e_all.${commitId}"
 
-daemonStartWait=15
+daemonStartWait=20
 
 while getopts r:t:s:c:u:w:pn opt; do
   case $opt in
-    r) atDirectoryHost=$OPTARG ;;
-    t) testsToRun=$OPTARG ;;
-    s) daemonVersions=$OPTARG ;;
-    c) clientVersions=$OPTARG ;;
-    u) remoteUsername=$OPTARG ;;
-    w) daemonStartWait=$OPTARG ;;
-    p) allowParallelization="true" ;;
-    n) recompile="false" ;;
-    *) usageAndExit ;;
+  r) atDirectoryHost=$OPTARG ;;
+  t) testsToRun=$OPTARG ;;
+  s) daemonVersions=$OPTARG ;;
+  c) clientVersions=$OPTARG ;;
+  u) remoteUsername=$OPTARG ;;
+  w) daemonStartWait=$OPTARG ;;
+  p) allowParallelization="true" ;;
+  n) recompile="false" ;;
+  *) usageAndExit ;;
   esac
 done
 

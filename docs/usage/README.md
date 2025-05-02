@@ -1,8 +1,8 @@
 ---
-icon: person-from-portal
 description: >-
   Learn how to use NoPorts. This guide covers some of the things you can run via
   NoPorts, as well as how to set up the NoPorts Tunnel (npt).
+icon: person-from-portal
 ---
 
 # Usage
@@ -29,6 +29,6 @@ If your primary use case is SSH, start here. We also recommend the ssh config in
 [basic-usage-1](basic-usage-1/)
 {% endcontent-ref %}
 
-{% content-ref url="integrate-with-ssh-config.md" %}
-[integrate-with-ssh-config.md](integrate-with-ssh-config.md)
+{% content-ref url="../integrations/integrate-with-ssh-config.md" %}
+[integrate-with-ssh-config.md](../integrations/integrate-with-ssh-config.md)
 {% endcontent-ref %}

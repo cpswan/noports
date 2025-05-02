@@ -26,7 +26,16 @@ clean:
 install: build-dev
   cmake --build {{dev_dir}} --target install
 
+test +ARGS='': build-dev
+  ctest --test-dir {{dev_dir}} {{ARGS}}
+
 # BUILD COMMANDS
+
+package-static:
+  cmake --workflow --preset package-static
+
+package-source:
+  cmake --workflow --preset package-source
 
 build-dev: configure-dev
   cmake --build {{ dev_dir }}
@@ -51,10 +60,12 @@ strict-docker +ARGS='':
 memcheck +ARGS='': build-dev
   #!/usr/bin/env bash
   file="valgrind-sshnpd-$(date +%s).log"
-  valgrind --log-file="$file" \
+  # child-silient-after-fork=yes: ignore session forks, we don't care
+  valgrind --log-file="logs/$file" \
   --tool=memcheck \
   --leak-check=full \
   --show-leak-kinds=all \
+  --child-silent-after-fork=yes \
   {{dev_dir}}/sshnpd/sshnpd -a $TO_ATSIGN -m $FROM_ATSIGN -d $DEVICE_NAME \
   --permit-open "*:*" -v {{ARGS}}
   echo "memcheck log saved to: $file"
@@ -91,6 +102,9 @@ configure-dev:
     -DCMAKE_INSTALL_PREFIX="$HOME/.local/" \
     -DCMAKE_BUILD_TYPE=Debug \
     -DCMAKE_C_COMPILER=$C_COMPILER \
+    -DCMAKE_C_FLAGS="-std=c99 -Wno-error -DATSDK_DEBUG_MODE" \
+    -DNOPORTS_GS_TOOL=ON \
+    -DNOPORTS_BUILD_TESTS=ON \
     -DSSHNPD_ENABLE_TESTING_SHUTDOWN_NOTIFICATION=ON
 
 configure-strict:

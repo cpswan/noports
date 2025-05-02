@@ -29,13 +29,14 @@ class ProfileSelectedExportButton extends StatelessWidget {
             showDialog(
               context: context,
               builder: (BuildContext context) => MultiSelectDialog(
-                strings.profileExportSelectedMessage,
-                {
-                  'JSON': Export.getExportCallback(
+                title: strings.profileExportDialogTitle,
+                message: strings.profileExportSelectedMessage,
+                actions: {
+                  strings.json: Export.getExportCallback(
                     ExportableProfileFiletype.json,
                     futureExportableProfileList,
                   ),
-                  'YAML': Export.getExportCallback(
+                  strings.yamlRecommended: Export.getExportCallback(
                     ExportableProfileFiletype.yaml,
                     futureExportableProfileList,
                   ),

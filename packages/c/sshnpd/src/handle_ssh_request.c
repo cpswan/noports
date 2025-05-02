@@ -9,7 +9,6 @@
 #include <atclient/string_utils.h>
 #include <atlogger/atlogger.h>
 #include <errno.h>
-#include <pthread.h>
 #include <sshnpd/handle_ssh_request.h>
 #include <sshnpd/handler_commons.h>
 #include <sshnpd/run_srv_process.h>
@@ -21,9 +20,8 @@
 #define LOGGER_TAG "SSH_REQUEST"
 
 // TODO: refactor this to call the new common handlers
-void handle_ssh_request(atclient *atclient, pthread_mutex_t *atclient_lock, sshnpd_params *params,
-                        bool *is_child_process, atclient_monitor_message *message,
-                        atchops_rsa_key_private_key signing_key) {
+void handle_ssh_request(atclient *atclient, sshnpd_params *params, bool *is_child_process,
+                        atclient_monitor_message *message, atchops_rsa_key_private_key signing_key) {
   int res = 0;
 
   cJSON *envelope = extract_envelope_from_notification(message);
@@ -40,7 +38,7 @@ void handle_ssh_request(atclient *atclient, pthread_mutex_t *atclient_lock, sshn
   }
 
   char *requesting_atsign = message->notification->from;
-  res = verify_envelope_signature_from(envelope, requesting_atsign, atclient, atclient_lock);
+  res = verify_envelope_signature_from(envelope, requesting_atsign, atclient);
 
   if (res != 0) {
     cJSON_Delete(envelope);
@@ -150,8 +148,8 @@ void handle_ssh_request(atclient *atclient, pthread_mutex_t *atclient_lock, sshn
       goto cancel;
     }
 
-    res = send_success_payload(payload, atclient, atclient_lock, params, session_aes_key_base64, session_iv_base64,
-                               &signing_key, requesting_atsign);
+    res = send_success_payload(payload, atclient, params, session_aes_key_base64, session_iv_base64, &signing_key,
+                               requesting_atsign);
     if (res != 0) {
       atlogger_log(LOGGER_TAG, ATLOGGER_LOGGING_LEVEL_ERROR,
                    "Failed to send success message to the requesting atsign: %s\n", requesting_atsign);

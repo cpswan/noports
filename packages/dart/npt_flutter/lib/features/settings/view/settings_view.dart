@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:npt_flutter/features/settings/settings.dart';
 import 'package:npt_flutter/features/settings/widgets/advance_section.dart';
-import 'package:npt_flutter/features/settings/widgets/contact_list_tile.dart';
 import 'package:npt_flutter/features/settings/widgets/default_relay_section.dart';
 import 'package:npt_flutter/features/settings/widgets/language_section.dart';
 import 'package:npt_flutter/widgets/custom_card.dart';
 import 'package:npt_flutter/widgets/custom_text_button.dart';
 import 'package:npt_flutter/widgets/spinner.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../styles/sizes.dart';
 import '../widgets/dashboard_section.dart';
@@ -37,19 +37,33 @@ class SettingsView extends StatelessWidget {
                   children: [
                     CustomCard.settingsRail(
                       height: deviceSize.height * Sizes.settingsCardHeightFactor,
-                      child: const Column(
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           gapH10,
-                          CustomTextButton.backUpYourKey(),
-                          CustomTextButton.faq(),
-                          CustomTextButton.email(),
-                          CustomTextButton.discord(),
-                          CustomTextButton.feedback(),
-                          CustomTextButton.privacyPolicy(),
-                          CustomTextButton.signOut(),
-                          ContactListTile(),
+                          const CustomTextButton.backUpYourKey(),
+                          const CustomTextButton.faq(),
+                          const CustomTextButton.email(),
+                          const CustomTextButton.discord(),
+                          const CustomTextButton.feedback(),
+                          const CustomTextButton.privacyPolicy(),
+                          const CustomTextButton.signOut(),
+                          gapH13,
+                          FutureBuilder(
+                              future: PackageInfo.fromPlatform(),
+                              builder: (_, snapshot) {
+                                if (snapshot.connectionState == ConnectionState.done) {
+                                  return Center(
+                                    child: Text(
+                                      'v${snapshot.data?.version}',
+                                      style: Theme.of(context).textTheme.bodySmall,
+                                    ),
+                                  );
+                                }
+                                return const SizedBox.shrink();
+                              }),
+                          gapH10,
                         ],
                       ),
                     ),
