@@ -11,14 +11,20 @@ outputDir=$(getOutputDir)
 mkdir -p "${outputDir}/daemons"
 
 waitUntilStarted() {
-  logInfo "Waiting for daemon $2 to start"
+
+  local pid="$1"
+  local deviceName="$2"
+  local logFile="$3"
+  local daemonVersion="$4"
+
+  logInfo "Waiting for daemon $deviceName to start"
   # $1 is pid, $2 is deviceName, $3 is logFile, $4 is daemon version
   totalSleepTime=0
 
-  while ! grep "Monitor .*monitor started" "$3"; do
-    if ! ps -p "$1" >/dev/null; then
-      logErrorAndReport "Daemon $2 has exited. Log file follows: "
-      cat "$3"
+  while ! grep "Monitor .*monitor started" "$logFile"; do
+    if ! ps -p "$pid" >/dev/null; then
+      logErrorAndReport "Daemon $deviceName has exited. Log file follows: "
+      cat "$logFile"
       # Do something knowing the pid exists, i.e. the process with $PID is running
       exit 1
     fi
@@ -26,7 +32,7 @@ waitUntilStarted() {
     totalSleepTime=$((totalSleepTime + 1))
     if ((totalSleepTime > daemonStartWait)); then
       logErrorAndReport "Daemon $2 has failed to start. Log file follows: "
-      cat "$3"
+      cat "$logFile"
       exit 1
     fi
   done
