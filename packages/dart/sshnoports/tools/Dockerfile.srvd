@@ -1,5 +1,5 @@
 # Dockerfile.srvd
-# Build image for a containerized call of the at_activate binary
+# Build image for a containerized call of the srvd and srv binaries 
 FROM dart:3.7.3@sha256:1d0491432892b4f7cd216dfaf8406adef5bff216adc51a024e381023d8f22ce7 AS buildimage
 ENV PACKAGEDIR=packages/dart/sshnoports
 ENV BINARYDIR=/usr/local/at
