@@ -130,15 +130,19 @@ for typeAndVersion in $daemonVersions; do
   if [[ $? -ne 0 ]]; then
     logErrorAndReport "Error: Failed to build docker daemon for type $type and version $version"
     exit 1
-  else 
+  else
     logInfo "Docker daemon built successfully for type $type and version $version"
   fi
 
   deviceName=$(getDeviceNameWithFlags "$commitId" "$typeAndVersion")
-  runDockerDaemon "$type" "$version" "$deviceName" "$clientAtSign" "$daemonAtSign" "-u -s"
+  logFile="${outputDir}/daemons/${deviceName}.log"
+  echo "      Starting daemon version $typeAndVersion with the -u and -s flags"  > "$logFile" 2>&1
+  runDockerDaemon "$type" "$version" "$deviceName" "$clientAtSign" "$daemonAtSign" "-s -u"
 
   deviceName=$(getDeviceNameNoFlags "$commitId" "$typeAndVersion")
-  
+  logFile="${outputDir}/daemons/${deviceName}.log"
+  echo "      Starting daemon version $typeAndVersion with neither the -u nor -s flags" > "$logFile" 2>&1
+  runDockerDaemon "$type" "$version" "$deviceName" "$clientAtSign" "$daemonAtSign" ""
 done
 
 # For each daemonVersion
