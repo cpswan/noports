@@ -136,13 +136,19 @@ for typeAndVersion in $daemonVersions; do
 
   deviceName=$(getDeviceNameWithFlags "$commitId" "$typeAndVersion")
   logFile="${outputDir}/daemons/${deviceName}.log"
+  if [[ $(versionIsAtLeast "$typeAndVersion" "d:5.3.0") == "true" ]]; then
+    apkamApp=$(getApkamAppName)
+    apkamDev=$(getApkamDeviceName "daemon" "$commitId")
+    keysFile=$(getApkamKeysFile "$daemonAtSign" "$apkamApp" "$apkamDev")
+    extraFlags="-k $keysFile"
+  fi
   echo "      Starting daemon version $typeAndVersion with the -u and -s flags"  > "$logFile" 2>&1
-  runDockerDaemon "$type" "$version" "$deviceName" "$clientAtSign" "$daemonAtSign" "-s -u"
+  runDockerDaemon "$type" "$version" "$deviceName" "$clientAtSign" "$daemonAtSign" "$extraFlags -s -u"
 
   deviceName=$(getDeviceNameNoFlags "$commitId" "$typeAndVersion")
   logFile="${outputDir}/daemons/${deviceName}.log"
   echo "      Starting daemon version $typeAndVersion with neither the -u nor -s flags" > "$logFile" 2>&1
-  runDockerDaemon "$type" "$version" "$deviceName" "$clientAtSign" "$daemonAtSign" ""
+  runDockerDaemon "$type" "$version" "$deviceName" "$clientAtSign" "$daemonAtSign" "$extraFlags"
 done
 
 # For each daemonVersion
