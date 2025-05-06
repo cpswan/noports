@@ -10,6 +10,7 @@ import 'package:npt_flutter/features/back_up_key/widgets/backup_key_alert_dialog
 import 'package:npt_flutter/features/profile/profile.dart';
 import 'package:npt_flutter/features/profile/view/profile_header_view.dart';
 import 'package:npt_flutter/features/profile_list/profile_list.dart';
+import 'package:npt_flutter/features/profile_list/widgets/demo_profile_info_widget.dart';
 import 'package:npt_flutter/features/profile_list/widgets/profile_list_failed_load_content.dart';
 import 'package:npt_flutter/styles/sizes.dart';
 import 'package:npt_flutter/widgets/spinner.dart';
@@ -129,7 +130,11 @@ class _ProfileListViewState extends State<ProfileListView> {
                                           style: bodyMedium?.copyWith(fontSize: Sizes.p16),
                                           textAlign: TextAlign.center,
                                         ),
-                                      )
+                                      ),
+                                      const Positioned(
+                                        top: 1,
+                                        child: DemoProfileInfoWidget(),
+                                      ),
                                     ],
                                   ),
                             BlocBuilder<SyncCubit, bool>(buildWhen: (previous, current) {
