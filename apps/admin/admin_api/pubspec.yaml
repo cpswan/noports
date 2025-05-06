@@ -9,7 +9,10 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
-  alfred: 1.1.2+1
+  alfred:
+    git:
+      ref: cc-directory-4-windows
+      url: https://github.com/atsign-foundation/alfred.git
   at_client: 3.4.2
   json_annotation: 4.9.0
   at_cli_commons: 2.1.0
