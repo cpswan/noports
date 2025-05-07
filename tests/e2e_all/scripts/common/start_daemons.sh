@@ -39,52 +39,65 @@ waitUntilStarted() {
 
 # e.g. `buildDockerDaemon d 4.0.5``
 buildDockerDaemon() {
-    dockerfilesDir="$(dirname "$0")/../../dockerfiles"
-    local type="$1"
-    local version="$2"
-    
-    logInfo "Building container for:      Type: $type, Version: $version"
-    
-      if [[ "$type" == "d" ]]; then
-          language="dart"
-      elif [[ "$type" == "c" ]]; then
-          language="c"
-      else
-          logErrorAndReport "Error: Unknown type: $type"
-          return 1
-      fi
+  dockerfilesDir="$(dirname "$0")/../../dockerfiles"
+  local type="$1"
+  local version="$2"
+  
+  if [[ "$type" == "d" ]]; then
+      language="dart"
+  elif [[ "$type" == "c" ]]; then
+      language="c"
+  else
+      logErrorAndReport "Error: Unknown type: $type"
+      return 1
+  fi
 
-      if [[ "$version" == "current" ]]; then
-          dockerfile="$dockerfilesDir/Dockerfile.$language.current"
-          tag="noports-$language:current"
-          fBuildArg=""
-      else
-          # assume "$version" is a release version like "4.0.5" or "5.2.0"
-          dockerfile="$dockerfilesDir/Dockerfile.$language.release"
-          tag="noports-$language:v$version"
-          fBuildArg="--build-arg release=v$version"
-      fi
+  if [[ "$version" == "current" ]]; then
+      dockerfile="$dockerfilesDir/Dockerfile.$language.current"
+      tag="noports-$language:current"
+      fBuildArg=""
+  else
+      # assume "$version" is a release version like "4.0.5" or "5.2.0"
+      dockerfile="$dockerfilesDir/Dockerfile.$language.release"
+      tag="noports-$type:v$version"
+      fBuildArg="--build-arg release=v$version"
+  fi
 
-      sudo docker build \
-          -f "$dockerfile" \
-          -t $tag \
-          $fBuildArg \
-          --quiet \
-          --target runtime \
-          .
-      
-      local exitCode=$?
-      if [[ $exitCode -ne 0 ]]; then
-          logErrorAndReport "Error: Docker build failed with exit code $exitCode"
-          return $exitCode
-      else
-          logInfo "Container built successfully"
-          return 0
-      fi
+  logInfo "Building container for:      Type: $type, Version: $version"
+
+  sudo docker build \
+      -f "$dockerfile" \
+      -t $tag \
+      $fBuildArg \
+      --quiet \
+      --target runtime \
+      .
+  
+  local exitCode=$?
+  if [[ $exitCode -ne 0 ]]; then
+      logErrorAndReport "Error: Docker build failed with exit code $exitCode"
+      return $exitCode
+  else
+      logInfo "Container built successfully"
+      return 0
+  fi
 }
 
-# e.g. `runDockerDaemon "d" "4.0.5" "deviceName" "clientAtSign" "daemonAtSign" "-u -s"
-# e.g. `runDockerDaemon "c" "current" "deviceName" "clientAtSign" "daemonAtSign"`
+
+# usage: `waitUntilDockerDaemonStarted $containerId $timeout`
+# Blocking function call until the Docker daemon log's says "monitor started" using `sudo docker logs <containerId`
+# $timeout is optional argument, defaults to 30 seconds, specifies the maximum time to wait for the daemon to start
+# e.g. `waitUntilDockerDaemonStarted "3f266a8995fb"`
+# e.g. `waitUntilDockerDaemonStarted "3f266a8995fb" 30`
+waitUntilDockerDaemonStarted() {
+  containerId="$1"
+  timeoutSeconds="${2:-30}" # second argument is optional, defaults to 30 seconds
+  # TODO
+  exit 1
+}
+
+# e.g. `runDockerDaemon "d" "4.0.5" "deviceName" "clientAtSign" "daemonAtSign" "log.txt" "-u -s"
+# e.g. `runDockerDaemon "c" "current" "deviceName" "clientAtSign" "daemonAtSign" "log.txt"`
 runDockerDaemon() {
   local type="$1"
   local version="$2"
@@ -93,31 +106,24 @@ runDockerDaemon() {
   local daemonAt="$5"
   local daemonFlags="$6"
 
-  if [[ "$type" == "d" ]]; then
-    language="dart"
-  elif [[ "$type" == "c" ]]; then
-    language="c"
-  else
-    logErrorAndReport "Error: Unknown type: $type"
-    return 1
-  fi
-
   if [[ "$version" == "current" ]]; then
-    tag="noports-$language:current"
+    tag="noports-$type:current"
   else
-    tag="noports-$language:v$version"
+    tag="noports-$type:v$version"
   fi
 
   logInfo "Starting container for: Type: $type, Version: $version, Flags: $daemonFlags, Device name: $deviceName, Client atSign: $clientAt, Daemon atSign: $daemonAt"
 
-  hash=$(sudo docker run \
-    -d \
+  local dockerRunCommand="sudo docker run \
     --rm \
-    -v "$HOME/.atsign/keys/:/atsign/.atsign/keys/" \
-    "$tag" \
-    /bin/bash -c "sudo service ssh start && /usr/local/bin/sshnpd -a $daemonAt -m $clientAt -d $deviceName $daemonFlags -v")
+    -d \
+    --name \"$deviceName\" \
+    -v \"$testRuntimeDir/apkam/:/atsign/.atsign/keys/\" \
+    \"$tag\" \
+    /bin/bash -c \"sudo service ssh start && /usr/local/bin/sshnpd -a $daemonAt -m $clientAt -d $deviceName $daemonFlags -v\""
 
-  echo "$hash"
+  logInfo "Executing: $dockerRunCommand"
+  eval "$dockerRunCommand"
 }
 
 for typeAndVersion in $daemonVersions; do
@@ -130,25 +136,31 @@ for typeAndVersion in $daemonVersions; do
   if [[ $? -ne 0 ]]; then
     logErrorAndReport "Error: Failed to build docker daemon for type $type and version $version"
     exit 1
-  else
-    logInfo "Docker daemon built successfully for type $type and version $version"
   fi
+  logInfo "Docker daemon built successfully for type $type and version $version"
 
-  deviceName=$(getDeviceNameWithFlags "$commitId" "$typeAndVersion")
-  logFile="${outputDir}/daemons/${deviceName}.log"
   if [[ $(versionIsAtLeast "$typeAndVersion" "d:5.3.0") == "true" ]]; then
     apkamApp=$(getApkamAppName)
     apkamDev=$(getApkamDeviceName "daemon" "$commitId")
-    keysFile=$(getApkamKeysFile "$daemonAtSign" "$apkamApp" "$apkamDev")
+    # keysFile=$(getApkamKeysFile "$daemonAtSign" "$apkamApp" "$apkamDev")
+
+    # the keys file is in the docker daemon
+    # e.g. /atsign/.atsign/keys/@12alpaca.e2e_all.client_2064e58.atKeys
+    keysFile="/atsign/.atsign/keys/$daemonAtSign.$apkamApp.$apkamDev".atKeys
     extraFlags="-k $keysFile"
   fi
-  echo "      Starting daemon version $typeAndVersion with the -u and -s flags"  > "$logFile" 2>&1
-  runDockerDaemon "$type" "$version" "$deviceName" "$clientAtSign" "$daemonAtSign" "$extraFlags -s -u"
 
-  deviceName=$(getDeviceNameNoFlags "$commitId" "$typeAndVersion")
-  logFile="${outputDir}/daemons/${deviceName}.log"
-  echo "      Starting daemon version $typeAndVersion with neither the -u nor -s flags" > "$logFile" 2>&1
-  runDockerDaemon "$type" "$version" "$deviceName" "$clientAtSign" "$daemonAtSign" "$extraFlags"
+  deviceName1=$(getDeviceNameWithFlags "$commitId" "$typeAndVersion")
+  logFile1="${outputDir}/daemons/${deviceName1}.log"
+  echo "Starting daemon version $typeAndVersion with the -u and -s flags"  >> "$logFile"
+  runDockerDaemon "$type" "$version" "$deviceName1" "$clientAtSign" "$daemonAtSign" "$extraFlags -s -u"
+  sudo docker logs -f "$deviceName1" >> "$logFile1" 2>&1 &
+
+  deviceName2=$(getDeviceNameNoFlags "$commitId" "$typeAndVersion")
+  logFile2="${outputDir}/daemons/${deviceName2}.log"
+  echo "Starting daemon version $typeAndVersion with neither the -u nor -s flags" >> "$logFile"
+  runDockerDaemon "$type" "$version" "$deviceName2" "$clientAtSign" "$daemonAtSign" "$extraFlags"
+  sudo docker logs -f "$deviceName2" >> "$logFile2" 2>&1 &
 done
 
 # For each daemonVersion
