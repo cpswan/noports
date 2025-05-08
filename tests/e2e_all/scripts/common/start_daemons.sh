@@ -68,7 +68,7 @@ waitUntilDockerDaemonStarted() {
   timeout="${2:-60}"
 
   for i in $(seq 1 "$timeout"); do
-    if grep "Monitor .*monitor started" "$logFile" 2>/dev/null; then
+    if grep "monitor started" "$logFile" 2>/dev/null; then
       return 0
     fi
     sleep 1
@@ -142,7 +142,7 @@ for typeAndVersion in $daemonVersions; do
   logFile1="${outputDir}/daemons/${deviceName1}.log"
   echo "Starting daemon version $typeAndVersion with the -u and -s flags"  >> "$logFile1"
   runDockerDaemon "$type" "$version" "$deviceName1" "$clientAtSign" "$daemonAtSign" "$extraFlags -s -u"
-  docker logs -f "$deviceName1" >> "$logFile1" 2>&1 &
+  docker logs -f "e2e_all-$deviceName1" >> "$logFile1" 2>&1 &
   logInfo "Waiting for Docker daemon \"$deviceName1\" to start..."
   waitUntilDockerDaemonStarted "$logFile1" 120
   logInfo "Docker daemon $deviceName1 started successfully. See $logFile1 for details"
@@ -152,7 +152,7 @@ for typeAndVersion in $daemonVersions; do
   logFile2="${outputDir}/daemons/${deviceName2}.log"
   echo "Starting daemon version $typeAndVersion with neither the -u nor -s flags" >> "$logFile2"
   runDockerDaemon "$type" "$version" "$deviceName2" "$clientAtSign" "$daemonAtSign" "$extraFlags"
-  docker logs -f "$deviceName2" >> "$logFile2" 2>&1 &
+  docker logs -f "e2e_all-$deviceName2" >> "$logFile2" 2>&1 &
   logInfo "Waiting for Docker daemon \"$deviceName2\" to start..."
   waitUntilDockerDaemonStarted "$logFile2" 120
   logInfo "Docker daemon $deviceName2 started successfully. See $logFile2 for details"
