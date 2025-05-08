@@ -38,8 +38,9 @@ waitUntilStarted() {
 }
 
 # e.g. `buildDockerDaemon d 4.0.5``
+dockerfilesDir="$(dirname "$0")/../../dockerfiles"
+cd "$dockerfilesDir"/../../..
 buildDockerDaemon() {
-  dockerfilesDir="$(dirname "$0")/../../dockerfiles"
   local type="$1"
   local version="$2"
   
@@ -71,7 +72,6 @@ buildDockerDaemon() {
       $fBuildArg \
       --quiet \
       --target runtime \
-      --no-cache \
       ."
   
   logInfo "Executing Docker build command: $dockerBuildCommand"
