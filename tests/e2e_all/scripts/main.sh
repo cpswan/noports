@@ -190,6 +190,10 @@ if test "$retCode" != 0; then
 fi
 
 echo
+logInfo "Calling setup_atkeys.sh"
+"$testScriptsDir/common/setup_atkeys.sh"
+
+echo
 logInfo "Calling apkam_setup.sh"
 "$testScriptsDir/common/apkam_setup.sh"
 
