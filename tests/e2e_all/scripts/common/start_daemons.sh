@@ -145,6 +145,8 @@ for typeAndVersion in $daemonVersions; do
   echo "Starting daemon version $typeAndVersion with the -u and -s flags"  >> "$logFile1"
   runDockerDaemon "$type" "$version" "$deviceName1" "$clientAtSign" "$daemonAtSign" "$extraFlags -s -u"
   docker logs -f "$containerName" >> "$logFile1" 2>&1 &
+  sleep 5
+  docker logs "$containerName1"
   logInfo "Waiting for Docker daemon \"$containerName1\" to start..."
   waitUntilDockerDaemonStarted "$logFile1" 60
   logInfo "Docker daemon $deviceName1 started successfully. See $logFile1 for details"
@@ -156,6 +158,8 @@ for typeAndVersion in $daemonVersions; do
   echo "Starting daemon version $typeAndVersion with neither the -u nor -s flags" >> "$logFile2"
   runDockerDaemon "$type" "$version" "$deviceName2" "$clientAtSign" "$daemonAtSign" "$extraFlags"
   docker logs -f "$containerName2" >> "$logFile2" 2>&1 &
+  sleep 5
+  docker logs "$containerName2"
   logInfo "Waiting for Docker daemon \"$containerName2\" to start..."
   waitUntilDockerDaemonStarted "$logFile2" 60
   logInfo "Docker daemon $deviceName2 started successfully. See $logFile2 for details"
