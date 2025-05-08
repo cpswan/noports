@@ -54,7 +54,7 @@ buildDockerDaemon() {
 
   if [[ "$version" == "current" ]]; then
       dockerfile="$dockerfilesDir/Dockerfile.$language.current"
-      tag="noports-$language:current"
+      tag="noports-$type:current"
       fBuildArg=""
   else
       # assume "$version" is a release version like "4.0.5" or "5.2.0"
@@ -65,13 +65,17 @@ buildDockerDaemon() {
 
   logInfo "Building container for:      Type: $type, Version: $version"
 
-  sudo docker build \
-      -f "$dockerfile" \
+  local dockerBuildCommand="sudo docker build \
+      -f \"$dockerfile\" \
       -t $tag \
       $fBuildArg \
       --quiet \
       --target runtime \
-      .
+      --no-cache \
+      ."
+  
+  logInfo "Executing Docker build command: $dockerBuildCommand"
+  eval "$dockerBuildCommand"
   
   local exitCode=$?
   if [[ $exitCode -ne 0 ]]; then
@@ -84,15 +88,20 @@ buildDockerDaemon() {
 }
 
 
-# usage: `waitUntilDockerDaemonStarted $containerId $timeout`
-# Blocking function call until the Docker daemon log's says "monitor started" using `sudo docker logs <containerId`
-# $timeout is optional argument, defaults to 30 seconds, specifies the maximum time to wait for the daemon to start
-# e.g. `waitUntilDockerDaemonStarted "3f266a8995fb"`
-# e.g. `waitUntilDockerDaemonStarted "3f266a8995fb" 30`
+# usage: `waitUntilDockerDaemonStarted $logFile $timeout` 
+# - logFile is the path to the log file of the docker daemon
+# - timeout is optional, default is 60 seconds
 waitUntilDockerDaemonStarted() {
-  containerId="$1"
-  timeoutSeconds="${2:-30}" # second argument is optional, defaults to 30 seconds
-  # TODO
+  logFile="$1"
+  timeout="${2:-60}"
+
+  for i in $(seq 1 "$timeout"); do
+    if grep "Monitor .*monitor started" "$logFile" 2>/dev/null; then
+      return 0
+    fi
+    sleep 1
+  done
+  
   exit 1
 }
 
@@ -138,29 +147,41 @@ for typeAndVersion in $daemonVersions; do
     exit 1
   fi
   logInfo "Docker daemon built successfully for type $type and version $version"
+done
+
+for typeAndVersion in $daemonVersions; do
+  # typeAndVersion is a string like "d:4.0.5" or "c:current"
+  type=$(echo "$typeAndVersion" | cut -d: -f1)
+  version=$(echo "$typeAndVersion" | cut -d: -f2)
 
   if [[ $(versionIsAtLeast "$typeAndVersion" "d:5.3.0") == "true" ]]; then
     apkamApp=$(getApkamAppName)
     apkamDev=$(getApkamDeviceName "daemon" "$commitId")
-    # keysFile=$(getApkamKeysFile "$daemonAtSign" "$apkamApp" "$apkamDev")
+    # keysFile=$(getApkamKeysFile "$daemonAtSign" "$apkamApp" "$apkamDev") # OLD
 
     # the keys file is in the docker daemon
     # e.g. /atsign/.atsign/keys/@12alpaca.e2e_all.client_2064e58.atKeys
-    keysFile="/atsign/.atsign/keys/$daemonAtSign.$apkamApp.$apkamDev".atKeys
+    keysFile="/atsign/.atsign/keys/$daemonAtSign.$apkamApp.$apkamDev".atKeys # NEW
     extraFlags="-k $keysFile"
   fi
 
+  # Run with `-s` and `-u` flags
   deviceName1=$(getDeviceNameWithFlags "$commitId" "$typeAndVersion")
   logFile1="${outputDir}/daemons/${deviceName1}.log"
-  echo "Starting daemon version $typeAndVersion with the -u and -s flags"  >> "$logFile"
+  echo "Starting daemon version $typeAndVersion with the -u and -s flags"  >> "$logFile1"
   runDockerDaemon "$type" "$version" "$deviceName1" "$clientAtSign" "$daemonAtSign" "$extraFlags -s -u"
-  sudo docker logs -f "$deviceName1" >> "$logFile1" 2>&1 &
+  docker logs -f "$deviceName1" >> "$logFile1" 2>&1 &
+  waitUntilDockerDaemonStarted "$logFile1"
+  logInfo "Docker daemon $deviceName1 started successfully. See $logFile1 for details"
 
+  # Run without `-s` and `-u` flags
   deviceName2=$(getDeviceNameNoFlags "$commitId" "$typeAndVersion")
   logFile2="${outputDir}/daemons/${deviceName2}.log"
-  echo "Starting daemon version $typeAndVersion with neither the -u nor -s flags" >> "$logFile"
+  echo "Starting daemon version $typeAndVersion with neither the -u nor -s flags" >> "$logFile2"
   runDockerDaemon "$type" "$version" "$deviceName2" "$clientAtSign" "$daemonAtSign" "$extraFlags"
-  sudo docker logs -f "$deviceName2" >> "$logFile2" 2>&1 &
+  docker logs -f "$deviceName2" >> "$logFile2" 2>&1 &
+  waitUntilDockerDaemonStarted "$logFile2"
+  logInfo "Docker daemon $deviceName2 started successfully. See $logFile2 for details"
 done
 
 # For each daemonVersion
