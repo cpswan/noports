@@ -213,7 +213,7 @@ getVersionDescription() {
     *) desc="$type (?) " ;;
   esac
   case $version in
-    current) desc="${desc} (branch)" ;;
+    current) desc="${desc} (current)" ;;
     *) desc="${desc} v${version}" ;;
   esac
   echo "$desc"
