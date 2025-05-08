@@ -41,7 +41,7 @@ jobs:
           script: |
             if [[ "$(uname)" == "Linux" ]]; then
               sudo apt-get update
-              sudo apt-get install -y docker
+              sudo apt-get install -y docker.io
             fi
             cd noports
             rm -rf tests/e2e_all/runtime
