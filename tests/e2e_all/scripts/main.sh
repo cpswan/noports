@@ -141,7 +141,7 @@ export remoteUsername
 export identityFilename
 export daemonStartWait
 export allowParallelization
-timeoutDuration=120
+timeoutDuration=30 # time out for each test
 export timeoutDuration
 
 shift "$((OPTIND - 1))"
