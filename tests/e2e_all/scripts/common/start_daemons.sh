@@ -95,10 +95,11 @@ runDockerDaemon() {
 
   logInfo "Starting container for: Type: $type, Version: $version, Flags: $daemonFlags, Device name: $deviceName, Client atSign: $clientAt, Daemon atSign: $daemonAt"
 
+  containerName="e2e_all-$deviceName"
   local dockerRunCommand="sudo docker run \
     --rm \
     -d \
-    --name \"e2e_all-$deviceName\" \
+    --name \"$containerName\" \
     -v \"$testRuntimeDir/keys/:/atsign/.atsign/keys/\" \
     \"$tag\" \
     /bin/bash -c \"sudo service ssh start && /usr/local/bin/sshnpd -a $daemonAt -m $clientAt -d $deviceName $daemonFlags -v\""
@@ -140,20 +141,22 @@ for typeAndVersion in $daemonVersions; do
   # Run with `-s` and `-u` flags
   deviceName1=$(getDeviceNameWithFlags "$commitId" "$typeAndVersion")
   logFile1="${outputDir}/daemons/${deviceName1}.log"
+  containerName1="e2e_all-$deviceName1"
   echo "Starting daemon version $typeAndVersion with the -u and -s flags"  >> "$logFile1"
   runDockerDaemon "$type" "$version" "$deviceName1" "$clientAtSign" "$daemonAtSign" "$extraFlags -s -u"
-  docker logs -f "e2e_all-$deviceName1" >> "$logFile1" 2>&1 &
+  docker logs -f "$containerName" >> "$logFile1" 2>&1 &
   logInfo "Waiting for Docker daemon \"$deviceName1\" to start..."
-  waitUntilDockerDaemonStarted "$logFile1" 120
+  waitUntilDockerDaemonStarted "$logFile1" 60
   logInfo "Docker daemon $deviceName1 started successfully. See $logFile1 for details"
 
   # Run without `-s` and `-u` flags
   deviceName2=$(getDeviceNameNoFlags "$commitId" "$typeAndVersion")
   logFile2="${outputDir}/daemons/${deviceName2}.log"
+  containerName2="e2e_all-$deviceName2"
   echo "Starting daemon version $typeAndVersion with neither the -u nor -s flags" >> "$logFile2"
   runDockerDaemon "$type" "$version" "$deviceName2" "$clientAtSign" "$daemonAtSign" "$extraFlags"
-  docker logs -f "e2e_all-$deviceName2" >> "$logFile2" 2>&1 &
+  docker logs -f "$containerName2" >> "$logFile2" 2>&1 &
   logInfo "Waiting for Docker daemon \"$deviceName2\" to start..."
-  waitUntilDockerDaemonStarted "$logFile2" 120
+  waitUntilDockerDaemonStarted "$logFile2" 60
   logInfo "Docker daemon $deviceName2 started successfully. See $logFile2 for details"
 done
