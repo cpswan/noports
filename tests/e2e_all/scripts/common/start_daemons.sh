@@ -10,33 +10,6 @@ source "$testScriptsDir/common/check_env.include.sh" || exit $?
 outputDir=$(getOutputDir)
 mkdir -p "${outputDir}/daemons"
 
-waitUntilStarted() {
-  local pid="$1"
-  local deviceName="$2"
-  local logFile="$3"
-  local daemonVersion="$4"
-
-  logInfo "Waiting for daemon $deviceName to start"
-  # $1 is pid, $2 is deviceName, $3 is logFile, $4 is daemon version
-  totalSleepTime=0
-
-  while ! grep "Monitor .*monitor started" "$logFile"; do
-    if ! ps -p "$pid" >/dev/null; then
-      logErrorAndReport "Daemon $deviceName has exited. Log file follows: "
-      cat "$logFile"
-      # Do something knowing the pid exists, i.e. the process with $PID is running
-      exit 1
-    fi
-    sleep 1
-    totalSleepTime=$((totalSleepTime + 1))
-    if ((totalSleepTime > daemonStartWait)); then
-      logErrorAndReport "Daemon $2 has failed to start. Log file follows: "
-      cat "$logFile"
-      exit 1
-    fi
-  done
-}
-
 # e.g. `buildDockerDaemon d 4.0.5``
 dockerfilesDir="$(dirname "$0")/../../dockerfiles"
 cd "$dockerfilesDir"/../../..
@@ -183,46 +156,3 @@ for typeAndVersion in $daemonVersions; do
   waitUntilDockerDaemonStarted "$logFile2"
   logInfo "Docker daemon $deviceName2 started successfully. See $logFile2 for details"
 done
-
-# For each daemonVersion
-# Start two daemons for each typeAndVersion
-# 1) with the -u and -s flags set
-# 2) with neither of those flags set
-# for typeAndVersion in $daemonVersions; do
-#   logInfo "    Starting daemons for commitId $commitId and version $typeAndVersion"
-
-#   pathToBinaries=$(getPathToBinariesForTypeAndVersion "$typeAndVersion")
-
-#   cBinary="$pathToBinaries/sshnpd"
-#   fRoot="--root-domain $atDirectoryHost"
-#   fAtSigns="-m $clientAtSign -a $daemonAtSign"
-#   extraFlags=""
-#   if [[ $(versionIsAtLeast "$typeAndVersion" "d:5.3.0") == "true" ]]; then
-#     apkamApp=$(getApkamAppName)
-#     apkamDev=$(getApkamDeviceName "daemon" "$commitId")
-#     keysFile=$(getApkamKeysFile "$daemonAtSign" "$apkamApp" "$apkamDev")
-#     extraFlags="-k $keysFile"
-#   fi
-
-#   deviceName=$(getDeviceNameNoFlags "$commitId" "$typeAndVersion")
-#   logFile="${outputDir}/daemons/${deviceName}.log"
-#   logInfo "      Starting daemon version $typeAndVersion with neither the -u nor -s flags"
-#   commandLine="$cBinary $fRoot $fAtSigns -d ${deviceName} --storage-path ${outputDir}/daemons/${deviceName}.storage -v $extraFlags"
-#   echo "        --> $commandLine  >& $logFile 2>&1 &"
-#   $commandLine >"$logFile" 2>&1 &
-
-#   waitUntilStarted $! "$deviceName" "$logFile"
-#   echo
-
-#   deviceName=$(getDeviceNameWithFlags "$commitId" "$typeAndVersion")
-#   logFile="${outputDir}/daemons/${deviceName}.log"
-#   logInfo "      Starting daemon version $typeAndVersion with the -u and -s flags"
-#   commandLine="$cBinary $fRoot $fAtSigns -d ${deviceName} --storage-path ${outputDir}/daemons/${deviceName}.storage -v -u -s $extraFlags"
-#   echo "        --> $commandLine  >& $logFile 2>&1 &"
-#   $commandLine >"$logFile" 2>&1 &
-#   waitUntilStarted $! "$deviceName" "$logFile"
-
-#   echo
-#   echo
-
-# done
