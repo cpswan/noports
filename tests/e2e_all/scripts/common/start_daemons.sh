@@ -99,7 +99,7 @@ runDockerDaemon() {
   local dockerRunCommand="sudo docker run \
     --rm \
     -d \
-    --name \"$deviceName\" \
+    --name \"e2e_all-$deviceName\" \
     -v \"$testRuntimeDir/keys/:/atsign/.atsign/keys/\" \
     \"$tag\" \
     /bin/bash -c \"sudo service ssh start && /usr/local/bin/sshnpd -a $daemonAt -m $clientAt -d $deviceName $daemonFlags -v\""
