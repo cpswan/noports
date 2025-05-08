@@ -43,7 +43,6 @@ buildDockerDaemon() {
       -f \"$dockerfile\" \
       -t $tag \
       $fBuildArg \
-      --quiet \
       --target runtime \
       ."
   
