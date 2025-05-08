@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ -z "$testScriptsDir" ] ; then
+  echo -e "    ${RED}check_env: testScriptsDir is not set${NC}" && exit 1
+fi
+
 source "$testScriptsDir/common/common_functions.include.sh"
 
 atKeysDir=$testRuntimeDir/keys
