@@ -1,3 +1,8 @@
+## 1.0.5
+
+- chore: stricter compile options to match openwrt upstream
+- fix: build warnings for openwrt upstream
+
 ## 1.0.4
 
 - chore: change source packaging format

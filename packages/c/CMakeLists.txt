@@ -11,7 +11,7 @@ set(ATSDK_MBEDTLS_PATH ${NOPORTS_MBEDTLS_PATH})
 cmake_minimum_required(VERSION 3.19)
 set(CMAKE_C_STANDARD 99)
 cmake_policy(SET CMP0135 NEW)
-project(noports VERSION 1.0.4 LANGUAGES C)
+project(noports VERSION 1.0.5 LANGUAGES C)
 
 include("${CMAKE_CURRENT_LIST_DIR}/cmake/CPackSetup.cmake")
 
@@ -24,7 +24,7 @@ add_compile_options("-Wimplicit-fallthrough")
 add_compile_options("-Wmissing-field-initializers")
 # This enforces strictly using ISO standard (definitely overkill, hence pedantic)
 # enable this to check our deviations from the standard
-# add_compile_options("-pedantic-errors") 
+# add_compile_options("-pedantic-errors")
 
 # Custom compiler-based compiler options
 if(CMAKE_C_COMPILER MATCHES ".*clang.*")
