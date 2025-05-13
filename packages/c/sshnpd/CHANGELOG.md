@@ -1,3 +1,7 @@
+## 1.0.6
+
+- fix: more build warnings for openwrt upstream
+
 ## 1.0.5
 
 - chore: stricter compile options to match openwrt upstream
