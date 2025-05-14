@@ -1,3 +1,7 @@
+## 1.0.7
+
+- fix: switch statement fallthrough warning
+
 ## 1.0.6
 
 - fix: more build warnings for openwrt upstream
