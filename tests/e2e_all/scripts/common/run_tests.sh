@@ -42,6 +42,7 @@ if [[ $allowParallelization == "true" ]]; then
   # Wait for all background processes to finish
   for pid in "${listOfPids[@]}"; do
     wait $pid
+    logInfo "Test with PID $pid has completed"
   done
 else
   # The old way of running e2e tests - no parallelization
