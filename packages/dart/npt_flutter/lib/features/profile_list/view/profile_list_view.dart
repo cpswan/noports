@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:npt_flutter/app.dart';
-import 'package:npt_flutter/features/back_up_key/cubit/backup_key_cubit.dart';
-import 'package:npt_flutter/features/back_up_key/widgets/backup_key_alert_dialog.dart';
+import 'package:npt_flutter/features/back_up_key/util/backup_key_utils.dart';
 import 'package:npt_flutter/features/profile/profile.dart';
 import 'package:npt_flutter/features/profile/view/profile_header_view.dart';
 import 'package:npt_flutter/features/profile_list/profile_list.dart';
@@ -29,16 +27,7 @@ class _ProfileListViewState extends State<ProfileListView> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final shouldBackupKey = await App.navState.currentContext!.read<BackupKeyCubit>().getBackupKeyStatus();
-
-      if (shouldBackupKey == false && mounted) {
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          barrierColor: Colors.black.withValues(alpha: 0.2),
-          builder: (context) => const BackupKeyAlertDialog(),
-        );
-      }
+      await BackupKeyUtils().BackupKeyStatusCheck();
     });
     super.initState();
   }

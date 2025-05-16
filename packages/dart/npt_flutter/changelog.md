@@ -1,6 +1,7 @@
 ## 1.3.0+16
 
 - **FEAT**: demo profile is downloaded and added to profile screen by pressing the try now button.
+- **FEAT**: atsigns can be switched in the settings screen.
 
 ## 1.2.0+15
 
