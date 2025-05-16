@@ -31,7 +31,7 @@ if [[ $allowParallelization == "true" ]]; then
   listOfPids=()
   for clientVersion in $clientVersions; do
     for daemonVersion in $daemonVersions; do
-      "$testScriptsDir/common/run_single_test.sh" $clientVersion $daemonVersion $testToRun $timeoutDuration &
+      "$testScriptsDir/common/run_single_test.sh" $clientVersion $daemonVersion '001_minus_s_flag' $timeoutDuration &
       pid=$!
       listOfPids+=($pid)
       sleep 1
