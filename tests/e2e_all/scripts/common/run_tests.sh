@@ -27,30 +27,23 @@ numClients=$(wc -w <<<"$clientVersions")
 numTestScripts=$(wc -w <<<"$testsToRun")
 totalNumTests=$((numDaemons * numClients * numTestScripts))
 
-# N.B. any variable used by this function must be explicitly set when called from GNU parallel
-run_tests_for_daemon() {
-  local daemonVersion="$1"
-  for testToRun in $testsToRun; do
-    for clientVersion in $clientVersions; do
-      "$testScriptsDir/common/run_single_test.sh" $clientVersion $daemonVersion $testToRun $timeoutDuration
+if [[ $allowParallelization == "true" ]]; then
+  listOfPids=()
+  for daemonVersion in $daemonVersions; do
+    for testToRun in $testsToRun; do
+      for clientVersion in $clientVersions; do
+        "$testScriptsDir/common/run_single_test.sh" $clientVersion $daemonVersion $testToRun $timeoutDuration &
+        pid=$!
+        listOfPids+=($pid)
+      done
     done
   done
-}
-
-if [ $allowParallelization == "true" ] && command -v env_parallel >/dev/null 2>&1; then
-  logInfo "Found GNU parallel, running tests in parallel"
-  export -f run_tests_for_daemon
-  # Run a round of tests against each daemon in parallel
-  parallel --jobs 5 \
-    --timeout 3m \
-    --env run_tests_for_daemon \
-    "testScriptsDir='$testScriptsDir' && testsToRun='$testsToRun' && clientVersions='$clientVersions' && testScriptsDir='$testScriptsDir' && timeoutDuration='$timeoutDuration' && run_tests_for_daemon" \
-    ::: $daemonVersions
+  # Wait for all background processes to finish
+  for pid in "${listOfPids[@]}"; do
+    wait $pid
+  done
 else
   # The old way of running e2e tests - no parallelization
-  if [ $allowParallelization == "true" ]; then
-    logWarning "Unable to find GNU parallel, running tests serially :("
-  fi
   for daemonVersion in $daemonVersions; do
     for testToRun in $testsToRun; do
       for clientVersion in $clientVersions; do
