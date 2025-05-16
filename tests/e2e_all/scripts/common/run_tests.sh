@@ -48,7 +48,7 @@ if [[ $allowParallelization == "true" ]]; then
   for testToRun in $testsToRun; do
     for clientVersion in $clientVersions; do
       for daemonVersion in $daemonVersions; do
-        if [[$testToRun == "001_minus_s_flag"]]; then
+        if [ "$testToRun" == "001_minus_s_flag" ]; then
           # Skip this test for now
           continue
         fi
