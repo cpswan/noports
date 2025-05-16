@@ -24,7 +24,7 @@ daemonVersion="$1"
 clientVersion="$2"
 
 if [[ "$clientVersion" != "d:current" ]]; then
-  loginfo "    N/A - client version \"$clientVersion\" is not d:current"
+  logInfo "    N/A - client version \"$clientVersion\" is not d:current"
   exit 50 # test rig interprets this exit status as 'test was not applicable'
 fi
 
