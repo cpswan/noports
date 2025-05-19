@@ -190,6 +190,10 @@ if test "$retCode" != 0; then
 fi
 
 echo
+logInfo "Calling wipe_known_hosts.sh"
+"$testScriptsDir/common/wipe_known_hosts.sh"
+
+echo
 logInfo "Calling setup_atkeys.sh"
 "$testScriptsDir/common/setup_atkeys.sh"
 
