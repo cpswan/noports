@@ -46,44 +46,23 @@ if [[ $allowParallelization == "true" ]]; then
 
   for testToRun in $testsToRun; do
     for daemonVersion in $daemonVersions; do
-      listOfForLoopPids=()
+      listOfPids=()
       for clientVersion in $clientVersions; do
         if [ "$testToRun" == "001_minus_s_flag" ]; then
           # Skip this test because it was already run above
           continue
         fi 
 
-        "$testScriptsDir/common/run_single_test.sh" $clientVersion $daemonVersion $testToRun $timeoutDuration &
-        pid=$!
-        wait $pid
-        logInfo "Test with PID $pid has completed"
-        # Check if the test was skipped
-        if [ $? -eq 50 ]; then
-          logInfo "Test $testToRun was skipped for client version $clientVersion and daemon version $daemonVersion"
-          continue
-        fi
-        # Check if the test failed
-        if [ $? -ne 0 ]; then
-          logError "Test $testToRun failed for client version $clientVersion and daemon version $daemonVersion"
-          continue
-        fi
-        # Check if the test passed
-        if [ $? -eq 0 ]; then
-          logInfo "Test $testToRun passed for client version $clientVersion and daemon version $daemonVersion"
-          continue
-        fi
-        # If none of the above conditions were met, log an error
-        logError "Test $testToRun encountered an unexpected error for client version $clientVersion and daemon version $daemonVersion"
+        "$testScriptsDir/common/run_single_test.sh" $clientVersion $daemonVersion $testToRun $timeoutDuration
+        sleep 0.1
       done &
       forLoopPid=$!
-      listOfForLoopPids+=($forLoopPid)
-      sleep 0.1
-      # Wait for all the tests in the current loop to finish
-      for forLoopPid in "${listOfForLoopPids[@]}"; do
-        wait $forLoopPid
-        logInfo "Test with PID $forLoopPid has completed"
-      done
+      listOfPids+=($forLoopPid)
     done
+  done
+  for pid in "${listOfPids[@]}"; do
+    wait $pid
+    logInfo "Test with PID $pid has completed"
   done
 else
   # The old way of running e2e tests - no parallelization
