@@ -47,11 +47,24 @@ buildDockerDaemon() {
       ."
   
   logInfo "Executing Docker build command: $dockerBuildCommand"
-  eval "$dockerBuildCommand"
+
+  local max_retries=3
+  local retry_count=0
+  local exitCode=1
+
+  while [[ $exitCode -ne 0 && $retry_count -lt $max_retries ]]; do
+    if [[ $retry_count -gt 0 ]]; then
+      logInfo "Retrying Docker build (attempt $((retry_count+1))/$max_retries)..."
+      sleep 1
+    fi
+    
+    eval "$dockerBuildCommand"
+    exitCode=$?
+    retry_count=$((retry_count+1))
+  done
   
-  local exitCode=$?
   if [[ $exitCode -ne 0 ]]; then
-      logErrorAndReport "Error: Docker build failed with exit code $exitCode"
+      logErrorAndReport "Error: Docker build failed with exit code $exitCode after $max_retries attempts"
       return $exitCode
   else
       logInfo "Container built successfully"
