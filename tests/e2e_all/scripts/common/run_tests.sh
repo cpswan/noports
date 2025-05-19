@@ -34,7 +34,7 @@ if [[ $allowParallelization == "true" ]]; then
       "$testScriptsDir/common/run_single_test.sh" $clientVersion $daemonVersion '001_minus_s_flag' $timeoutDuration &
       pid=$!
       listOfPids+=($pid)
-      sleep 1
+      sleep 0.1
     done
   done
 
@@ -51,12 +51,12 @@ if [[ $allowParallelization == "true" ]]; then
         if [ "$testToRun" == "001_minus_s_flag" ]; then
           # Skip this test for now
           continue
-        fi
+        fi 
 
         "$testScriptsDir/common/run_single_test.sh" $clientVersion $daemonVersion $testToRun $timeoutDuration &
         pid=$!
         listOfPids+=($pid)
-        sleep 1
+        sleep 0.1
       done
     done
   done
