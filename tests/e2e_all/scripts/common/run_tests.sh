@@ -43,13 +43,13 @@ if [[ $allowParallelization == "true" ]]; then
     logInfo "Test with PID $pid has completed"
   done
 
-  listOfPids=()
 
   for testToRun in $testsToRun; do
     for clientVersion in $clientVersions; do
+      listOfPids=()
       for daemonVersion in $daemonVersions; do
         if [ "$testToRun" == "001_minus_s_flag" ]; then
-          # Skip this test for now
+          # Skip this test because it was already run above
           continue
         fi 
 
@@ -58,6 +58,29 @@ if [[ $allowParallelization == "true" ]]; then
         listOfPids+=($pid)
         sleep 0.1
       done
+
+      # Wait for all background processes to finish
+      for pid in "${listOfPids[@]}"; do
+        wait $pid
+        logInfo "Test with PID $pid has completed"
+        # Check if the test was skipped
+        if [ $? -eq 50 ]; then
+          logInfo "Test $testToRun was skipped for client version $clientVersion and daemon version $daemonVersion"
+          continue
+        fi
+        # Check if the test failed
+        if [ $? -ne 0 ]; then
+          logError "Test $testToRun failed for client version $clientVersion and daemon version $daemonVersion"
+          continue
+        fi
+        # Check if the test passed
+        if [ $? -eq 0 ]; then
+          logInfo "Test $testToRun passed for client version $clientVersion and daemon version $daemonVersion"
+          continue
+        fi
+        # If none of the above conditions were met, log an error
+        logError "Test $testToRun encountered an unexpected error for client version $clientVersion and daemon version $daemonVersion"
+      done         
     done
   done
   # Wait for all background processes to finish
