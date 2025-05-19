@@ -54,10 +54,10 @@ if [[ $allowParallelization == "true" ]]; then
         fi 
 
         "$testScriptsDir/common/run_single_test.sh" $clientVersion $daemonVersion $testToRun $timeoutDuration
-        sleep 0.1
       done &
       forLoopPid=$!
       listOfPids+=($forLoopPid)
+      sleep 0.1
     done
   done
   for pid in "${listOfPids[@]}"; do

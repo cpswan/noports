@@ -123,18 +123,24 @@ runDockerDaemon() {
   eval "$dockerRunCommand"
 }
 
+buildDockerDaemonPids=()
 for typeAndVersion in $daemonVersions; do
   # typeAndVersion is a string like "d:4.0.5" or "c:current"
   type=$(echo "$typeAndVersion" | cut -d: -f1)
   version=$(echo "$typeAndVersion" | cut -d: -f2)
   logInfo "Building docker daemon for type $type and version $version"
 
-  buildDockerDaemon "$type" "$version"
-  if [[ $? -ne 0 ]]; then
-    logErrorAndReport "Error: Failed to build docker daemon for type $type and version $version"
+  buildDockerDaemon "$type" "$version" &
+  buildDockerDaemonPid=$!
+  buildDockerDaemonPids+=($buildDockerDaemonPid)
+done
+
+for pid in "${buildDockerDaemonPids[@]}"; do
+  wait $pid
+  if [ $? -ne 0 ]; then
+    logErrorAndReport "Error: Docker daemon build failed with exit code $?"
     exit 1
   fi
-  logInfo "Docker daemon built successfully for type $type and version $version"
 done
 
 for typeAndVersion in $daemonVersions; do
