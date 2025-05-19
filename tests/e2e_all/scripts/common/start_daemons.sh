@@ -160,9 +160,6 @@ for typeAndVersion in $daemonVersions; do
   echo "Starting daemon version $typeAndVersion with the -u and -s flags"  >> "$logFile1"
   runDockerDaemon "$type" "$version" "$deviceName1" "$clientAtSign" "$daemonAtSign" "$extraFlags -s -u"
   sudo docker logs -f "$containerName" >> "$logFile1" 2>&1 &
-  logInfo "Waiting for Docker daemon \"$containerName1\" to start..."
-  waitUntilDockerDaemonStarted "$logFile1" 60
-  logInfo "Docker daemon $deviceName1 started successfully. See $logFile1 for details"
 
   # Run without `-s` and `-u` flags
   deviceName2=$(getDeviceNameNoFlags "$commitId" "$typeAndVersion")
@@ -171,7 +168,14 @@ for typeAndVersion in $daemonVersions; do
   echo "Starting daemon version $typeAndVersion with neither the -u nor -s flags" >> "$logFile2"
   runDockerDaemon "$type" "$version" "$deviceName2" "$clientAtSign" "$daemonAtSign" "$extraFlags"
   sudo docker logs -f "$containerName2" >> "$logFile2" 2>&1 &
+
+  # Wait for container 1 to start
   logInfo "Waiting for Docker daemon \"$containerName2\" to start..."
+  waitUntilDockerDaemonStarted "$logFile1" 60
+  logInfo "Docker daemon $deviceName1 started successfully. See $logFile1 for details"
+
+  # Wait for container 2 to start
+  logInfo "Waiting for Docker daemon \"$containerName1\" to start..."
   waitUntilDockerDaemonStarted "$logFile2" 60
   logInfo "Docker daemon $deviceName2 started successfully. See $logFile2 for details"
 done
