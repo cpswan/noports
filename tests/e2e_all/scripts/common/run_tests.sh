@@ -29,8 +29,8 @@ totalNumTests=$((numDaemons * numClients * numTestScripts))
 
 if [[ $allowParallelization == "true" ]]; then
   listOfPids=()
-  for clientVersion in $clientVersions; do
-    for daemonVersion in $daemonVersions; do
+  for daemonVersion in $daemonVersions; do
+    for clientVersion in $clientVersions; do
       "$testScriptsDir/common/run_single_test.sh" $clientVersion $daemonVersion '001_minus_s_flag' $timeoutDuration &
       pid=$!
       listOfPids+=($pid)
@@ -45,9 +45,9 @@ if [[ $allowParallelization == "true" ]]; then
 
 
   for testToRun in $testsToRun; do
-    for clientVersion in $clientVersions; do
-      listOfPids=()
-      for daemonVersion in $daemonVersions; do
+    for daemonVersion in $daemonVersions; do
+      listOfForLoopPids=()
+      for clientVersion in $clientVersions; do
         if [ "$testToRun" == "001_minus_s_flag" ]; then
           # Skip this test because it was already run above
           continue
@@ -55,12 +55,6 @@ if [[ $allowParallelization == "true" ]]; then
 
         "$testScriptsDir/common/run_single_test.sh" $clientVersion $daemonVersion $testToRun $timeoutDuration &
         pid=$!
-        listOfPids+=($pid)
-        sleep 0.1
-      done
-
-      # Wait for all background processes to finish
-      for pid in "${listOfPids[@]}"; do
         wait $pid
         logInfo "Test with PID $pid has completed"
         # Check if the test was skipped
@@ -80,13 +74,16 @@ if [[ $allowParallelization == "true" ]]; then
         fi
         # If none of the above conditions were met, log an error
         logError "Test $testToRun encountered an unexpected error for client version $clientVersion and daemon version $daemonVersion"
-      done         
+      done &
+      forLoopPid=$!
+      listOfForLoopPids+=($forLoopPid)
+      sleep 0.1
+      # Wait for all the tests in the current loop to finish
+      for forLoopPid in "${listOfForLoopPids[@]}"; do
+        wait $forLoopPid
+        logInfo "Test with PID $forLoopPid has completed"
+      done
     done
-  done
-  # Wait for all background processes to finish
-  for pid in "${listOfPids[@]}"; do
-    wait $pid
-    logInfo "Test with PID $pid has completed"
   done
 else
   # The old way of running e2e tests - no parallelization
