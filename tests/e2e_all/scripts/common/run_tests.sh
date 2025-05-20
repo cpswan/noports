@@ -44,8 +44,8 @@ if [[ $allowParallelization == "true" ]]; then
 
 
   listOfPids=()
-  for daemonVersion in $daemonVersions; do # 'd:current c:current d:5.8.7'
-    for clientVersion in $clientVersions; do # 'd:current d:5.5.0'
+  for clientVersion in $clientVersions; do
+    for daemonVersion in $daemonVersions; do
       for testToRun in $testsToRun; do
         if [ "$testToRun" == "001_minus_s_flag" ]; then
           # Skip this test because it was already run above
