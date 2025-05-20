@@ -30,11 +30,13 @@ buildDockerDaemon() {
       dockerfile="$dockerfilesDir/Dockerfile.$language.current"
       tag="noports-$type:current"
       fBuildArg=""
+      fCache="--no-cache"
   else
       # assume "$version" is a release version like "4.0.5" or "5.2.0"
       dockerfile="$dockerfilesDir/Dockerfile.$language.release"
       tag="noports-$type:v$version"
       fBuildArg="--build-arg release=v$version"
+      fCache=""
   fi
 
   logInfo "Building container for:      Type: $type, Version: $version"
@@ -43,7 +45,7 @@ buildDockerDaemon() {
       -f \"$dockerfile\" \
       -t $tag \
       --quiet \
-      --no-cache \
+      $fCache \
       $fBuildArg \
       --target runtime \
       ."
