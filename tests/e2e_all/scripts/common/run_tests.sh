@@ -28,6 +28,7 @@ numTestScripts=$(wc -w <<<"$testsToRun")
 totalNumTests=$((numDaemons * numClients * numTestScripts))
 
 if [[ $allowParallelization == "true" ]]; then
+  # 1. Run the 001_minus_s_flag test in parallel for all client and daemon versions
   listOfPids=()
   for clientVersion in $clientVersions; do
     for daemonVersion in $daemonVersions; do
@@ -37,11 +38,12 @@ if [[ $allowParallelization == "true" ]]; then
     listOfPids+=($pid)
     sleep 0.1
   done
-
+  # Wait for all the 001_minus_s_flag tests to finish
   for pid in "${listOfPids[@]}"; do
     wait $pid
   done
 
+  # 2. Run the rest of the tests in parallel for all client and daemon versions
   listOfPids=()
   for daemonVersion in $daemonVersions; do
     for clientVersion in $clientVersions; do
@@ -59,6 +61,7 @@ if [[ $allowParallelization == "true" ]]; then
     listOfPids+=($pid)
     sleep 0.1
   done
+  # Wait for all the tests to finish
   for pid in "${listOfPids[@]}"; do
     wait $pid
   done

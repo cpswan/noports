@@ -74,7 +74,6 @@ buildDockerDaemon() {
   fi
 }
 
-
 # usage: `waitUntilDockerDaemonStarted $logFile $timeout` 
 # - logFile is the path to the log file of the docker daemon
 # - timeout is optional, default is 60 seconds
@@ -125,66 +124,74 @@ runDockerDaemon() {
   eval "$dockerRunCommand"
 }
 
-buildDockerDaemonPids=()
-for typeAndVersion in $daemonVersions; do
-  # typeAndVersion is a string like "d:4.0.5" or "c:current"
-  type=$(echo "$typeAndVersion" | cut -d: -f1)
-  version=$(echo "$typeAndVersion" | cut -d: -f2)
-  logInfo "Building docker daemon for type $type and version $version"
+buildAllDockerDaemons() {
+  buildDockerDaemonPids=()
+  for typeAndVersion in $daemonVersions; do
+    # typeAndVersion is a string like "d:4.0.5" or "c:current"
+    type=$(echo "$typeAndVersion" | cut -d: -f1)
+    version=$(echo "$typeAndVersion" | cut -d: -f2)
+    logInfo "Building docker daemon for type $type and version $version"
 
-  buildDockerDaemon "$type" "$version" &
-  buildDockerDaemonPid=$!
-  buildDockerDaemonPids+=($buildDockerDaemonPid)
-done
+    buildDockerDaemon "$type" "$version" &
+    buildDockerDaemonPid=$!
+    buildDockerDaemonPids+=($buildDockerDaemonPid)
+  done
 
-for pid in "${buildDockerDaemonPids[@]}"; do
-  wait $pid
-  if [ $? -ne 0 ]; then
-    logErrorAndReport "Error: Docker daemon build failed with exit code $?"
-    exit 1
-  fi
-done
+  for pid in "${buildDockerDaemonPids[@]}"; do
+    wait $pid
+    if [ $? -ne 0 ]; then
+      logErrorAndReport "Error: Docker daemon build failed with exit code $?"
+      exit 1
+    fi
+  done
+}
 
-logFilesToCheck=()
+runAllDockerDaemons() {
+  logFilesToCheck=()
+  for typeAndVersion in $daemonVersions; do
+    # typeAndVersion is a string like "d:4.0.5" or "c:current"
+    type=$(echo "$typeAndVersion" | cut -d: -f1)
+    version=$(echo "$typeAndVersion" | cut -d: -f2)
 
-for typeAndVersion in $daemonVersions; do
-  # typeAndVersion is a string like "d:4.0.5" or "c:current"
-  type=$(echo "$typeAndVersion" | cut -d: -f1)
-  version=$(echo "$typeAndVersion" | cut -d: -f2)
+    if [[ $(versionIsAtLeast "$typeAndVersion" "d:5.3.0") == "true" ]]; then
+      apkamApp=$(getApkamAppName)
+      apkamDev=$(getApkamDeviceName "daemon" "$commitId")
+      # keysFile=$(getApkamKeysFile "$daemonAtSign" "$apkamApp" "$apkamDev") # OLD
 
-  if [[ $(versionIsAtLeast "$typeAndVersion" "d:5.3.0") == "true" ]]; then
-    apkamApp=$(getApkamAppName)
-    apkamDev=$(getApkamDeviceName "daemon" "$commitId")
-    # keysFile=$(getApkamKeysFile "$daemonAtSign" "$apkamApp" "$apkamDev") # OLD
+      # the keys file is in the docker daemon
+      # e.g. /atsign/.atsign/keys/@12alpaca.e2e_all.client_2064e58.atKeys
+      keysFile="/atsign/.atsign/keys/$daemonAtSign.$apkamApp.$apkamDev".atKeys # NEW
+      extraFlags="-k $keysFile"
+    else
+      extraFlags=""
+    fi
 
-    # the keys file is in the docker daemon
-    # e.g. /atsign/.atsign/keys/@12alpaca.e2e_all.client_2064e58.atKeys
-    keysFile="/atsign/.atsign/keys/$daemonAtSign.$apkamApp.$apkamDev".atKeys # NEW
-    extraFlags="-k $keysFile"
-  fi
+    # Run with `-s` and `-u` flags (container 1)
+    deviceName1=$(getDeviceNameWithFlags "$commitId" "$typeAndVersion")
+    logFile1="${outputDir}/daemons/${deviceName1}.log"
+    containerName1="e2e_all-$deviceName1"
+    echo "Starting daemon version $typeAndVersion with the -u and -s flags"  >> "$logFile1"
+    runDockerDaemon "$type" "$version" "$deviceName1" "$clientAtSign" "$daemonAtSign" "$extraFlags -s -u"
+    sudo docker logs -f "$containerName1" >> "$logFile1" 2>&1 &
 
-  # Run with `-s` and `-u` flags (container 1)
-  deviceName1=$(getDeviceNameWithFlags "$commitId" "$typeAndVersion")
-  logFile1="${outputDir}/daemons/${deviceName1}.log"
-  containerName1="e2e_all-$deviceName1"
-  echo "Starting daemon version $typeAndVersion with the -u and -s flags"  >> "$logFile1"
-  runDockerDaemon "$type" "$version" "$deviceName1" "$clientAtSign" "$daemonAtSign" "$extraFlags -s -u"
-  sudo docker logs -f "$containerName" >> "$logFile1" 2>&1 &
+    # Run without `-s` and `u` flags (container 2)
+    deviceName2=$(getDeviceNameNoFlags "$commitId" "$typeAndVersion")
+    logFile2="${outputDir}/daemons/${deviceName2}.log"
+    containerName2="e2e_all-$deviceName2"
+    echo "Starting daemon version $typeAndVersion with neither the -u nor -s flags" >> "$logFile2"
+    runDockerDaemon "$type" "$version" "$deviceName2" "$clientAtSign" "$daemonAtSign" "$extraFlags"
+    sudo docker logs -f "$containerName2" >> "$logFile2" 2>&1 &
 
-  # Run without `-s` and `-u` flags (container 2)
-  deviceName2=$(getDeviceNameNoFlags "$commitId" "$typeAndVersion")
-  logFile2="${outputDir}/daemons/${deviceName2}.log"
-  containerName2="e2e_all-$deviceName2"
-  echo "Starting daemon version $typeAndVersion with neither the -u nor -s flags" >> "$logFile2"
-  runDockerDaemon "$type" "$version" "$deviceName2" "$clientAtSign" "$daemonAtSign" "$extraFlags"
-  sudo docker logs -f "$containerName2" >> "$logFile2" 2>&1 &
+    logFilesToCheck+=("$logFile1")
+    logFilesToCheck+=("$logFile2")
+  done
 
-  logFilesToCheck+=("$logFile1")
-  logFilesToCheck+=("$logFile2")
-done
+  # Wait for all daemons to start
+  for logFile in "${logFilesToCheck[@]}"; do
+    logInfo "Waiting for Docker daemon with logFile \"$logFile\" to start..."
+    waitUntilDockerDaemonStarted "$logFile" 60
+  done
+}
 
-# Wait for all daemons to start
-for logFile in "${logFilesToCheck[@]}"; do
-  logInfo "Waiting for Docker daemon with logFile \"$logFile\" to start..."
-  waitUntilDockerDaemonStarted "$logFile" 60
-done
+buildAllDockerDaemons
+runAllDockerDaemons

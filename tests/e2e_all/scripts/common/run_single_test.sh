@@ -7,7 +7,7 @@
 script_dir="$(dirname -- "$(readlink -f -- "$0")")"
 source "$script_dir/common_functions.include.sh"
 
-"$script_dir/wipe_known_hosts.sh"
+"$script_dir/wipe_known_hosts.sh" # to avoid SSH issues
 
 clientVersion="$1"
 daemonVersion="$2"
