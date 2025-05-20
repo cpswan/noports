@@ -65,8 +65,8 @@ if [[ $allowParallelization == "true" ]]; then
   # done
 
   listOfPids=()
-  for daemonVersion in $daemonVersions; do
-    for clientVersion in $clientVersions; do
+  for clientVersion in $clientVersions; do
+    for daemonVersion in $daemonVersions; do
       for testToRun in $testsToRun; do
         "$testScriptsDir/common/run_single_test.sh" $clientVersion $daemonVersion $testToRun $timeoutDuration &
         pid=$!
