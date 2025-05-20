@@ -43,26 +43,42 @@ if [[ $allowParallelization == "true" ]]; then
   done
 
 
+  # listOfPids=()
+  # for daemonVersion in $daemonVersions; do
+  #   for clientVersion in $clientVersions; do
+  #     for testToRun in $testsToRun; do
+  #       if [ "$testToRun" == "001_minus_s_flag" ]; then
+  #         # Skip this test because it was already run above
+  #         continue
+  #       fi
+
+  #       "$testScriptsDir/common/run_single_test.sh" $clientVersion $daemonVersion $testToRun $timeoutDuration
+  #       sleep 0.1
+  #     done
+  #   done &
+  #   pid=$!
+  #   listOfPids+=($pid)
+  #   sleep 0.1
+  # done
+  # for pid in "${listOfPids[@]}"; do
+  #   wait $pid
+  # done
+
   listOfPids=()
   for daemonVersion in $daemonVersions; do
     for clientVersion in $clientVersions; do
       for testToRun in $testsToRun; do
-        if [ "$testToRun" == "001_minus_s_flag" ]; then
-          # Skip this test because it was already run above
-          continue
-        fi
-
-        "$testScriptsDir/common/run_single_test.sh" $clientVersion $daemonVersion $testToRun $timeoutDuration
+        "$testScriptsDir/common/run_single_test.sh" $clientVersion $daemonVersion $testToRun $timeoutDuration &
+        pid=$!
+        listOfPids+=($pid)
         sleep 0.1
       done
-    done &
-    pid=$!
-    listOfPids+=($pid)
-    sleep 0.1
+    done
   done
   for pid in "${listOfPids[@]}"; do
     wait $pid
   done
+
 else
   # The old way of running e2e tests - no parallelization
   for daemonVersion in $daemonVersions; do
