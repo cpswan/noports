@@ -53,16 +53,16 @@ if [[ $allowParallelization == "true" ]]; then
           continue
         fi
 
-        "$testScriptsDir/common/run_single_test.sh" $clientVersion $daemonVersion $testToRun $timeoutDuration &
-        pid=$!
-        listOfPids+=($pid)
-        sleep 0.1
-      done
-    done 
-  done
-  # Wait for all the tests to finish
-  for pid in "${listOfPids[@]}"; do
-    wait $pid
+        "$testScriptsDir/common/run_single_test.sh" $clientVersion $daemonVersion $testToRun $timeoutDuration
+      done &
+      pid=$!
+      listOfPids+=($pid)
+      sleep 0.1
+    done
+    # Wait for all the tests to finish
+    for pid in "${listOfPids[@]}"; do
+      wait $pid
+    done
   done
 else
   # The old way of running e2e tests - no parallelization
