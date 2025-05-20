@@ -159,7 +159,7 @@ for typeAndVersion in $daemonVersions; do
     extraFlags="-k $keysFile"
   fi
 
-  # Run with `-s` and `-u` flags
+  # Run with `-s` and `-u` flags (container 1)
   deviceName1=$(getDeviceNameWithFlags "$commitId" "$typeAndVersion")
   logFile1="${outputDir}/daemons/${deviceName1}.log"
   containerName1="e2e_all-$deviceName1"
@@ -167,7 +167,7 @@ for typeAndVersion in $daemonVersions; do
   runDockerDaemon "$type" "$version" "$deviceName1" "$clientAtSign" "$daemonAtSign" "$extraFlags -s -u"
   sudo docker logs -f "$containerName" >> "$logFile1" 2>&1 &
 
-  # Run without `-s` and `-u` flags
+  # Run without `-s` and `-u` flags (container 2)
   deviceName2=$(getDeviceNameNoFlags "$commitId" "$typeAndVersion")
   logFile2="${outputDir}/daemons/${deviceName2}.log"
   containerName2="e2e_all-$deviceName2"
