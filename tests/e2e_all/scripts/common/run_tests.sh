@@ -29,8 +29,8 @@ totalNumTests=$((numDaemons * numClients * numTestScripts))
 
 if [[ $allowParallelization == "true" ]]; then
   listOfPids=()
-  for clientVersion in $clientVersions; do
-    for daemonVersion in $daemonVersions; do
+  for daemonVersion in $daemonVersions; do
+    for clientVersion in $clientVersions; do
       "$testScriptsDir/common/run_single_test.sh" $clientVersion $daemonVersion '001_minus_s_flag' $timeoutDuration
     done &
     pid=$!
