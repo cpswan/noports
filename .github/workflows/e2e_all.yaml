@@ -39,10 +39,6 @@ jobs:
           envs: SHA
           command_timeout: 30m
           script: |
-            if [[ "$(uname)" == "Linux" ]]; then
-              sudo apt-get update
-              sudo apt-get install -y docker.io
-            fi
             cd noports
             rm -rf tests/e2e_all/runtime
             mkdir -p tests/e2e_all/runtime
