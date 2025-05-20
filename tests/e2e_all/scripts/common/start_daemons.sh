@@ -84,7 +84,7 @@ waitUntilDockerDaemonStarted() {
     if grep "monitor started" "$logFile" 2>/dev/null; then
       return 0
     fi
-    sleep 1
+    sleep 0.2
   done
 
   cat $logFile
