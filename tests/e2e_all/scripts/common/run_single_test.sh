@@ -7,6 +7,8 @@
 script_dir="$(dirname -- "$(readlink -f -- "$0")")"
 source "$script_dir/common_functions.include.sh"
 
+"$script_dir/wipe_known_hosts.sh"
+
 clientVersion="$1"
 daemonVersion="$2"
 testToRun="$3"
