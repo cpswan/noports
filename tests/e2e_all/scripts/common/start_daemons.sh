@@ -124,8 +124,6 @@ runDockerDaemon() {
   eval "$dockerRunCommand"
 }
 
-sudo docker image prune -f
-
 buildDockerDaemonPids=()
 for typeAndVersion in $daemonVersions; do
   # typeAndVersion is a string like "d:4.0.5" or "c:current"
