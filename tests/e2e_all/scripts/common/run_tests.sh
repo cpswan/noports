@@ -59,10 +59,11 @@ if [[ $allowParallelization == "true" ]]; then
       listOfPids+=($pid)
       sleep 0.1
     done
-    # Wait for all the tests to finish
-    for pid in "${listOfPids[@]}"; do
-      wait $pid
-    done
+    sleep 1
+  done
+  # Wait for all the tests to finish
+  for pid in "${listOfPids[@]}"; do
+    wait $pid
   done
 else
   # The old way of running e2e tests - no parallelization
