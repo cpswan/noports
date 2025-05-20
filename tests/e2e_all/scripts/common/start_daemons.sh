@@ -69,7 +69,7 @@ buildDockerDaemon() {
       logErrorAndReport "Error: Docker build failed with exit code $exitCode after $max_retries attempts"
       return $exitCode
   else
-      logInfo "Container built successfully"
+      logInfo "Container $type $version built successfully"
       return 0
   fi
 }
@@ -145,6 +145,8 @@ for pid in "${buildDockerDaemonPids[@]}"; do
   fi
 done
 
+logFilesToCheck=()
+
 for typeAndVersion in $daemonVersions; do
   # typeAndVersion is a string like "d:4.0.5" or "c:current"
   type=$(echo "$typeAndVersion" | cut -d: -f1)
@@ -177,13 +179,12 @@ for typeAndVersion in $daemonVersions; do
   runDockerDaemon "$type" "$version" "$deviceName2" "$clientAtSign" "$daemonAtSign" "$extraFlags"
   sudo docker logs -f "$containerName2" >> "$logFile2" 2>&1 &
 
-  # Wait for container 1 to start
-  logInfo "Waiting for Docker daemon \"$containerName2\" to start..."
-  waitUntilDockerDaemonStarted "$logFile1" 60
-  logInfo "Docker daemon $deviceName1 started successfully. See $logFile1 for details"
+  logFilesToCheck+=("$logFile1")
+  logFilesToCheck+=("$logFile2")
+done
 
-  # Wait for container 2 to start
-  logInfo "Waiting for Docker daemon \"$containerName1\" to start..."
-  waitUntilDockerDaemonStarted "$logFile2" 60
-  logInfo "Docker daemon $deviceName2 started successfully. See $logFile2 for details"
+# Wait for all daemons to start
+for logFile in "${logFilesToCheck[@]}"; do
+  logInfo "Waiting for Docker daemon with logFile \"$logFile\" to start..."
+  waitUntilDockerDaemonStarted "$logFile" 60
 done
