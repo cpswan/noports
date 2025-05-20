@@ -45,8 +45,8 @@ if [[ $allowParallelization == "true" ]]; then
 
   # 2. Run the rest of the tests in parallel for all client and daemon versions
   listOfPids=()
-  for clientVersion in $clientVersions; do
-    for testToRun in $testsToRun; do
+  for testToRun in $testsToRun; do
+    for clientVersion in $clientVersions; do
       for daemonVersion in $daemonVersions; do
         if [ "$testToRun" == "001_minus_s_flag" ]; then
           # Skip this test because it was already run above
@@ -59,11 +59,9 @@ if [[ $allowParallelization == "true" ]]; then
       listOfPids+=($pid)
       sleep 0.1
     done
-    sleep 1
-  done
-  # Wait for all the tests to finish
-  for pid in "${listOfPids[@]}"; do
-    wait $pid
+    for pid in "${listOfPids[@]}"; do
+      wait $pid
+    done
   done
 else
   # The old way of running e2e tests - no parallelization
