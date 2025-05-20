@@ -71,6 +71,7 @@ if [ $allowParallelization == "true" ]; then
   for typeAndVersion in $uniqueVersions; do
     setup_type_and_version $typeAndVersion &
     pid=$!
+    pids+=($pid)
   done
   for pid in "${pids[@]}"; do
     wait $pid
