@@ -48,4 +48,3 @@ jobs:
             git checkout -f "$SHA"
             echo "Running tests"
             tests/e2e_all/scripts/main.sh @apricoteventual @combinedbelgian @rv_am -u atsign -p
-            sudo docker image prune -f # remove dangling images
