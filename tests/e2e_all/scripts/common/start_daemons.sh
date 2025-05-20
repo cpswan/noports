@@ -42,6 +42,7 @@ buildDockerDaemon() {
   local dockerBuildCommand="sudo docker build \
       -f \"$dockerfile\" \
       -t $tag \
+      --quiet \
       --no-cache \
       $fBuildArg \
       --target runtime \
