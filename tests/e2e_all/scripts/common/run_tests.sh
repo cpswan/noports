@@ -45,20 +45,20 @@ if [[ $allowParallelization == "true" ]]; then
 
   # 2. Run the rest of the tests in parallel for all client and daemon versions
   listOfPids=()
-  for testToRun in $testsToRun; do
-    for clientVersion in $clientVersions; do
+  for clientVersion in $clientVersions; do
+    for testToRun in $testsToRun; do
       for daemonVersion in $daemonVersions; do
         if [ "$testToRun" == "001_minus_s_flag" ]; then
           # Skip this test because it was already run above
           continue
         fi
-
         "$testScriptsDir/common/run_single_test.sh" $clientVersion $daemonVersion $testToRun $timeoutDuration
       done &
       pid=$!
       listOfPids+=($pid)
       sleep 0.1
     done
+    # Wait for all the tests to finish
     for pid in "${listOfPids[@]}"; do
       wait $pid
     done
