@@ -7,29 +7,10 @@ fi
 source "$testScriptsDir/common/common_functions.include.sh"
 source "$testScriptsDir/common/check_env.include.sh" || exit $?
 
-buildAllDockerDaemons() {
-  buildDockerDaemonPids=()
-  for typeAndVersion in $daemonVersions; do
-    # typeAndVersion is a string like "d:4.0.5" or "c:current"
-    type=$(echo "$typeAndVersion" | cut -d: -f1)
-    version=$(echo "$typeAndVersion" | cut -d: -f2)
-    logInfo "Building docker daemon for type $type and version $version"
-
-    buildDockerDaemon "$type" "$version" &
-    buildDockerDaemonPid=$!
-    buildDockerDaemonPids+=($buildDockerDaemonPid)
-  done
-
-  for pid in "${buildDockerDaemonPids[@]}"; do
-    wait $pid
-    if [ $? -ne 0 ]; then
-      logErrorAndReport "Error: Docker daemon build failed with exit code $?"
-      exit 1
-    fi
-  done
-}
-
 runAllDockerDaemons() {
+  dockerfilesDir="$(dirname "$0")/../../dockerfiles"
+  cd "$dockerfilesDir"/../../..
+
   logFilesToCheck=()
   for typeAndVersion in $daemonVersions; do
     # typeAndVersion is a string like "d:4.0.5" or "c:current"
@@ -79,9 +60,4 @@ runAllDockerDaemons() {
 outputDir=$(getOutputDir)
 mkdir -p "${outputDir}/daemons"
 
-# e.g. `buildDockerDaemon d 4.0.5``
-dockerfilesDir="$(dirname "$0")/../../dockerfiles"
-cd "$dockerfilesDir"/../../..
-
-buildAllDockerDaemons
 runAllDockerDaemons

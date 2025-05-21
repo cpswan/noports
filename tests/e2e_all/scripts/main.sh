@@ -180,13 +180,23 @@ logInfo "    commitId:         $commitId"
 logInfo "    testsToRun:       $(tr "\n" ";" <<<"$testsToRun")"
 
 echo
+logInfo "Calling build_docker_daemons.sh"
+if [ "${allowParallelization}" = "true" ]; then
+  # shellcheck disable=SC2016
+  "$testScriptsDir/common/build_docker_daemons.sh" &
+  buildDockerDaemonPidParallel=$!
+else
+  "$testScriptsDir/common/build_docker_daemons.sh"
+fi
+
+echo
 logInfo "Calling setup_binaries.sh"
 export recompile
-"$testScriptsDir/common/setup_binaries.sh"
-retCode=$?
-if test "$retCode" != 0; then
-  logErrorAndReport "Failed to set up binaries - exiting"
-  exit $retCode
+if [ "${allowParallelization}" = "true" ]; then
+  "$testScriptsDir/common/setup_binaries.sh" &
+  setupBinariesPidParallel=$!
+else
+  "$testScriptsDir/common/setup_binaries.sh"
 fi
 
 echo
@@ -196,10 +206,6 @@ logInfo "Calling wipe_known_hosts.sh"
 echo
 logInfo "Calling setup_atkeys.sh"
 "$testScriptsDir/common/setup_atkeys.sh"
-
-echo
-logInfo "Calling apkam_setup.sh"
-"$testScriptsDir/common/apkam_setup.sh"
 
 echo
 logInfo "Generating new ssh key"
@@ -213,6 +219,33 @@ backupAuthorizedKeys
 echo
 logInfo "Calling stop_daemons.sh"
 "$testScriptsDir/common/stop_daemons.sh"
+
+# Wait for parallel pids to finish
+if [ "${allowParallelization}" = "true" ]; then
+  logInfo "Waiting for setup_binaries to finish"
+  wait $buildDockerDaemonPidParallel
+  retCode=$?
+  if test "$retCode" != 0; then
+    logErrorAndReport "Failed to build docker daemons"
+    exit $retCode
+  fi
+  logInfo "setup_binaries finished with exit code $?"
+fi
+
+echo
+logInfo "Calling apkam_setup.sh"
+"$testScriptsDir/common/apkam_setup.sh"
+
+if [ "${allowParallelization}" = "true" ]; then
+  logInfo "Waiting for build_docker_daemons to finish"
+  wait $buildDockerDaemonPidParallel
+  retCode=$?
+  if test "$retCode" != 0; then
+    logErrorAndReport "Failed to build docker daemons"
+    exit $retCode
+  fi
+  logInfo "build_docker_daemons finished with exit code $?"
+fi
 
 logInfo "Calling start_daemons.sh"
 "$testScriptsDir/common/start_daemons.sh"
