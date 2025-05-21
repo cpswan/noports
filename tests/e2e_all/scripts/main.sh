@@ -220,12 +220,11 @@ echo
 logInfo "Calling common/stop_daemons.sh"
 "$testScriptsDir/common/stop_daemons.sh"
 
-# Wait for parallel pids to finish
 if [ "${allowParallelization}" = "true" ]; then
   logInfo "Waiting for setup_binaries.sh to finish"
   wait $setupBinariesPidParallel
   retCode=$?
-  if test "$retCode" != 0; then
+  if "$retCode" != 0; then
     logErrorAndReport "setup_binaries.sh failed with exit code $?"
     exit $retCode
   fi
@@ -240,7 +239,7 @@ if [ "${allowParallelization}" = "true" ]; then
   logInfo "Waiting for build_docker_daemons.sh to finish"
   wait $buildDockerDaemonPidParallel
   retCode=$?
-  if test "$retCode" != 0; then
+  if $retCode != 0; then
     logErrorAndReport "build_docker_daemons.sh failed with exit code $?"
     exit $retCode
   fi
