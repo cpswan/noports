@@ -226,7 +226,7 @@ if [ "${allowParallelization}" = "true" ]; then
   wait $setupBinariesPidParallel
   retCode=$?
   if test "$retCode" != 0; then
-    logErrorAndReport "Failed to build docker daemons"
+    logErrorAndReport "setup_binaries.sh failed with exit code $?"
     exit $retCode
   fi
   logInfo "setup_binaries.sh finished with exit code $?"
@@ -237,14 +237,14 @@ logInfo "Calling common/apkam_setup.sh"
 "$testScriptsDir/common/apkam_setup.sh"
 
 if [ "${allowParallelization}" = "true" ]; then
-  logInfo "Waiting for build_docker_daemons to finish"
+  logInfo "Waiting for build_docker_daemons.sh to finish"
   wait $buildDockerDaemonPidParallel
   retCode=$?
   if test "$retCode" != 0; then
-    logErrorAndReport "Failed to build docker daemons"
+    logErrorAndReport "build_docker_daemons.sh failed with exit code $?"
     exit $retCode
   fi
-  logInfo "build_docker_daemons finished with exit code $?"
+  logInfo "build_docker_daemons.sh finished with exit code $?"
 fi
 
 logInfo "Calling common/start_daemons.sh"
@@ -255,11 +255,12 @@ if test "$retCode" != 0; then
   logInfo "Calling stop_daemons.sh"
   "$testScriptsDir/common/stop_daemons.sh"
   exit $retCode
+else
+  logInfo "Calling common/run_tests.sh"
+  "$testScriptsDir/common/run_tests.sh"
+  testExitStatus=$?
 fi
 
-logInfo "Calling common/run_tests.sh"
-"$testScriptsDir/common/run_tests.sh"
-testExitStatus=$?
 
 logInfo "Calling common/stop_daemons.sh"
 "$testScriptsDir/common/stop_daemons.sh"
