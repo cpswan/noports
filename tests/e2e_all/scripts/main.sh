@@ -224,8 +224,8 @@ if [ "${allowParallelization}" = "true" ]; then
   logInfo "Waiting for setup_binaries.sh to finish"
   wait $setupBinariesPidParallel
   retCode=$?
-  if "$retCode" != 0; then
-    logErrorAndReport "setup_binaries.sh failed with exit code $?"
+  if [ "$retCode" -ne 0 ]; then
+    logErrorAndReport "setup_binaries.sh failed with exit code $retCode"
     exit $retCode
   fi
   logInfo "setup_binaries.sh finished with exit code $?"
@@ -239,7 +239,7 @@ if [ "${allowParallelization}" = "true" ]; then
   logInfo "Waiting for build_docker_daemons.sh to finish"
   wait $buildDockerDaemonPidParallel
   retCode=$?
-  if $retCode != 0; then
+  if [ "$retCode" -ne 0 ]; then
     logErrorAndReport "build_docker_daemons.sh failed with exit code $?"
     exit $retCode
   fi
