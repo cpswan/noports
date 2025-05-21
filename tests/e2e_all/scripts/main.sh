@@ -49,8 +49,8 @@ atDirectoryPort=64
 testsToRun="all"
 
 # defaultDaemonVersions="c:current"
-defaultDaemonVersions="d:5.5.0 d:5.8.7 d:current c:current"
-defaultClientVersions="d:5.5.0 d:5.8.7 d:current"
+defaultDaemonVersions="d:current c:current d:5.5.0 d:5.8.7"
+defaultClientVersions="d:current 5.5.0 d:5.8.7"
 
 daemonVersions=$defaultDaemonVersions
 clientVersions=$defaultClientVersions
@@ -180,7 +180,7 @@ logInfo "    commitId:         $commitId"
 logInfo "    testsToRun:       $(tr "\n" ";" <<<"$testsToRun")"
 
 echo
-logInfo "Calling build_docker_daemons.sh"
+logInfo "Calling common/build_docker_daemons.sh"
 if [ "${allowParallelization}" = "true" ]; then
   # shellcheck disable=SC2016
   "$testScriptsDir/common/build_docker_daemons.sh" &
@@ -190,7 +190,7 @@ else
 fi
 
 echo
-logInfo "Calling setup_binaries.sh"
+logInfo "Calling common/setup_binaries.sh"
 export recompile
 if [ "${allowParallelization}" = "true" ]; then
   "$testScriptsDir/common/setup_binaries.sh" &
@@ -200,11 +200,11 @@ else
 fi
 
 echo
-logInfo "Calling wipe_known_hosts.sh"
+logInfo "Calling common/wipe_known_hosts.sh"
 "$testScriptsDir/common/wipe_known_hosts.sh"
 
 echo
-logInfo "Calling setup_atkeys.sh"
+logInfo "Calling common/setup_atkeys.sh"
 "$testScriptsDir/common/setup_atkeys.sh"
 
 echo
@@ -217,7 +217,7 @@ backupAuthorizedKeys
 
 # Kill any daemons that might be running since last time, due to a Ctrl-C or whatever
 echo
-logInfo "Calling stop_daemons.sh"
+logInfo "Calling common/stop_daemons.sh"
 "$testScriptsDir/common/stop_daemons.sh"
 
 # Wait for parallel pids to finish
@@ -233,7 +233,7 @@ if [ "${allowParallelization}" = "true" ]; then
 fi
 
 echo
-logInfo "Calling apkam_setup.sh"
+logInfo "Calling common/apkam_setup.sh"
 "$testScriptsDir/common/apkam_setup.sh"
 
 if [ "${allowParallelization}" = "true" ]; then
@@ -247,7 +247,7 @@ if [ "${allowParallelization}" = "true" ]; then
   logInfo "build_docker_daemons finished with exit code $?"
 fi
 
-logInfo "Calling start_daemons.sh"
+logInfo "Calling common/start_daemons.sh"
 "$testScriptsDir/common/start_daemons.sh"
 retCode=$?
 if test "$retCode" != 0; then
@@ -255,11 +255,11 @@ if test "$retCode" != 0; then
   logInfo "Calling stop_daemons.sh"
   "$testScriptsDir/common/stop_daemons.sh"
   exit $retCode
-else
-  logInfo "Calling common/run_tests.sh"
-  "$testScriptsDir/common/run_tests.sh"
-  testExitStatus=$?
 fi
+
+logInfo "Calling common/run_tests.sh"
+"$testScriptsDir/common/run_tests.sh"
+testExitStatus=$?
 
 logInfo "Calling common/stop_daemons.sh"
 "$testScriptsDir/common/stop_daemons.sh"
