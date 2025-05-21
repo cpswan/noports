@@ -222,14 +222,14 @@ logInfo "Calling stop_daemons.sh"
 
 # Wait for parallel pids to finish
 if [ "${allowParallelization}" = "true" ]; then
-  logInfo "Waiting for setup_binaries to finish"
-  wait $buildDockerDaemonPidParallel
+  logInfo "Waiting for setup_binaries.sh to finish"
+  wait $setupBinariesPidParallel
   retCode=$?
   if test "$retCode" != 0; then
     logErrorAndReport "Failed to build docker daemons"
     exit $retCode
   fi
-  logInfo "setup_binaries finished with exit code $?"
+  logInfo "setup_binaries.sh finished with exit code $?"
 fi
 
 echo
