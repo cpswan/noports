@@ -58,7 +58,7 @@ Future<void> main(List<String> args) async {
         help: 'On the daemon side, this is the local port to connect to.'
             ' On the client side this is the local port which the srv will bind'
             ' to so that client-side programs can create sockets to it.')
-    ..addOption('timeout',
+    ..addOption('heartbeat',
         defaultsTo: '1800',
         help: 'How frequently to send heartbeats on the connection\'s'
             ' control socket. Defaults to 30 minutes (1800 seconds)')
