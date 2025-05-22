@@ -8,10 +8,19 @@ source "$testScriptsDir/common/common_functions.include.sh"
 source "$testScriptsDir/common/check_env.include.sh" || exit $?
 
 
-buildAllDockerDaemons() {
-  dockerfilesDir="$(dirname "$0")/../../dockerfiles"
-  cd "$dockerfilesDir"/../../.. # go to root of the repo
+dockerfilesDir="$(dirname "$0")/../../dockerfiles"
+cd "$dockerfilesDir"/../../.. # go to root of the repo
 
+buildBaseRuntime() {
+  logInfo "Building base runtime"
+  sudo docker build \
+    -f $dockerfilesDir/Dockerfile.base.runtime \
+    -t atsigncompany/e2e_all_base_runtime:latest \
+    --quiet \
+    .
+}
+
+buildAllDockerDaemons() {
   logInfo "Building all docker daemons for $daemonVersions"
   if [ "${allowParallelization}" = "true" ]; then
     buildDockerDaemonPids=()
@@ -39,4 +48,5 @@ buildAllDockerDaemons() {
   fi
 }
 
+buildBaseRuntime
 buildAllDockerDaemons
