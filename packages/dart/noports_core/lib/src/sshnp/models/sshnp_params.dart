@@ -137,8 +137,8 @@ class NptParams extends ClientParamsBase
   /// How long to keep the local port open if there have been no connections
   final Duration timeout;
 
-  /// Interval between heartbeats on the control socket.
-  final Duration heartbeat;
+  /// Interval between heartbeats on the control channel.
+  final Duration? controlChannelHeartbeat;
 
   NptParams({
     required super.clientAtSign,
@@ -157,7 +157,7 @@ class NptParams extends ClientParamsBase
     required this.inline,
     super.daemonPingTimeout,
     required this.timeout,
-    this.heartbeat = DefaultArgs.controlSocketHeartbeatInterval,
+    this.controlChannelHeartbeat,
   }) {
     try {
       AtUtils.fixAtSign(clientAtSign);

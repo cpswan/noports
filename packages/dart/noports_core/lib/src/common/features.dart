@@ -22,6 +22,10 @@ enum DaemonFeature {
   /// Understands and respects the 'timeout' value in an npt session request
   /// See also [NptParams.timeout]
   adjustableTimeout,
+
+  /// Can handle heartbeat messages being sent over the control channel.
+  /// See also [NptParams.controlChannelHeartbeat]
+  controlChannelHeartbeats,
 }
 
 extension FeatureDescription on DaemonFeature {
@@ -37,6 +41,8 @@ extension FeatureDescription on DaemonFeature {
         return 'support requests for specific device ports';
       case DaemonFeature.adjustableTimeout:
         return 'support the \'timeout\' value in npt session requests';
+      case DaemonFeature.controlChannelHeartbeats:
+        return 'handle heartbeat messages being send over the control channel';
     }
   }
 }

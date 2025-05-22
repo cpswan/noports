@@ -205,11 +205,12 @@ void main(List<String> args) async {
         'heartbeat',
         abbr: 'H',
         mandatory: false,
-        defaultsTo: '${DefaultArgs.controlSocketHeartbeatIntervalMins}m',
+        defaultsTo: '${DefaultArgs.controlChannelHeartbeatIntervalMins}m',
         help: 'How frequently to send heartbeats on the connection\'s'
-            ' control socket. Heartbeats are an attempt to persuade zealous'
-            ' network intermediaries that the control socket shouldn\'t be'
-            ' closed due to lack of activity.'
+            ' control channel. Heartbeats are an attempt to persuade zealous'
+            ' network intermediaries that the control channel shouldn\'t be'
+            ' closed due to lack of activity. Heartbeats will not be sent'
+            ' to older daemons which do not support them.'
             ' Argument must be supplied in human readable'
             ' form e.g. as follows: "30s" or "1h" or "1h,14m,30s"'
             ' or "7d".',
@@ -354,7 +355,7 @@ void main(List<String> args) async {
             Duration(seconds: int.parse(parsedArgs['daemon-ping-timeout'])),
         encryptRvdTraffic: parsedArgs['encrypt-rvd-traffic'],
         timeout: parseDuration(timeoutArg),
-        heartbeat: parseDuration(parsedArgs['heartbeat']),
+        controlChannelHeartbeat: parseDuration(parsedArgs['heartbeat']),
       );
 
       while (true) {

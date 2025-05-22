@@ -61,7 +61,7 @@ Future<void> main(List<String> args) async {
     ..addOption('heartbeat',
         defaultsTo: '1800',
         help: 'How frequently to send heartbeats on the connection\'s'
-            ' control socket. Defaults to 30 minutes (1800 seconds)')
+            ' control channel. Defaults to 30 minutes (1800 seconds)')
     ..addOption('timeout',
         defaultsTo: '60',
         help: 'How long to keep the SocketConnector open'
@@ -138,7 +138,7 @@ Future<void> main(List<String> args) async {
         detached: true,
         // by definition - this is the srv binary
         timeout: timeout,
-        heartbeat: heartbeat,
+        controlChannelHeartbeat: heartbeat,
       ).run();
     } on ArgumentError catch (e) {
       printVersion();

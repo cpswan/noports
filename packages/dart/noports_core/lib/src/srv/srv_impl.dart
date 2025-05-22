@@ -52,7 +52,7 @@ class SrvImplExec implements Srv<Process> {
   final Duration timeout;
 
   @override
-  final Duration heartbeat;
+  final Duration? controlChannelHeartbeat;
 
   SrvImplExec(
     this.streamingHost,
@@ -65,7 +65,7 @@ class SrvImplExec implements Srv<Process> {
     this.sessionIVString,
     required this.multi,
     required this.timeout,
-    required this.heartbeat,
+    this.controlChannelHeartbeat,
   }) {
     if (localPort == null) {
       throw ArgumentError('localPort must be non-null');
@@ -99,9 +99,11 @@ class SrvImplExec implements Srv<Process> {
       localHost ?? 'localhost',
       '--timeout',
       timeout.inSeconds.toString(),
-      '--heartbeat',
-      heartbeat.inSeconds.toString(),
     ];
+    if (controlChannelHeartbeat != null) {
+      rvArgs.addAll(
+          ['--heartbeat', controlChannelHeartbeat!.inSeconds.toString()]);
+    }
     if (multi) {
       rvArgs.add('--multi');
     }
@@ -203,7 +205,7 @@ class SrvImplInline implements Srv<SSHSocket> {
   final Duration timeout;
 
   @override
-  final Duration heartbeat;
+  final Duration? controlChannelHeartbeat;
 
   SrvImplInline(
     this.streamingHost,
@@ -213,7 +215,7 @@ class SrvImplInline implements Srv<SSHSocket> {
     this.sessionIVString,
     this.multi = false,
     required this.timeout,
-    required this.heartbeat,
+    required this.controlChannelHeartbeat,
   }) {
     if ((sessionAESKeyString == null && sessionIVString != null) ||
         (sessionAESKeyString != null && sessionIVString == null)) {
@@ -361,7 +363,7 @@ class SrvImplDart implements Srv<SocketConnector> {
   final Duration timeout;
 
   @override
-  final Duration heartbeat;
+  final Duration? controlChannelHeartbeat;
 
   final AtSignLogger logger = AtSignLogger(' SrvImplDart ');
 
@@ -377,7 +379,7 @@ class SrvImplDart implements Srv<SocketConnector> {
     this.multi = false,
     required this.detached,
     required this.timeout,
-    required this.heartbeat,
+    this.controlChannelHeartbeat,
   }) {
     logger.info('New SrvImplDart - localPort $localPort');
     if ((sessionAESKeyString == null && sessionIVString != null) ||
@@ -526,10 +528,10 @@ class SrvImplDart implements Srv<SocketConnector> {
     Socket sessionControlSocket = await Socket.connect(
         streamingHost, streamingPort,
         timeout: Duration(seconds: 10));
-    // Authenticate the control socket
+    // Authenticate the control channel
     if (rvdAuthString != null) {
       logger.info('_runClientSideMulti authenticating'
-          ' control socket connection to rvd');
+          ' control channel connection to rvd');
       sessionControlSocket.writeln(rvdAuthString);
     }
 
@@ -546,7 +548,7 @@ class SrvImplDart implements Srv<SocketConnector> {
     }
 
     logger.info('_runClientSideMulti serverToSocket is ready');
-    // upon socketConnector.done, destroy the control socket, and complete
+    // upon socketConnector.done, destroy the control channel, and complete
     unawaited(socketConnector.done.whenComplete(() {
       logger.info('_runClientSideMulti sc.done');
       sessionControlSocket.destroy();
@@ -563,7 +565,7 @@ class SrvImplDart implements Srv<SocketConnector> {
     sessionControlSocket.listen((event) {
       String response = String.fromCharCodes(event).trim();
       logger.info('_runClientSideMulti'
-          ' Received control socket response: [$response]');
+          ' Received control channel response: [$response]');
     }, onError: (e) {
       logger.severe('_runClientSideMulti controlSocket error: $e');
       socketConnector?.close();
@@ -615,7 +617,7 @@ class SrvImplDart implements Srv<SocketConnector> {
     controlStream.listen((event) {
       String response = String.fromCharCodes(event).trim();
       logger.info('_runClientSideMulti'
-          ' Received control socket response: [$response]');
+          ' Received control channel response: [$response]');
     }, onError: (e) {
       logger.severe('_runClientSideMulti controlSocket error: $e');
       socketConnector?.close();
@@ -624,24 +626,26 @@ class SrvImplDart implements Srv<SocketConnector> {
       socketConnector?.close();
     });
 
-    bool heartbeatInProgress = false;
-    int heartbeatCounter = 1;
-    Timer.periodic(heartbeat, (timer) async {
-      if (heartbeatInProgress) {
-        logger.warning('Control socket heartbeat already in progress');
-        return;
-      }
-      try {
-        heartbeatInProgress = true;
-        logger.info('Sending heartbeat $heartbeatCounter on control socket');
-        controlSink.add(
-          Uint8List.fromList('heartbeat:$heartbeatCounter\n'.codeUnits),
-        );
-        heartbeatCounter++;
-      } finally {
-        heartbeatInProgress = false;
-      }
-    });
+    if (controlChannelHeartbeat != null) {
+      bool heartbeatInProgress = false;
+      int heartbeatCounter = 1;
+      Timer.periodic(controlChannelHeartbeat!, (timer) async {
+        if (heartbeatInProgress) {
+          logger.warning('control channel heartbeat already in progress');
+          return;
+        }
+        try {
+          heartbeatInProgress = true;
+          logger.info('Sending heartbeat $heartbeatCounter on control channel');
+          controlSink.add(
+            Uint8List.fromList('heartbeat:$heartbeatCounter\n'.codeUnits),
+          );
+          heartbeatCounter++;
+        } finally {
+          heartbeatInProgress = false;
+        }
+      });
+    }
 
     logger.info('_runClientSideMulti calling SocketConnector.serverToSocket');
     socketConnector = await SocketConnector.serverToSocket(
@@ -681,7 +685,7 @@ class SrvImplDart implements Srv<SocketConnector> {
     DataTransformer? decrypter,
   ) async {
     logger.info('_runDaemonSideMulti'
-        ' Control socket received connect request - '
+        ' control channel received connect request - '
         ' creating new socketToSocket connection');
 
     InternetAddress localAddress = await resolveRequestedLocalHost();
@@ -790,15 +794,15 @@ class SrvImplDart implements Srv<SocketConnector> {
       logger: ioSinkForLogger(logger),
     );
 
-    // - create control socket and listen for requests
+    // - create control channel and listen for requests
     // - for each request, create a socketToSocket connection
     Socket sessionControlSocket = await Socket.connect(
         streamingHost, streamingPort,
         timeout: Duration(seconds: 10));
-    // Authenticate the control socket
+    // Authenticate the control channel
     if (rvdAuthString != null) {
       logger.info('_runDaemonSideMulti authenticating'
-          ' control socket connection to rvd');
+          ' control channel connection to rvd');
       sessionControlSocket.writeln(rvdAuthString);
     }
 
@@ -812,7 +816,7 @@ class SrvImplDart implements Srv<SocketConnector> {
       _daemonSidePlainSocket(sessionControlSocket, sc, relayAddress);
     }
 
-    // upon socketConnector.done, destroy the control socket, and complete
+    // upon socketConnector.done, destroy the control channel, and complete
     unawaited(sc.done.whenComplete(() {
       sessionControlSocket.destroy();
     }));
@@ -820,7 +824,7 @@ class SrvImplDart implements Srv<SocketConnector> {
     return sc;
   }
 
-  /// Start the control stream listener on the control socket itself
+  /// Start the control stream listener on the control channel itself
   /// since there is no encryption / decryption
   void _daemonSidePlainSocket(Socket sessionControlSocket, SocketConnector sc,
       InternetAddress relayAddress) {
@@ -860,7 +864,7 @@ class SrvImplDart implements Srv<SocketConnector> {
     SocketConnector sc,
     InternetAddress relayAddress,
   ) {
-    logger.info('Starting control socket listener');
+    logger.info('Starting control channel listener');
     at_commons.ByteBuffer rcvBuffer = at_commons.ByteBuffer(capacity: 4096);
     Mutex controlStreamMutex = Mutex();
     sessionControlStream.listen((data) async {

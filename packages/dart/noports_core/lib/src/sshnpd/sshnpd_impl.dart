@@ -140,6 +140,7 @@ class SshnpdImpl with AtClientBindings implements Sshnpd {
         DaemonFeature.acceptsPublicKeys.name: addSshPublicKeys,
         DaemonFeature.supportsPortChoice.name: true,
         DaemonFeature.adjustableTimeout.name: true,
+        DaemonFeature.controlChannelHeartbeats.name: true,
       },
       'allowedServices': permitOpen,
     };

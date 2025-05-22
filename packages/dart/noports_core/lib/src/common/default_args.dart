@@ -38,14 +38,14 @@ class DefaultArgs {
   static const int srvTimeoutInSeconds = 30;
   static const Duration srvTimeout = Duration(seconds: srvTimeoutInSeconds);
 
-  /// How frequently to send heartbeats over the control socket.
+  /// How frequently to send heartbeats over the control channel.
   ///
   /// Heartbeats are an attempt to persuade over-zealous network
-  /// intermediaries that the control socket shouldn't be closed due to lack
+  /// intermediaries that the control channel shouldn't be closed due to lack
   /// of activity.
-  static const int controlSocketHeartbeatIntervalMins = 30;
-  static const Duration controlSocketHeartbeatInterval =
-      Duration(minutes: controlSocketHeartbeatIntervalMins);
+  static const int controlChannelHeartbeatIntervalMins = 30;
+  static const Duration controlChannelHeartbeatInterval =
+      Duration(minutes: controlChannelHeartbeatIntervalMins);
 }
 
 class DefaultSshnpArgs {
