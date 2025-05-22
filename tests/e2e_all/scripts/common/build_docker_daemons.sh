@@ -12,7 +12,7 @@ dockerfilesDir="$(dirname "$0")/../../dockerfiles"
 cd "$dockerfilesDir"/../../.. # go to root of the repo
 
 buildBaseRuntime() {
-  logInfo "Building base runtime"
+  logInfo "Building Dockerfile.base.runtime"
   sudo docker build \
     -f $dockerfilesDir/Dockerfile.base.runtime \
     -t atsigncompany/e2e_all_base_runtime:latest \
