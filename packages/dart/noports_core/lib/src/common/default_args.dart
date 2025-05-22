@@ -37,6 +37,15 @@ class DefaultArgs {
   /// How long srv should stay running if SocketConnector has no connections
   static const int srvTimeoutInSeconds = 30;
   static const Duration srvTimeout = Duration(seconds: srvTimeoutInSeconds);
+
+  /// How frequently to send heartbeats over the control socket.
+  ///
+  /// Heartbeats are an attempt to persuade over-zealous network
+  /// intermediaries that the control socket shouldn't be closed due to lack
+  /// of activity.
+  static const int controlSocketHeartbeatIntervalMins = 30;
+  static const Duration controlSocketHeartbeatInterval =
+      Duration(minutes: controlSocketHeartbeatIntervalMins);
 }
 
 class DefaultSshnpArgs {

@@ -315,6 +315,7 @@ class _NptImpl extends NptBase
         multi: true,
         detached: true,
         timeout: params.timeout,
+        heartbeat: params.heartbeat,
       );
       _completer.complete();
     }
@@ -338,6 +339,7 @@ class _NptImpl extends NptBase
       multi: true,
       detached: false,
       timeout: params.timeout,
+      heartbeat: params.heartbeat,
     );
 
     unawaited(sc.done.then((_) {

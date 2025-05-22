@@ -201,6 +201,20 @@ void main(List<String> args) async {
             ' it has started its session.',
       );
 
+      parser.addOption(
+        'heartbeat',
+        abbr: 'H',
+        mandatory: false,
+        defaultsTo: '${DefaultArgs.controlSocketHeartbeatIntervalMins}m',
+        help: 'How frequently to send heartbeats on the connection\'s'
+            ' control socket. Heartbeats are an attempt to persuade zealous'
+            ' network intermediaries that the control socket shouldn\'t be'
+            ' closed due to lack of activity.'
+            ' Argument must be supplied in human readable'
+            ' form e.g. as follows: "30s" or "1h" or "1h,14m,30s"'
+            ' or "7d".',
+      );
+
       parser.addFlag(
         'encrypt-rvd-traffic',
         aliases: ['et'],
@@ -324,6 +338,7 @@ void main(List<String> args) async {
             ' setting timeout to $keepAliveDefaultTimeoutHours hours');
         timeoutArg = '${keepAliveDefaultTimeoutHours}h';
       }
+
       NptParams params = NptParams(
         clientAtSign: clientAtSign,
         sshnpdAtSign: daemonAtSign,
@@ -339,6 +354,7 @@ void main(List<String> args) async {
             Duration(seconds: int.parse(parsedArgs['daemon-ping-timeout'])),
         encryptRvdTraffic: parsedArgs['encrypt-rvd-traffic'],
         timeout: parseDuration(timeoutArg),
+        heartbeat: parseDuration(parsedArgs['heartbeat']),
       );
 
       while (true) {
