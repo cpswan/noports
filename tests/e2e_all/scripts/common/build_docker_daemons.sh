@@ -11,11 +11,23 @@ source "$testScriptsDir/common/check_env.include.sh" || exit $?
 dockerfilesDir="$(dirname "$0")/../../dockerfiles"
 cd "$dockerfilesDir"/../../.. # go to root of the repo
 
+pullBaseRuntime() {
+  logInfo "Pulling base runtime image"
+  imageName="atsigncompany/noports_e2e_all_base_runtime:latest"
+  sudo docker pull $imageName --quiet
+  if [ $? -ne 0 ]; then
+    logError "Failed to pull base runtime image $imageName"
+    return 1
+  fi
+  logInfo "Successfully pulled base runtime image $imageName"
+  return 0
+}
+
 buildBaseRuntime() {
   logInfo "Building Dockerfile.base.runtime"
   sudo docker build \
     -f $dockerfilesDir/Dockerfile.base.runtime \
-    -t atsigncompany/e2e_all_base_runtime:latest \
+    -t atsigncompany/noports_e2e_all_base_runtime:latest \
     --quiet \
     .
 }
@@ -48,5 +60,8 @@ buildAllDockerDaemons() {
   fi
 }
 
-buildBaseRuntime
+if ! pullBaseRuntime; then
+  logInfo "Pulling base runtime failed, building it locally"
+  buildBaseRuntime
+fi
 buildAllDockerDaemons
