@@ -162,6 +162,8 @@ case "$executionType" in
 
     echo "$(iso8601Date) | Executing sshnp.expect with sshnpCommand $sshnpCommand"
 
+    ls -la $testScriptsDir/tests/shared # DEBUG LINE
+    cat $testScriptsDir/tests/shared/sshnp.expect  # DEBUG LINE
     "$testScriptsDir/tests/shared/sshnp.expect"
     retCode=$?
     if ((retCode == 0)); then
