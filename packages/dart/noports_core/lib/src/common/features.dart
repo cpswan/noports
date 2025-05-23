@@ -6,28 +6,28 @@ import 'package:version/version.dart';
 enum DaemonFeature {
   /// daemon will accept ssh public keys sent by clients (i.e. daemon has been
   /// started with the `--sshpublickey` or `-s` flag)
-  acceptsPublicKeys("1.0.0"),
+  acceptsPublicKeys('1.0.0'),
 
   /// authenticate when connecting to the Socket Rendezvous (sr)
-  srAuth("1.1.0"),
+  srAuth('1.1.0'),
 
   /// End-to-end encrypt traffic sent via the SocketRendezvous (sr)
-  srE2ee("1.1.0"),
+  srE2ee('1.1.0'),
 
   /// Understands requests from clients for specific ports. Note that this
   /// does not mean that a daemon will **allow** a connection to that port,
   /// just that the daemon will understand the request. For example, a client
   /// could request to connect to port 80, and the daemon could allow it, but
   /// not allow connections to any other ports.
-  supportsPortChoice("1.2.0"),
+  supportsPortChoice('1.2.0'),
 
   /// Understands and respects the 'timeout' value in an npt session request
   /// See also [NptParams.timeout]
-  adjustableTimeout("1.3.0"),
+  adjustableTimeout('1.3.0'),
 
   /// Can handle heartbeat messages being sent over the control channel.
   /// See also [NptParams.controlChannelHeartbeat]
-  controlChannelHeartbeats("1.4.0"),
+  controlChannelHeartbeats('1.4.0'),
   ;
 
   /// The version of the NoPorts control protocol which introduced this feature.
