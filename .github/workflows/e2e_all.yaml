@@ -32,7 +32,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Setup dart
         uses: dart-lang/setup-dart@e51d8e571e22473a2ddebf0ef8a2123f0ab2c02c # v1.7.1
-      - name: Run e2e_all main.sh
+      - name: Execute tests/e2e_all/scripts/main.sh
         run: |
           mkdir -p /tmp/e2e_all          
           mkdir -p ~/.atsign/keys/
@@ -42,7 +42,7 @@ jobs:
           echo "${{ secrets.ATKEYS_829SNOWSHOEING }}" > ~/.atsign/keys/@829snowshoeing_key.atKeys
           echo "Test started at: $(date)"
           start_time=$(date +%s)          
-          tests/e2e_all/scripts/main.sh @8incanteater @8485wealthy51 @rv_am -u atsign -p
+          tests/e2e_all/scripts/main.sh @8052simple @829snowshoeing @rv_am -u atsign -p
           test_exit_code=$?
           end_time=$(date +%s)
           echo "Test finished at: $(date)"
