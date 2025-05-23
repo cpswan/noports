@@ -36,7 +36,7 @@ if [[ $allowParallelization == "true" ]]; then
     done &
     pid=$!
     listOfPids+=($pid)
-    sleep 0.1
+    sleep 0.5
   done
   # Wait for all the 001_minus_s_flag tests to finish
   for pid in "${listOfPids[@]}"; do
@@ -45,8 +45,8 @@ if [[ $allowParallelization == "true" ]]; then
 
   # 2. Run the rest of the tests in parallel for all client and daemon versions
   listOfPids=()
-  for clientVersion in $clientVersions; do
-    for testToRun in $testsToRun; do
+  for testToRun in $testsToRun; do
+    for clientVersion in $clientVersions; do
       for daemonVersion in $daemonVersions; do
         if [ "$testToRun" == "001_minus_s_flag" ]; then
           # Skip this test because it was already run above
@@ -56,7 +56,7 @@ if [[ $allowParallelization == "true" ]]; then
       done &
       pid=$!
       listOfPids+=($pid)
-      sleep 0.1
+      sleep 1
     done
     # Wait for all the tests to finish
     for pid in "${listOfPids[@]}"; do
