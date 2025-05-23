@@ -44,8 +44,8 @@ if [[ $allowParallelization == "true" ]]; then
   done
 
   # 2. Run the rest of the tests in parallel for all client and daemon versions
-  listOfPids=()
   for testToRun in $testsToRun; do
+    listOfPids=()
     for clientVersion in $clientVersions; do
       for daemonVersion in $daemonVersions; do
         if [ "$testToRun" == "001_minus_s_flag" ]; then

@@ -28,6 +28,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Debugging TEMP
+        run: |
+          ls -la
+          ls -la /home/runner/work/noports/noports/tests/e2e_all/scripts/tests/shared/
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Setup dart
