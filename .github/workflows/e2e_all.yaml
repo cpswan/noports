@@ -24,7 +24,6 @@ jobs:
     if:
       ${{ github.event.pull_request.head.repo.fork == false && github.actor !=
       'dependabot[bot]'}}
-    concurrency: e2e_all
     runs-on: ubuntu-latest
 
     steps:
