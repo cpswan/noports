@@ -143,7 +143,7 @@ class SshnpdImpl with AtClientBindings implements Sshnpd {
         DaemonFeature.controlChannelHeartbeats.name: true,
       },
       'allowedServices': permitOpen,
-      'npCpV': DaemonFeature.latestVersion,
+      'npCpVersion': DaemonFeature.latestVersion.toString(),
     };
   }
 
