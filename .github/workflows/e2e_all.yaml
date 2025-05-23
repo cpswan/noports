@@ -58,26 +58,24 @@ jobs:
         with:
           name: tmp_e2e_all_artifacts
           path: tmp_e2e_all_artifacts.zip
-
-    # steps:
-    #   - name: execute tests on cicd vm
-    #     uses: appleboy/ssh-action@2ead5e36573f08b82fbfce1504f1a4b05a647c6f # v1.2.2
-    #     env:
-    #       SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-    #     with:
-    #       host: ${{ secrets.NOPORTS_CICD_HOST }}
-    #       username: ubuntu
-    #       key: ${{ secrets.NOPORTS_CICD_SSH_KEY }}
-    #       envs: SHA
-    #       command_timeout: 15m
-    #       script: |
-    #         cd noports
-    #         rm -rf tests/e2e_all/runtime
-    #         mkdir -p tests/e2e_all/runtime
-    #         echo "Running git fetch"
-    #         git fetch
-    #         echo "Running git checkout -f $SHA"
-    #         git checkout -f "$SHA"
-    #         echo "Running tests"
-    #         tests/e2e_all/scripts/main.sh @apricoteventual @combinedbelgian @rv_am -u atsign -p
-    #         sudo docker image prune -f # prune dangling images
+      - name: execute tests on cicd vm
+        uses: appleboy/ssh-action@2ead5e36573f08b82fbfce1504f1a4b05a647c6f # v1.2.2
+        env:
+          SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        with:
+          host: ${{ secrets.NOPORTS_CICD_HOST }}
+          username: ubuntu
+          key: ${{ secrets.NOPORTS_CICD_SSH_KEY }}
+          envs: SHA
+          command_timeout: 15m
+          script: |
+            cd noports
+            rm -rf tests/e2e_all/runtime
+            mkdir -p tests/e2e_all/runtime
+            echo "Running git fetch"
+            git fetch
+            echo "Running git checkout -f $SHA"
+            git checkout -f "$SHA"
+            echo "Running tests"
+            tests/e2e_all/scripts/main.sh @apricoteventual @combinedbelgian @rv_am -u atsign -p
+            sudo docker image prune -f # prune dangling images

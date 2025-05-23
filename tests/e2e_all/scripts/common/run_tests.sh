@@ -36,7 +36,7 @@ if [[ $allowParallelization == "true" ]]; then
     done &
     pid=$!
     listOfPids+=($pid)
-    sleep 0.5
+    sleep 0.2
   done
   # Wait for all the 001_minus_s_flag tests to finish
   for pid in "${listOfPids[@]}"; do
@@ -60,7 +60,7 @@ if [[ $allowParallelization == "true" ]]; then
       done &
       pid=$!
       listOfPids+=($pid)
-      sleep 0.1
+      sleep 0.2
     done
     # Wait for all the tests to finish
     for pid in "${listOfPids[@]}"; do
