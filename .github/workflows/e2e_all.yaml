@@ -32,25 +32,14 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Run e2e_all main.sh
         run: |
-          # Clean up any previous test artifacts
-          sudo rm -rf tests/e2e_all/runtime
-          sudo rm -rf tests/e2e_all/releases
-          
-          # Run tests with timing information
+          mkdir -p /tmp/e2e_all          
           echo "Test started at: $(date)"
-          start_time=$(date +%s)
-          
+          start_time=$(date +%s)          
           tests/e2e_all/scripts/main.sh @apricoteventual @combinedbelgian @rv_am -u atsign -p
           test_exit_code=$?
-          
           end_time=$(date +%s)
           echo "Test finished at: $(date)"
-          echo "Total execution time: $((end_time - start_time)) seconds"
-          
-          # Clean up Docker images
-          sudo docker image prune -f
-          
-          # Pass along the test exit code
+          echo "Total execution time: $((end_time - start_time)) seconds"          
           exit $test_exit_code
 
     # steps:
