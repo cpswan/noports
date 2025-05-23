@@ -30,14 +30,28 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - name: Install Docker
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker.io
       - name: Run e2e_all main.sh
         run: |
+          # Clean up any previous test artifacts
+          sudo rm -rf tests/e2e_all/runtime
+          sudo rm -rf tests/e2e_all/releases
+          
+          # Run tests with timing information
+          echo "Test started at: $(date)"
+          start_time=$(date +%s)
+          
           tests/e2e_all/scripts/main.sh @apricoteventual @combinedbelgian @rv_am -u atsign -p
-          sudo docker image prune -f # prune dangling images
+          test_exit_code=$?
+          
+          end_time=$(date +%s)
+          echo "Test finished at: $(date)"
+          echo "Total execution time: $((end_time - start_time)) seconds"
+          
+          # Clean up Docker images
+          sudo docker image prune -f
+          
+          # Pass along the test exit code
+          exit $test_exit_code
 
     # steps:
     #   - name: execute tests on cicd vm
