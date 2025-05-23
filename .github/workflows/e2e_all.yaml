@@ -35,9 +35,14 @@ jobs:
       - name: Run e2e_all main.sh
         run: |
           mkdir -p /tmp/e2e_all          
+          mkdir -p ~/.atsign/keys/
+          echo "${{ secrets.ATKEYS_8INCANTEATER }}" > ~/.atsign/keys/@8incanteater_key.atKeys
+          echo "${{ secrets.ATKEYS_8485WEALTHY51 }}" > ~/.atsign/keys/@8485wealthy51_key.atKeys
+          echo "${{ secrets.ATKEYS_8052SIMPLE }}" > ~/.atsign/keys/@8052simple_key.atKeys
+          echo "${{ secrets.ATKEYS_829SNOWSHOEING }}" > ~/.atsign/keys/@829snowshoeing_key.atKeys
           echo "Test started at: $(date)"
           start_time=$(date +%s)          
-          tests/e2e_all/scripts/main.sh @apricoteventual @combinedbelgian @rv_am -u atsign -p
+          tests/e2e_all/scripts/main.sh @8incanteater @8485wealthy51 @rv_am -u atsign -p
           test_exit_code=$?
           end_time=$(date +%s)
           echo "Test finished at: $(date)"
