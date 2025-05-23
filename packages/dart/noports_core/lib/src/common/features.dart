@@ -73,7 +73,3 @@ extension FeatureDescription on DaemonFeature {
     }
   }
 }
-
-void main() {
-  print(DaemonFeature.latestVersion);
-}
