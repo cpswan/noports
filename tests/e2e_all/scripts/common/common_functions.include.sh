@@ -692,7 +692,7 @@ runDockerDaemon() {
     tag="noports-$type:v$version"
   fi
 
-  logInfo "Starting container for: Type: $type, Version: $version, Flags: $daemonFlags, Device name: $deviceName, Client atSign: $clientAt, Daemon atSign: $daemonAt"
+  logInfo "Starting container for: Type: $type, Version: $version, atDirectory: $atDirectoryHost Flags: $daemonFlags, Device name: $deviceName, Client atSign: $clientAt, Daemon atSign: $daemonAt"
 
   containerName="e2e_all-$deviceName"
   local dockerRunCommand="sudo docker run \
@@ -701,7 +701,7 @@ runDockerDaemon() {
     --name \"$containerName\" \
     -v \"$testRuntimeDir/keys/:/atsign/.atsign/keys/\" \
     \"$tag\" \
-    /bin/bash -c \"sudo service ssh start && /usr/local/bin/sshnpd -a $daemonAt -m $clientAt -d $deviceName $daemonFlags -v\""
+    /bin/bash -c \"sudo service ssh start && /usr/local/bin/sshnpd -a $daemonAt -m $clientAt -d $deviceName $daemonFlags --root-domain $atDirectoryHost -v\""
 
   logInfo "Executing: $dockerRunCommand"
   eval "$dockerRunCommand"
