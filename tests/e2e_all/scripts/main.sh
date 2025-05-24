@@ -24,7 +24,7 @@ function usageAndExit {
   echo "     [-c <client versions>] - defaults to $defaultClientVersions \\"
   echo "     [-w <daemon start wait time> - how long to wait for daemons to start up - defaults to 30 seconds] \\"
   echo "     [-n (Do not recompile binaries for current commit. Default is to always recompile.)]"
-  echo "     [-p (Enable test parallelization, requires GNU parallel to be installed.) ]"
+  echo "     [-p (Enable test parallelization) ]"
   echo ""
   echo "Notes:"
   echo "  <atDirectory host> defaults to root.atsign.org"
