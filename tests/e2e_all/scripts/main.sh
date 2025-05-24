@@ -22,7 +22,6 @@ function usageAndExit {
   echo "     [-t <space-separated list of test scripts to run from the e2e_all/scripts/tests/ subdirectory>] \\"
   echo "     [-s <daemon versions>] - defaults to $defaultDaemonVersions\\"
   echo "     [-c <client versions>] - defaults to $defaultClientVersions \\"
-  echo "     [-u <remote username>] - defaults to the local username \\"
   echo "     [-w <daemon start wait time> - how long to wait for daemons to start up - defaults to 30 seconds] \\"
   echo "     [-n (Do not recompile binaries for current commit. Default is to always recompile.)]"
   echo "     [-p (Enable test parallelization, requires GNU parallel to be installed.) ]"
@@ -107,7 +106,6 @@ shift
 commitId="$(git rev-parse --short HEAD)"
 export commitId
 
-remoteUsername=$(whoami)
 identityFilename="$HOME/.ssh/e2e_all.${commitId}"
 
 daemonStartWait=20
@@ -118,7 +116,6 @@ while getopts r:t:s:c:u:w:pn opt; do
   t) testsToRun=$OPTARG ;;
   s) daemonVersions=$OPTARG ;;
   c) clientVersions=$OPTARG ;;
-  u) remoteUsername=$OPTARG ;;
   w) daemonStartWait=$OPTARG ;;
   p) allowParallelization="true" ;;
   n) recompile="false" ;;
@@ -137,7 +134,7 @@ export atDirectoryPort
 export testsToRun
 export daemonVersions
 export clientVersions
-export remoteUsername
+export remoteUsername="atsign"
 export identityFilename
 export daemonStartWait
 export allowParallelization
