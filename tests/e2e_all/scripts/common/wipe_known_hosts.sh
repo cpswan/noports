@@ -8,9 +8,7 @@ source "$testScriptsDir/common/common_functions.include.sh"
 source "$testScriptsDir/common/check_env.include.sh" || exit $?
 
 knownHostsFile="$HOME/.ssh/known_hosts"
-
-# Empty the known_hosts file
-echo "" >"$knownHostsFile"
+echo "" >"$knownHostsFile" # Empty the known_hosts file
 
 if [[ "$(uname)" == "Darwin" ]]; then
     sudo sh -c 'echo "" > /var/root/.ssh/known_hosts'
