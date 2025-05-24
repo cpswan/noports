@@ -30,9 +30,6 @@ logInfo "$what" | tee -a "$singleTestOutputLog"
 
 exitStatus=1
 maxAttempts=5
-if [[ $(uname -s) == "Darwin" ]]; then
-  maxAttempts=2
-fi
 attempts=0
 
 while ((exitStatus != 0 && exitStatus != 50 && attempts < maxAttempts)); do
